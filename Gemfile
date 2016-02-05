@@ -14,7 +14,6 @@ gem 'maestrano-connector-rails'
 # gem 'maestrano-connector-rails', path: '../maestrano-connector-rails'
 
 gem 'restforce'
-gem 'omniauth-salesforce'
 
 gem 'haml-rails'
 gem 'bootstrap-sass'

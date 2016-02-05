@@ -7,7 +7,7 @@ describe Entities::Opportunity do
   it { expect(subject.external_entity_name).to eql('Opportunity') }
   it { expect(subject.external_attributes).to be_a(Array) }
 
-  describe 'SalesForce to connec!' do
+  describe 'Shopify to connec!' do
     let(:sf) {
       {
         "attributes"  =>  {
@@ -49,7 +49,7 @@ describe Entities::Opportunity do
         "LastViewedDate"  =>"2015-12-05T14:22:27.000+0000  ",
         "LastReferencedDate"=>"2015-12-05T14:22:27.000+0000  ",
         "DeliveryInstallationStatus__c"=>"Yet to begin",
-        "TrackingNumber__c"  =>nil,
+        "TrackingNumber__c"  =>nil,Sa
         "OrderNumber__c"  =>nil,
         "CurrentGenerators__c"  =>"Hawkpower, Fujitsu",
         "MainCompetitors__c"  =>"Hawkpower"
@@ -69,7 +69,7 @@ describe Entities::Opportunity do
     it { expect(subject.map_to_connec(sf, nil)).to eql(mapped_sf) }
   end
 
-  describe 'connec to salesforce' do
+  describe 'connec to Shopify' do
     let(:connec) {
       {
         "id"  =>"2c3d1121-7d87-0133-9e73-0620e3ce3a45",

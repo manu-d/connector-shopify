@@ -7,7 +7,7 @@ describe Entities::Organization do
   it { expect(subject.external_entity_name).to eql('Account') }
   it { expect(subject.external_attributes).to be_a(Array) }
 
-  describe 'SalesForce to connec!' do
+  describe 'Shopify to connec!' do
     let(:sf) {
       {
         "attributes"=>
@@ -123,7 +123,7 @@ describe Entities::Organization do
     it { expect(subject.map_to_connec(sf, nil)).to eql(mapped_sf) }
   end
 
-  describe 'connec to salesforce' do
+  describe 'connec to shopify' do
     let(:connec) {
       {
         "id"=>"cd946971-78db-0133-6798-0620e3ce3a45",

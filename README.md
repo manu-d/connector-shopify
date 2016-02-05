@@ -1,22 +1,20 @@
-# SalesForce Connector
+# Shopify Connector
 
-The aim of this connector is to implement data sharing between Connec! and SalesForce
+The aim of this connector is to implement data sharing between Connec! and Shopify
 
 ### Configuration
-Configure your SalesForce application. To create a new SalesForce application: http://geekymartian.com/articles/ruby-on-rails-4-salesforce-oauth-implementation/
 
-Create a configuration file `config/application.yml` with the following settigns (complete with your SalesForce / Connec! credentials)
+Create a configuration file `config/application.yml` with the following settigns (complete with your Shopify / Connec! credentials)
 ```
 connec_api_id: 
 connec_api_key: 
-salesforce_client_id: 
-salesforce_client_secret: 
+
 ```
 
 ### Run the connector locally against the Maestrano production environment
 In the initialize `config/initializers/maestrano.rb`
 ```
-config.app.host = 'http://localhost:3001'
+config.app.host = 'http://localhost:5678'
 ```
 
 ### Run the connector
@@ -24,7 +22,7 @@ config.app.host = 'http://localhost:3001'
 rvm install jruby-9.0.4.0
 gem install bundler
 bundle
-rails s -p 3001
+rails s -p 5678
 ```
 
 ### Heroku

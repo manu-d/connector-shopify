@@ -21,10 +21,10 @@
             %small (#{@organization.uid})
             is
             - unless @organization.oauth_uid
-              not linked to any SalesForce account.
-              = link_to "Link this company to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm" if is_admin?(current_user, @organization)
+              not linked to any Shopify account.
+              = link_to "Link this company to Shopify", "/auth/Shopify/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm" if is_admin?(current_user, @organization)
             - else
-              linked to a SalesForce account
+              linked to a Shopify account
               %small (#{@organization.oauth_uid})
 
         .row

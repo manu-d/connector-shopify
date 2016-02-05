@@ -16,7 +16,7 @@ class OauthController < ApplicationController
     end
   end
 
-  # Link an Organization to SalesForce OAuth account
+  # Link an Organization to Shopify OAuth account
   def create_omniauth
     org_uid = params[:state]
     organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
@@ -28,7 +28,7 @@ class OauthController < ApplicationController
     redirect_to root_url
   end
 
-  # Unlink Organization from SalesForce
+  # Unlink Organization from Shopify
   def destroy_omniauth
     organization = Maestrano::Connector::Rails::Organization.find(params[:organization_id])
 

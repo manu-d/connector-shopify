@@ -20,11 +20,11 @@
                 = link_to "Disconnect your Maestrano account", Maestrano::Connector::Rails::Engine.routes.url_helpers.signout_path, class: "btn btn-primary btn-sm"
             %li
               %h4
-                Salesforce account:
+                Shopify account:
                 - if @organization.oauth_uid
-                  = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Salesforce account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-primary btn-sm"
+                  = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Shopify account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-primary btn-sm"
                 - else
-                  = link_to "Connect #{@organization.name} (#{@organization.uid}) from your Salesforce account", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm"
+                  = link_to "Connect #{@organization.name} (#{@organization.uid}) from your Shopify account", "/auth/shopify/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm"
             - if @organization.oauth_uid
               %li= link_to "Force a synchronization", admin_synchronize_path, method: :post, class: "btn btn-warning btn-sm"
         .spacer1
@@ -50,7 +50,7 @@
         .row
           %h3
             IdMap
-            %small Equivalence between Maestrano's Connec! id and SalesForce id for each of your entities
+            %small Equivalence between Maestrano's Connec! id and Shopify id for each of your entities
           .center
             .row
               .col-md-3
@@ -58,9 +58,9 @@
               .col-md-3
                 %strong Connec! id
               .col-md-3
-                %strong SalesForce entity
+                %strong Shopify entity
               .col-md-3
-                %strong SalesForce id
+                %strong Shopify id
             - @idmaps.each do |idmap|
               .row
                 .col-md-3

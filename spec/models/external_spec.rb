@@ -6,7 +6,7 @@ describe Maestrano::Connector::Rails::External do
     subject { Maestrano::Connector::Rails::External }
 
     describe 'external_name' do
-      it { expect(subject.external_name).to eql('SalesForce') }
+      it { expect(subject.external_name).to eql('Shopify') }
     end
 
     describe 'get_client' do
