@@ -19,3 +19,5 @@
 *.sqlite3
 
 .project
+
+.idea/*
