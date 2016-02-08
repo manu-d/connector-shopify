@@ -2,12 +2,15 @@ class OauthController < ApplicationController
 
   def request_omniauth
     org_uid = params[:org_uid]
+    shop_name = params[:shop]
     organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
 
     if organization && is_admin?(current_user, organization)
       auth_params = {
-        :state => org_uid
+        :state => org_uid,
+        :shop =>shop_name
       }
+
       auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
 
       redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: "sign_in"
@@ -18,14 +21,19 @@ class OauthController < ApplicationController
 
   # Link an Organization to Shopify OAuth account
   def create_omniauth
-    org_uid = params[:state]
-    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
-
-    if organization && is_admin?(current_user, organization)
-      organization.from_omniauth(env["omniauth.auth"])
+    if response = request.env['omniauth.auth']
+      organization = current_organization
+      if organization && is_admin?(current_user, organization)
+        organization.from_omniauth(response)
+      end
+      flash[:notice] = "Logged in"
+      redirect_to root_url
+    else
+      flash[:error] = "Could not log in to Shopify store."
+      redirect_to root_url
     end
 
-    redirect_to root_url
+
   end
 
   # Unlink Organization from Shopify

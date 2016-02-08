@@ -1,7 +1,7 @@
 # This migration comes from maestrano_connector_rails_engine (originally 20151122163325)
-class CreateMaestranoConnectorRailsSynchronizations < ActiveRecord::Migration
+class CreateSynchronizations < ActiveRecord::Migration
   def change
-    create_table :maestrano_connector_rails_synchronizations do |t|
+    create_table :synchronizations do |t|
       t.integer :organization_id
       t.string  :status
       t.text    :message
@@ -9,6 +9,6 @@ class CreateMaestranoConnectorRailsSynchronizations < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_index :maestrano_connector_rails_synchronizations, :organization_id, name: 'synchronization_orga_id_index'
+    add_index :synchronizations, :organization_id, name: 'synchronization_orga_id_index'
   end
 end

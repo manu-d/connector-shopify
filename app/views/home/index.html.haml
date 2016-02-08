@@ -16,13 +16,21 @@
       .container
 
         .row
-          %h4
+          %p
             Your company #{@organization.name}
             %small (#{@organization.uid})
             is
             - unless @organization.oauth_uid
               not linked to any Shopify account.
-              = link_to "Link this company to Shopify", "/auth/Shopify/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm" if is_admin?(current_user, @organization)
+              - if is_admin?(current_user, @organization)
+                %header
+                  %p
+                    Please enter the “myshopify” domain of your store
+                .container__form
+                  %form{:action => "/auth/shopify/request", :method => "GET"}
+                    %input#shop{:name => "shop", :placeholder => "blabla.myshopify.com", :type => "text"}/
+                    %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
+                    %button{:type => "submit"} Install
             - else
               linked to a Shopify account
               %small (#{@organization.oauth_uid})
