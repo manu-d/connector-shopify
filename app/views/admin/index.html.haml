@@ -12,39 +12,42 @@
 
       - else
         .row
-          %h3 Settings
-          %ul
-            %li
-              %h4
-                Maestrano account:
-                = link_to "Disconnect your Maestrano account", Maestrano::Connector::Rails::Engine.routes.url_helpers.signout_path, class: "btn btn-primary btn-sm"
-            %li
-              %h4
-                Shopify account:
-                - if @organization.oauth_uid
-                  = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Shopify account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-primary btn-sm"
-                - else
-                  = link_to "Connect #{@organization.name} (#{@organization.uid}) from your Shopify account", "/auth/shopify/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm"
+          .col-md-12
+            %h3 Settings
+            %p
+              Maestrano account
+              =link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.signout_path, class: "btn btn-danger btn-sm"
+            %p
+              Shopify account
+              "#{@organization.name} (#{@organization.uid})"
+              - if @organization.oauth_uid
+                =link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-danger btn-sm"
+              - else
+                =link_to "Connect", "/auth/shopify/request?org_uid=#{@organization.uid}", class: "btn btn-danger btn-sm"
             - if @organization.oauth_uid
-              %li= link_to "Force a synchronization", admin_synchronize_path, method: :post, class: "btn btn-warning btn-sm"
-        .spacer1
+              %p
+                Force Syncronisation
+                =link_to "Synchronise", admin_synchronize_path, method: :post, class: "btn btn-primary btn-sm"
+          .spacer1
 
         .row
-          %h3
-            Synchronized entities
+          .col-md-12
+            %h3 Synchronized entities
             %small You can customize which entities are synchronized by the connector.
-          .col-md-11.col-md-offset-1
+            .spacer1
             = form_tag admin_update_path(id: @organization.id), method: :put do
               - @organization.synchronized_entities.each do |k, v|
                 .row
-                  .col-md-2
-                    %label{:for => "#{k}"} #{k.to_s.humanize}
+                  .col-md-1
                   .col-md-1
                     %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
-                  -if v && @organization.oauth_uid
-                    .col-md-2
-                      = link_to "Force a synchronization for #{k.to_s.pluralize} only", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
-              =submit_tag :Update, class: "btn btn-primary"
+                  .col-md-3
+                    %label{:for => "#{k}"} #{k.to_s.humanize}
+                  .col-md-4
+                    -if v && @organization.oauth_uid
+                      = link_to "Synchronise", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-primary btn-sm"
+
+              =submit_tag :Update, class: "btn btn-lg btn-primary"
         .spacer1
 
         .row

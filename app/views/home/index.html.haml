@@ -30,30 +30,29 @@
                   %form{:action => "/auth/shopify/request", :method => "GET"}
                     %input#shop{:name => "shop", :placeholder => "blabla.myshopify.com", :type => "text"}/
                     %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
-                    %button{:type => "submit"} Install
+                    %button{:type => "submit", :class => 'btn  btn-primary'} Install
             - else
               linked to a Shopify account
               %small (#{@organization.oauth_uid})
 
         .row
-          %h3= "Last synchronization:"
-        .row
-          .col-md-10.col-md-offset-1.center
+          .col-md-6
+            %h4= "Last synchronization:"
+          .col-md-6
             - if @synchronizations.first
-              %h3.sync-status{class: @synchronizations.first.status.downcase}
+              %h4.sync-status{class: @synchronizations.first.status.downcase}
                 = "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
                 - if @synchronizations.first.status == 'ERROR'
                   = @synchronizations.first.message
                 - elsif @synchronizations.first.status == 'SUCCESS' && @synchronizations.first.partial?
                   Partial synchronization
             - else
-              %h3 None
-        .spacer2
+              %h4 None
 
         -if @synchronizations
           .row
             .col-md-12
-              %h3= "Synchronizations history"
+              %h4= "Synchronizations history"
               - @synchronizations.each do |sync|
                 .row.sync-status{class: sync.status.downcase}
                   .col-md-3
@@ -66,3 +65,9 @@
                   - elsif sync.status == 'SUCCESS' && sync.partial?
                     .col-md-6
                       Partial synchronization
+          .row
+            .col-md-12
+              %h4= "Products"
+              %ul
+                - @products.each do |product|
+                  %li= link_to product.title, "https://#{@shop_session.url}/admin/products/#{product.id}", target: "_top"
