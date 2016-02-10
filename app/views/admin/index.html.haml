@@ -1,76 +1,77 @@
 .admin
-  .banners
-    .container
 
-      - unless @organization
-        .row
-          .col-md-12.center
-            %h4 You need to be Admin or Super Admin in your company to access this panel.
-        .row
-          .col-md-12.center
-            = link_to 'Go back to home page', root_path, class: 'btn btn-warning'
-
-      - else
-        .row
-          .col-md-12
-            %h3 Settings
-            %p
+  .container
+    - unless @organization
+      .row
+        .col-md-12.center
+          %h4 You need to be Admin or Super Admin in your company to access this panel.
+      .row
+        .col-md-12.center
+          = link_to 'Go back to home page', root_path, class: 'btn btn-warning'
+    - else
+      .row
+        .col-md-12
+          %h3 Settings
+          .row.form-group
+            .col-md-3
               Maestrano account
-              =link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.signout_path, class: "btn btn-danger btn-sm"
-            %p
-              Shopify account
-              "#{@organization.name} (#{@organization.uid})"
+            .col-md-4
+              =link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.signout_path, class: "btn btn-danger"
+          .row.form-group
+            .col-md-3
+              Shopify account "#{@organization.name} (#{@organization.uid})"
+            .col-md-4
               - if @organization.oauth_uid
-                =link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-danger btn-sm"
+                =link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-danger"
               - else
-                =link_to "Connect", "/auth/shopify/request?org_uid=#{@organization.uid}", class: "btn btn-danger btn-sm"
-            - if @organization.oauth_uid
-              %p
+                =link_to "Connect", "/auth/shopify/request?org_uid=#{@organization.uid}", class: "btn btn-danger"
+          - if @organization.oauth_uid
+            .row.form-group
+              .col-md-3
                 Force Syncronisation
-                =link_to "Synchronise", admin_synchronize_path, method: :post, class: "btn btn-primary btn-sm"
-          .spacer1
-
-        .row
-          .col-md-12
-            %h3 Synchronized entities
-            %small You can customize which entities are synchronized by the connector.
-            .spacer1
-            = form_tag admin_update_path(id: @organization.id), method: :put do
-              - @organization.synchronized_entities.each do |k, v|
-                .row
-                  .col-md-1
-                  .col-md-1
-                    %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
-                  .col-md-3
-                    %label{:for => "#{k}"} #{k.to_s.humanize}
-                  .col-md-4
-                    -if v && @organization.oauth_uid
-                      = link_to "Synchronise", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-primary btn-sm"
-
-              =submit_tag :Update, class: "btn btn-lg btn-primary"
+              .col-md-4
+                =link_to "Synchronise", admin_synchronize_path, method: :post, class: 'btn btn-primary'
         .spacer1
+      .row
+        .col-md-12
+          %h3 Synchronized entities
+          %small You can customize which entities are synchronized by the connector.
+          .spacer1
+          = form_tag admin_update_path(id: @organization.id), method: :put do
+            - @organization.synchronized_entities.each do |k, v|
+              .row.form-group
+                .col-md-3
+                  .checkbox
+                    %label{:for => "#{k}"}
+                      %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v} #{k.to_s.humanize}
+                .col-md-4
+                  -if v && @organization.oauth_uid
+                    = link_to "Synchronise", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-primary"
 
-        .row
-          %h3
-            IdMap
-            %small Equivalence between Maestrano's Connec! id and Shopify id for each of your entities
-          .center
+            =submit_tag :Update, class: "btn btn-primary"
+      .spacer1
+
+      .row
+        %h3
+          IdMap
+          %small Equivalence between Maestrano's Connec! id and Shopify id for each of your entities
+        .center
+          .row
+            .col-md-3
+              %strong Connec! entity
+            .col-md-3
+              %strong Connec! id
+            .col-md-3
+              %strong Shopify entity
+            .col-md-3
+              %strong Shopify id
+          - @idmaps.each do |idmap|
             .row
               .col-md-3
-                %strong Connec! entity
+                = idmap.connec_entity ? idmap.connec_entity.humanize : nil
               .col-md-3
-                %strong Connec! id
+                = idmap.connec_id
               .col-md-3
-                %strong Shopify entity
+                = idmap.external_entity ? idmap.external_entity.humanize : nil
               .col-md-3
-                %strong Shopify id
-            - @idmaps.each do |idmap|
-              .row
-                .col-md-3
-                  = idmap.connec_entity ? idmap.connec_entity.humanize : nil
-                .col-md-3
-                  = idmap.connec_id
-                .col-md-3
-                  = idmap.external_entity ? idmap.external_entity.humanize : nil
-                .col-md-3
-                  = idmap.external_id
+                = idmap.external_id
