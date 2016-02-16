@@ -1,27 +1,14 @@
 class HomeController < ApplicationController
   def index
-    @products = []
-    if current_user
-      @organization = current_organization
-
-      if @organization
-        @synchronizations = Maestrano::Connector::Rails::Synchronization.where(organization_id: @organization.id).order(updated_at: :desc).limit(40)
-      end
-
-      if @organization.oauth_uid
-        begin
-          @shop_session = ShopifyAPI::Session.new(@organization.oauth_uid, @organization.oauth_token)
-          ShopifyAPI::Base.activate_session(@shop_session)
-          @products = ShopifyAPI::Product.find(:all, :params => {:limit => 10})
-        ensure
-          ShopifyAPI::Base.clear_session
-        end
-      end
-    end
-
-
-
+    @organization = current_organization if current_user
   end
-
+  def redirect_to_external
+    # If current user has a linked organization, redirect to the SalesForce instance url
+    if current_organization && current_organization.instance_url
+      redirect_to current_organization.instance_url
+    else
+      redirect_to 'https://www.shopify.com/login'
+    end
+  end
 
 end

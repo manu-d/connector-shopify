@@ -1,0 +1,41 @@
+.home
+  - if current_user
+    .banners
+      .container
+        .row
+          .col-md-10
+            %h3
+              Synchronization history
+          - if @organization.oauth_uid
+            .col-md-2
+              = link_to "Synchronize", admin_synchronize_path, method: :post, class: "btn btn-warning btn-lg"
+
+        - if @synchronizations
+          %table.table.table-condensed
+            %th
+              Synchronization date
+            %th
+              Status
+            %th
+              Message
+
+            - @synchronizations.each do |sync|
+              - if sync.status == 'ERROR'
+                %tr.warning
+                  %td= sync.updated_at
+                  %td= sync.status
+                  %td= sync.message
+              - elsif sync.status == 'SUCCESS'
+                %tr.success
+                  %td= sync.updated_at
+                  %td= sync.status
+                  %td= sync.message
+              - else
+                %tr.active
+                  %td= sync.updated_at
+                  %td= sync.status
+                  %td= sync.message
+        - else
+          .row
+            .col-md-12
+              %h3= "Never synchronized yet"

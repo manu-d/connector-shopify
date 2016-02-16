@@ -8,8 +8,10 @@ Rails.application.routes.draw do
   get 'admin/index' => 'admin#index'
   put 'admin/update' => 'admin#update'
   post 'admin/synchronize' => 'admin#synchronize'
-
   put 'admin/synchronize' => 'admin#synchronize'
+  put 'admin/toggle_sync' => 'admin#toggle_sync'
+  get 'synchronizations/index' => 'synchronizations#index'
+  get 'shared_entities/index' => 'shared_entities#index'
 
 
   match 'auth/:provider/request', to: 'oauth#request_omniauth', via: [:get, :post]

@@ -13,11 +13,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'maestrano-connector-rails'
-# gem 'maestrano-connector-rails', path: '../maestrano-connector-rails'
 gem 'shopify_app'
-
-
-gem 'restforce'
 
 gem 'haml-rails'
 gem 'bootstrap-sass'

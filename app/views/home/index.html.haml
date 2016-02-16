@@ -5,69 +5,44 @@
         .row
           .col-md-4.col-md-offset-4.center
             = link_to "Link your Maestrano account", Maestrano::Connector::Rails::Engine.routes.url_helpers.default_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
-        .row
-          .col-md-12
-            %h2 Some blabla
-            More blablabla
-            %br
-            More blabla
+
   - else
     .banners
       .container
-
-        .row
-          %p
-            Your company #{@organization.name}
-            %small (#{@organization.uid})
-            is
-            - unless @organization.oauth_uid
-              not linked to any Shopify account.
-              - if is_admin?(current_user, @organization)
-                %header
-                  %p
-                    Please enter the “myshopify” domain of your store
-                .container__form
-                  %form{:action => "/auth/shopify/request", :method => "GET"}
-                    %input#shop{:name => "shop", :placeholder => "blabla.myshopify.com", :type => "text"}/
-                    %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
-                    %button{:type => "submit", :class => 'btn  btn-primary'} Install
-            - else
-              linked to a Shopify account
-              %small (#{@organization.oauth_uid})
-
         .row
           .col-md-6
-            %h4= "Last synchronization:"
-          .col-md-6
-            - if @synchronizations.first
-              %h4.sync-status{class: @synchronizations.first.status.downcase}
-                = "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
-                - if @synchronizations.first.status == 'ERROR'
-                  = @synchronizations.first.message
-                - elsif @synchronizations.first.status == 'SUCCESS' && @synchronizations.first.partial?
-                  Partial synchronization
-            - else
-              %h4 None
+            %p
+              Your company #{@organization.name}
+              %small (#{@organization.uid})
+              is
+              - unless @organization.oauth_uid
+                not linked to any Shopify account.
+                - if is_admin?(current_user, @organization)
+                  %header
+                    %p
+                      Please enter the “myshopify” domain of your store
+                  .container__form
+                    %form{:action => "/auth/shopify/request", :method => "GET"}
+                      %input#shop{:name => "shop", :placeholder => "blabla.myshopify.com", :type => "text"}/
+                      %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
+                      %button{:type => "submit", :class => 'btn  btn-primary'} Install
+              - else
+                linked to a Shopify account
+                %small (#{@organization.oauth_uid})
 
-        -if @synchronizations
-          .row
-            .col-md-12
-              %h4= "Synchronizations history"
-              - @synchronizations.each do |sync|
-                .row.sync-status{class: sync.status.downcase}
-                  .col-md-3
-                    = sync.updated_at
-                  .col-md-3
-                    = sync.status
-                  -if sync.status == 'ERROR'
-                    .col-md-6
-                      = sync.message
-                  - elsif sync.status == 'SUCCESS' && sync.partial?
-                    .col-md-6
-                      Partial synchronization
-          .row
-            .col-md-12
-              %h4= "Products"
-              %ul
-                - @products.each do |product|
-                  %li= link_to product.title, "https://#{@shop_session.url}/admin/products/#{product.id}", target: "_top"
+
+        .row
+          .col-md-3
+            =image_tag "logos/sync.png", class: 'external-logo'
+          - if @organization.sync_enabled
+            .col-md-8.alert.alert-success
+              %h4
+                Synchronizations are enabled
+            .col-md-1
+              = link_to "Toggle off", admin_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg"
+          - else
+            .col-md-8.alert.alert-warning
+              %h4
+                Synchronizations are disabled
+            .col-md-1
+              = link_to "Toggle on", admin_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg"

@@ -16,7 +16,7 @@
             .col-md-3
               Maestrano account
             .col-md-4
-              =link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.signout_path, class: "btn btn-danger"
+              =link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.maestrano_signout_path, class: "btn btn-danger"
           .row.form-group
             .col-md-3
               Shopify account "#{@organization.name} (#{@organization.uid})"
@@ -49,29 +49,3 @@
                     = link_to "Synchronise", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-primary"
 
             =submit_tag :Update, class: "btn btn-primary"
-      .spacer1
-
-      .row
-        %h3
-          IdMap
-          %small Equivalence between Maestrano's Connec! id and Shopify id for each of your entities
-        .center
-          .row
-            .col-md-3
-              %strong Connec! entity
-            .col-md-3
-              %strong Connec! id
-            .col-md-3
-              %strong Shopify entity
-            .col-md-3
-              %strong Shopify id
-          - @idmaps.each do |idmap|
-            .row
-              .col-md-3
-                = idmap.connec_entity ? idmap.connec_entity.humanize : nil
-              .col-md-3
-                = idmap.connec_id
-              .col-md-3
-                = idmap.external_entity ? idmap.external_entity.humanize : nil
-              .col-md-3
-                = idmap.external_id

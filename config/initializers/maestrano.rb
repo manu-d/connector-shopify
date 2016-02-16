@@ -8,12 +8,20 @@ Maestrano['default'].configure do |config|
   # The api-sandbox allows you to easily test integration scenarios.
   # More details on http://api-sandbox.maestrano.io
   #
-  config.environment = Rails.env.development? ? 'test' : 'production'
+  config.environment = Rails.env.development? ? 'local' : 'production'
+
+  if ENV['connec_host']
+    config.connec.host = ENV['connec_host']
+  end
+  if ENV['api_host']
+    config.api.host = ENV['api_host']
+  end
 
   # ==> Application host
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
+
   config.app.host = Rails.env.development? ? 'http://localhost:5678' : 'http://connector-shopify.herokuapp.com'
   
   # ==> App ID & API key
