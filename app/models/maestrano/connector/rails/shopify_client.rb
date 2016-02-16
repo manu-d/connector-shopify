@@ -1,0 +1,2 @@
+class ShopifyClient
+end
