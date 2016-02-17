@@ -18,14 +18,14 @@ class Maestrano::Connector::Rails::Entity
     entities
   end
 
-  def create_entity_to_external(client, mapped_connec_entity, external_entity_name, organization)
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', organizaion, "Sending create #{external_entity_name}: #{mapped_connec_entity} to #{@@external_name}")
+  def create_external_entity(client, mapped_connec_entity, external_entity_name, organization)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending create #{external_entity_name}: #{mapped_connec_entity} to #{@@external_name}")
     client.create(external_entity_name, mapped_connec_entity)
   end
 
-  def update_entity_to_external(client, mapped_connec_entity, external_id, external_entity_name, organization)
+  def update_external_entity(client, mapped_connec_entity, external_id, external_entity_name, organization)
     Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}")
-    mapped_connec_entity['Id'] = external_id
+    mapped_connec_entity['id'] = external_id
     client.update(external_entity_name, mapped_connec_entity)
   end
 
@@ -36,4 +36,5 @@ class Maestrano::Connector::Rails::Entity
   def get_last_update_date_from_external_entity_hash(entity)
     entity['updated_at'].to_time
   end
+
 end
