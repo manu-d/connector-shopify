@@ -26,7 +26,7 @@
                 %td= idmap.connec_entity ? idmap.connec_entity.humanize : nil
                 %td= idmap.connec_id
                 %td= idmap.external_entity ? idmap.external_entity.humanize : nil
-                %td= idmap.external_id
+                %td= link_to idmap.external_id, "https://#{@organization.oauth_uid}/admin/#{idmap.external_entity}s/#{idmap.external_id}"
                 %td= idmap.message
         - else
           .row
