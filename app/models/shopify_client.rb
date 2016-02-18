@@ -17,7 +17,8 @@ class ShopifyClient
 
   def create(external_entity_name, mapped_connec_entity)
     ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
-      ShopifyAPI::Product.create mapped_connec_entity
+      element = ShopifyAPI::Product.create mapped_connec_entity
+      element.id
     end
   end
 
