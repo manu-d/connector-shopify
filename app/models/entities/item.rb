@@ -1,7 +1,7 @@
 class Entities::Item < Maestrano::Connector::Rails::Entity
 
   def connec_entity_name
-    'item'
+    'Item'
   end
 
   def external_entity_name

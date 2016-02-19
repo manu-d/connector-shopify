@@ -11,20 +11,24 @@ class ShopifyClient
 
   def find(external_entity_name)
     ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
-      ShopifyAPI::Product.find(:all).map { |x| x.serializable_hash }
+      get_shopify_entity_constant(external_entity_name).find(:all).map { |x| x.serializable_hash }
     end
   end
 
   def create(external_entity_name, mapped_connec_entity)
-    ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
-      element = ShopifyAPI::Product.create mapped_connec_entity
-      element.id
-    end
+    element = update external_entity_name, mapped_connec_entity
+    element.id
   end
 
   def update(external_entity_name, mapped_connec_entity)
     ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
-      ShopifyAPI::Product.create mapped_connec_entity
+      get_shopify_entity_constant(external_entity_name).create mapped_connec_entity
     end
   end
+
+  private
+  def get_shopify_entity_constant(external_entity_name)
+    "ShopifyAPI::#{external_entity_name}".constantize
+  end
+
 end
