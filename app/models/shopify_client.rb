@@ -11,7 +11,8 @@ class ShopifyClient
 
   def find(external_entity_name)
     ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
-      get_shopify_entity_constant(external_entity_name).find(:all).map { |x| x.serializable_hash }
+      # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
+      get_shopify_entity_constant(external_entity_name).find(:all).map { |x| JSON.parse(x.to_json) }
     end
   end
 
