@@ -41,9 +41,8 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.3)
-    autoprefixer-rails (6.3.3)
+    autoprefixer-rails (6.3.3.1)
       execjs
-      json
     bootstrap-sass (3.3.6)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -152,7 +151,7 @@ GEM
     omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    omniauth-shopify-oauth2 (1.1.11)
+    omniauth-shopify-oauth2 (1.1.12)
       omniauth-oauth2 (~> 1.2)
     puma (2.16.0)
     puma (2.16.0-java)
@@ -193,7 +192,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    rspec-core (3.4.2)
+    rspec-core (3.4.3)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -210,17 +209,13 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    ruby_parser (3.7.3)
+    ruby_parser (3.8.1)
       sexp_processor (~> 4.1)
     sass (3.4.21)
-    sexp_processor (4.6.1)
-    shopify_api (4.0.7)
+    sexp_processor (4.7.0)
+    shopify_api (4.1.0)
       activeresource
       rack
-    shopify_app (6.4.2)
-      omniauth-shopify-oauth2 (~> 1.1.11)
-      rails (>= 4.2, < 5.0)
-      shopify_api (~> 4.0.2)
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
     sidekiq (4.1.0)
@@ -280,10 +275,11 @@ DEPENDENCIES
   httparty
   jquery-rails
   maestrano-connector-rails
+  omniauth-shopify-oauth2 (~> 1.1)
   puma
   rails (= 4.2.4)
   rspec-rails
-  shopify_app
+  shopify_api (~> 4.1)
   shoulda-matchers
   simplecov
   sinatra
