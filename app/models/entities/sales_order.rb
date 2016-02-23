@@ -16,9 +16,9 @@ end
 class LineMapper
   extend HashMapper
 
-  map from('unit_price.net_amount'), to('price')
-  map from('quantity'), to('quantity')
-  map from('description'), to('title')
+  map from('/unit_price/net_amount'), to('/price')
+  map from('/quantity'), to('/quantity')
+  map from('/description'), to('/title')
 
 end
 
@@ -44,25 +44,25 @@ class SalesOrderMapper
 
   # normalize from Connect to Shopify
 
-  map from('billing_address.line1'), to('billing_address.address1')
-  map from('billing_address.line2'), to('billing_address.address2')
-  map from('billing_address.city'), to('billing_address.city')
-  map from('billing_address.region'), to('billing_address.province')
-  map from('billing_address.postal_code'), to('billing_address.zip')
-  map from('billing_address.country'), to('billing_address.country_code')
+  map from('/billing_address/line1'), to('/billing_address/address1')
+  map from('/billing_address/line2'), to('/billing_address/address2')
+  map from('/billing_address/city'), to('/billing_address/city')
+  map from('/billing_address/region'), to('/billing_address/province')
+  map from('/billing_address/postal_code'), to('/billing_address/zip')
+  map from('/billing_address/country'), to('/billing_address/country_code')
 
-  map from('shipping_address.line1'), to('shipping_address.address1')
-  map from('shipping_address.line2'), to('shipping_address.address2')
-  map from('shipping_address.city'), to('shipping_address.city')
-  map from('shipping_address.region'), to('shipping_address.province')
-  map from('shipping_address.postal_code'), to('shipping_address.zip')
-  map from('shipping_address.country'), to('shipping_address.country_code')
+  map from('/shipping_address/line1'), to('/shipping_address/address1')
+  map from('/shipping_address/line2'), to('/shipping_address/address2')
+  map from('/shipping_address/city'), to('/shipping_address/city')
+  map from('/shipping_address/region'), to('/shipping_address/province')
+  map from('/shipping_address/postal_code'), to('/shipping_address/zip')
+  map from('/shipping_address/country'), to('/shipping_address/country_code')
 
-  map from('transaction_date'), to('closed_at')
+  map from('/transaction_date'), to('/closed_at')
 
-  map from('code'), to('order_number')
+  map from('/code'), to('/order_number')
 
-  map from('lines'), to('line_items'), using: LineMapper
+  map from('/lines'), to('/line_items'), using: LineMapper
 
 
   after_normalize do |input, output|
