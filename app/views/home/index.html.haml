@@ -74,7 +74,7 @@
         .col-md-4.col-md-offset-4.center
           = link_to 'Link your Maestrano account', Maestrano::Connector::Rails::Engine.routes.url_helpers.default_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
 
-    - if @organization
+    - if @organization && is_admin
       .spacer2
       .row
         .col-md-12
