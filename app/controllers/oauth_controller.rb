@@ -3,19 +3,24 @@ class OauthController < ApplicationController
   def request_omniauth
     org_uid = params[:org_uid]
     shop_name = params[:shop]
-    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
-
-    if organization && is_admin?(current_user, organization)
-      auth_params = {
-        :state => org_uid,
-        :shop =>shop_name
-      }
-
-      auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
-
-      redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: "sign_in"
-    else
+    if shop_name.blank?
+      flash[:error] = "Shopify Store name is required"
       redirect_to root_url
+    else
+      organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
+
+      if organization && is_admin?(current_user, organization)
+        auth_params = {
+          :state => org_uid,
+          :shop =>shop_name
+        }
+
+        auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+
+        redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: "sign_in"
+      else
+        redirect_to root_url
+      end
     end
   end
 

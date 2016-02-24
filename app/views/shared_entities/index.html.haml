@@ -1,34 +1,37 @@
 .home
-  - if current_user
-    .banners
-      .container
+  .banners
+    .container
+      - if is_admin
         .row
           .col-md-10
-            %h3
-              Data Shared
+            %h3 Data Shared
             %small Equivalence between Maestrano's Connec! id and SalesForce id for each of your entities
 
         - if @idmaps
           %table.table.table-condensed
-            %th
-              Connec! entity
-            %th
-              Connec! id
-            %th
-              Shopify entity
-            %th
-              Shopify id
-            %th
-              Message
+            %th Connec!™ entity
+            %th Connec!™ id
+            %th SalesForce entity
+            %th SalesForce id
+            %th Message
 
             - @idmaps.each do |idmap|
               %tr
                 %td= idmap.connec_entity ? idmap.connec_entity.humanize : nil
                 %td= idmap.connec_id
                 %td= idmap.external_entity ? idmap.external_entity.humanize : nil
-                %td= link_to idmap.external_id, "https://#{@organization.oauth_uid}/admin/#{idmap.external_entity}s/#{idmap.external_id}"
+                %td= idmap.external_id
                 %td= idmap.message
         - else
+          .spacer1
           .row
             .col-md-12
-              %h3= "No data mapped"
+              %strong You don't have any data mapped yet
+
+      - else
+        .row.center
+          -if current_user
+            %h3 You don't have the necessary rights to access this page.
+          - else
+            %h3 You need to be logged in to access this page
+          = button_to "Go back", home_index_path, method: :get, class: 'btn btn-warning'

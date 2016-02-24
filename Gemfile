@@ -22,7 +22,8 @@ gem 'autoprefixer-rails'
 gem 'delayed_job_active_record'
 
 gem 'sqlite3'
-
+# jQuery based field validator for Twitter Bootstrap 3.
+gem 'bootstrap-validator-rails'
 
 group :test do
   gem 'simplecov'

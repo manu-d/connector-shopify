@@ -1,23 +1,19 @@
 .home
-  - if current_user
-    .banners
-      .container
+  .banners
+    .container
+      - if current_user
         .row
-          .col-md-10
-            %h3
-              Synchronization history
-          - if @organization.oauth_uid
+          .col-md-3
+            %h3 Synchronization history
+          - if current_organization.oauth_uid && is_admin
             .col-md-2
-              = link_to "Synchronize", admin_synchronize_path, method: :post, class: "btn btn-warning btn-lg"
+              = link_to "Synchronize", home_synchronize_path, method: :post, class: "btn btn-warning btn-lg"
 
         - if @synchronizations
           %table.table.table-condensed
-            %th
-              Synchronization date
-            %th
-              Status
-            %th
-              Message
+            %th Synchronization date
+            %th Status
+            %th Message
 
             - @synchronizations.each do |sync|
               - if sync.status == 'ERROR'
@@ -38,4 +34,9 @@
         - else
           .row
             .col-md-12
-              %h3= "Never synchronized yet"
+              %strong No synchronization yet
+
+      - else
+        .row.center
+          %h3 You need to be logged in to access this page
+          = button_to "Go back", home_index_path, method: :get, class: 'btn btn-warning'
