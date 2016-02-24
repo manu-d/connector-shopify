@@ -2,7 +2,6 @@ class ShopifyClient
   attr_reader :oauth_uid
   attr_reader :oauth_token
 
-
   def initialize(oauth_uid, oauth_token)
     @oauth_uid = oauth_uid
     @oauth_token = oauth_token

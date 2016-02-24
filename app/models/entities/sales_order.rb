@@ -42,7 +42,9 @@ class SalesOrderMapper
       'voided' => 'VOIDED',
   }
 
-  # normalize from Connect to Shopify
+  # normalize from Connec to Shopify
+  # denormalize from Shopify to Connec
+  # map from (connect_field) to (shopify_field)
 
   map from('/billing_address/line1'), to('/billing_address/address1')
   map from('/billing_address/line2'), to('/billing_address/address2')

@@ -15,6 +15,9 @@ end
 
 class ItemMapper
   extend HashMapper
+  # normalize from Connec to Shopify
+  # denormalize from Shopify to Connec
+  # map from (connect_field) to (shopify_field)
 
   # TODO map all variants in Shopify to a different product in connec!
   # Shopify rely on a "default Variant" name: "Tile" option1 : "Default Title"

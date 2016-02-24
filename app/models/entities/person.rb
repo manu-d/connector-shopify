@@ -15,6 +15,9 @@ end
 
 class PersonMapper
   extend HashMapper
+  # normalize from Connec to Shopify
+  # denormalize from Shopify to Connec
+  # map from (connect_field) to (shopify_field)
 
   before_denormalize do |input, output|
     output[:opts] = {'create_default_organization' => true}
