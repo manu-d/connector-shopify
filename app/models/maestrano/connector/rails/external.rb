@@ -10,5 +10,4 @@ class Maestrano::Connector::Rails::External
     ShopifyClient.new organization.oauth_uid, organization.oauth_token
   end
 
-
 end
