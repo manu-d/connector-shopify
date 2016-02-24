@@ -38,7 +38,7 @@
         - if @organization.oauth_uid
           .col-md-6.link-step-description
             %h
-              Your Shopify iaccount <strong>#{@organization.oauth_name} (#{@organization.oauth_uid})</strong> is currently linked
+              Your Shopify account <strong>#{@organization.oauth_name} (#{@organization.oauth_uid})</strong> is currently linked
           .col-md-2.text-center.link-step-action
             = link_to "Disconnect",(is_admin ?  signout_omniauth_path(organization_id: @organization.id) : '#'), :disabled => !is_admin, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
         - else
@@ -51,7 +51,7 @@
                 %input{:name => "shop", :placeholder => "blabla.myshopify.com", :type => "text", :class => "form-control", :disabled => !is_admin}
                 %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
             .col-md-2.text-center.link-step-action
-              %button{:type => "submit", :class => 'btn btn-warning btn-lg', :disabled => !is_admin, :rel => 'tooltip', :title => "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"} Install
+              %button{:type => "submit", :class => 'btn btn-warning btn-lg', :disabled => !is_admin, :rel => 'tooltip', :title => "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"} Link to Shopify
       .spacer1
 
       .row.link-step
