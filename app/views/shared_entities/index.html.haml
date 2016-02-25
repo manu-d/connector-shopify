@@ -20,7 +20,7 @@
                 %td= idmap.connec_entity ? idmap.connec_entity.humanize : nil
                 %td= idmap.connec_id
                 %td= idmap.external_entity ? idmap.external_entity.humanize : nil
-                %td= link_to idmap.external_id, "https://#{@organization.oauth_uid}/admin/#{idmap.external_entity.pluralize}/#{idmap.external_id}" if idmap.external_entity
+                %td= link_to idmap.external_id, "https://#{current_organization.oauth_uid}/admin/#{idmap.external_entity.pluralize}/#{idmap.external_id}" if !idmap.external_id.blank?
                 %td= idmap.message
         - else
           .spacer1
