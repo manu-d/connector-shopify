@@ -30,6 +30,10 @@ class OauthController < ApplicationController
       organization = Maestrano::Connector::Rails::Organization.find_by_uid_and_tenant(org_uid, current_user.tenant)
       if organization && is_admin?(current_user, organization)  && response = request.env['omniauth.auth']
           organization.from_omniauth(response)
+          shop_name = response.uid
+          token = response['credentials']['token']
+          Shopify::Webhooks::WebhooksManager.queue_create_webhooks(shop_name, token)
+
         end
     end
     redirect_to root_url
@@ -39,10 +43,13 @@ class OauthController < ApplicationController
   def destroy_omniauth
     organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:organization_id])
     if organization && is_admin?(current_user, organization)
+      shop_name = organization.oauth_uid
+      token = organization.oauth_token
       organization.oauth_uid = nil
       organization.oauth_token = nil
       organization.refresh_token = nil
       organization.save
+      Shopify::Webhooks::WebhooksManager.queue_destroy_webhooks(shop_name, token) unless shop_name.blank?
     end
 
     redirect_to root_url

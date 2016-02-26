@@ -9,7 +9,7 @@ class ShopifyClient
 
 
   def find(external_entity_name)
-    ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
+    with_shopify_session do
       # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
       find_all(get_shopify_entity_constant(external_entity_name)).map { |x| JSON.parse(x.to_json) }
     end
@@ -21,7 +21,7 @@ class ShopifyClient
   end
 
   def update(external_entity_name, mapped_connec_entity)
-    ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
+    with_shopify_session do
       get_shopify_entity_constant(external_entity_name).create mapped_connec_entity
     end
   end
@@ -29,6 +29,12 @@ class ShopifyClient
   private
   def get_shopify_entity_constant(external_entity_name)
     "ShopifyAPI::#{external_entity_name}".constantize
+  end
+
+  def with_shopify_session
+    ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
+      yield
+    end
   end
 
   # shopify paginate its result

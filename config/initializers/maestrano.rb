@@ -21,8 +21,13 @@ Maestrano['default'].configure do |config|
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
+  if ENV['app_host']
+    config.app.host = ENV['app_host']
+  else
+    config.app.host = Rails.env.development? ? 'http://localhost:5678' : 'http://connector-shopify.herokuapp.com'
+  end
 
-  config.app.host = Rails.env.development? ? 'http://localhost:5678' : 'http://connector-shopify.herokuapp.com'
+
   
   # ==> App ID & API key
   # Your application App ID and API key which you can retrieve on http://maestrano.com

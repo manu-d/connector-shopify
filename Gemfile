@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
 ruby '2.2.2'
-
-gem 'rails', '4.2.4'
+# we are depending on a method that only appears in activesupport 4.2.5.1
+# ActiveSupport::SecurityUtils.variable_size_secure_compare
+gem 'rails', '4.2.5.1'
 gem 'turbolinks'
 gem 'jquery-rails'
 gem 'puma'
