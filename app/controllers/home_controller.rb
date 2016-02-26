@@ -46,6 +46,4 @@ class HomeController < ApplicationController
       redirect_to 'https://www.shopify.com/login'
     end
   end
-
-
 end

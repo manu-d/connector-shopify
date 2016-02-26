@@ -6,7 +6,7 @@ class WebhooksController < ApplicationController
   def receive
     job_args = {shop_domain: shop_domain, webhook: webhook_params}
     p "WebhooksController:#{shop_domain}, #{webhook_params}"
-    head :no_content
+    head 200, content_type: "application/json"
   end
 
   private

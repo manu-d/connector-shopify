@@ -4,17 +4,16 @@ module Shopify
       class CreationFailed < StandardError;
       end
 
-
-      def self.queue_create_webhooks(shop_name, token)
-        WebhooksCreationJob.perform_later(shop_name: shop_name, token: token)
+      def self.queue_create_webhooks(org_uid, shop_name, token)
+        WebhooksCreationJob.perform_later(org_uid: org_uid, shop_name: shop_name, token: token)
       end
 
-      def self.queue_destroy_webhooks(shop_name, token)
-        WebhooksDestructionJob.perform_later(shop_name: shop_name, token: token)
+      def self.queue_destroy_webhooks(org_uid, shop_name, token)
+        WebhooksDestructionJob.perform_later(org_uid: org_uid, shop_name: shop_name, token: token)
       end
 
-      def initialize(shop_name, token)
-        @shop_name, @token = shop_name, token
+      def initialize(org_uid, shop_name, token)
+        @org_uid, @shop_name, @token = org_uid, shop_name, token
       end
 
       def recreate_webhooks!
@@ -35,10 +34,9 @@ module Shopify
       def destroy_webhooks
         with_shopify_session do
           ShopifyAPI::Webhook.all.each do |webhook|
-            ShopifyAPI::Webhook.delete(webhook.id)
+            ShopifyAPI::Webhook.delete(webhook.id) if webhook.address.end_with? @org_uid
           end
         end
-        @current_webhooks = nil
       end
 
       private
@@ -47,16 +45,16 @@ module Shopify
       def required_webhooks
         app_host = Maestrano['default'].param('app_host')
         [
-            {topic: 'products/create', address: app_host + '/webhooks/products/create'},
-            {topic: 'products/update', address: app_host + '/webhooks/products/update'},
-            {topic: 'products/delete', address: app_host + '/webhooks/products/delete'},
-            {topic: 'orders/create', address: app_host + '/orders/products/create'},
+            {topic: 'products/create', path: 'products/create'},
+            {topic: 'products/update', path: 'products/update'},
+            {topic: 'products/delete', path: 'products/delete'},
+            {topic: 'orders/create', path: 'products/create'},
             # For only that one, it is 'update*d*'
-            {topic: 'orders/updated', address: app_host + '/orders/products/update'},
-            {topic: 'orders/delete', address: app_host + '/orders/products/delete'},
-            {topic: 'customers/create', address: app_host + '/customers/products/create'},
-            {topic: 'customers/update', address: app_host + '/customers/products/update'},
-            {topic: 'customers/delete', address: app_host + '/customers/products/delete'}
+            {topic: 'orders/updated', path: 'orders/update'},
+            {topic: 'orders/delete', path: 'orders/delete'},
+            {topic: 'customers/create', path: 'customers/create'},
+            {topic: 'customers/update', path: 'customers/update'},
+            {topic: 'customers/delete', path: 'customers/delete'}
         ]
       end
 
@@ -66,8 +64,13 @@ module Shopify
         end
       end
 
+      def webhook_address(path)
+        [Maestrano['default'].param('app_host'), 'webhooks', path, @org_uid].join('/')
+      end
+
       def create_webhook(attributes)
         attributes.reverse_merge!(format: 'json')
+        attributes[:address] = webhook_address(attributes[:path])
         webhook = ShopifyAPI::Webhook.create(attributes)
         raise CreationFailed, "could not create webhook:#{attributes}: #{webhook.errors.values.join(',')}" unless webhook.persisted?
         webhook
@@ -75,7 +78,7 @@ module Shopify
 
       def webhook_exists?(webhook)
         current_webhooks.any? do |x|
-          x.topic == webhook[:topic] && x.address == webhook[:address]
+          x.topic == webhook[:topic] && x.address == webhook_address(webhook[:path])
         end
       end
 

@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   mount Maestrano::Connector::Rails::Engine, at: '/'
 
   namespace :webhooks do
-    post ':entity/:type' => :receive
+    post ':entity/:type/:org_uid' => :receive
   end
 
   # root 'home#index'
@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   put 'home/toggle_sync' => 'home#toggle_sync'
   get 'synchronizations/index' => 'synchronizations#index'
   get 'shared_entities/index' => 'shared_entities#index'
+  get 'admin/delete_webhooks' => 'home#delete_webhooks'
 
 
   match 'auth/:provider/request', to: 'oauth#request_omniauth', via: [:get, :post]

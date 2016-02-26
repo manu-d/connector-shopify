@@ -32,7 +32,7 @@ class OauthController < ApplicationController
           organization.from_omniauth(response)
           shop_name = response.uid
           token = response['credentials']['token']
-          Shopify::Webhooks::WebhooksManager.queue_create_webhooks(shop_name, token)
+          Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
 
         end
     end
@@ -49,7 +49,7 @@ class OauthController < ApplicationController
       organization.oauth_token = nil
       organization.refresh_token = nil
       organization.save
-      Shopify::Webhooks::WebhooksManager.queue_destroy_webhooks(shop_name, token) unless shop_name.blank?
+      Shopify::Webhooks::WebhooksManager.queue_destroy_webhooks(organization.uid, shop_name, token) unless shop_name.blank?
     end
 
     redirect_to root_url
