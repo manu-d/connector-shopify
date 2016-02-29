@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   mount Maestrano::Connector::Rails::Engine, at: '/'
 
   namespace :webhooks do
-    post ':type' => :receive
+    post ':entity/:type' => :receive
   end
 
   # root 'home#index'

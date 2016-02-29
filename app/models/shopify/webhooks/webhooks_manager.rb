@@ -47,9 +47,16 @@ module Shopify
       def required_webhooks
         app_host = Maestrano['default'].param('app_host')
         [
-            {topic: 'products/create', address: app_host + '/webhooks/products_create'},
-            {topic: 'products/update', address: app_host + '/webhooks/products_update'},
-            {topic: 'products/delete', address: app_host + '/webhooks/products_delete'}
+            {topic: 'products/create', address: app_host + '/webhooks/products/create'},
+            {topic: 'products/update', address: app_host + '/webhooks/products/update'},
+            {topic: 'products/delete', address: app_host + '/webhooks/products/delete'},
+            {topic: 'orders/create', address: app_host + '/orders/products/create'},
+            # For only that one, it is 'update*d*'
+            {topic: 'orders/updated', address: app_host + '/orders/products/update'},
+            {topic: 'orders/delete', address: app_host + '/orders/products/delete'},
+            {topic: 'customers/create', address: app_host + '/customers/products/create'},
+            {topic: 'customers/update', address: app_host + '/customers/products/update'},
+            {topic: 'customers/delete', address: app_host + '/customers/products/delete'}
         ]
       end
 
@@ -62,7 +69,7 @@ module Shopify
       def create_webhook(attributes)
         attributes.reverse_merge!(format: 'json')
         webhook = ShopifyAPI::Webhook.create(attributes)
-        raise CreationFailed unless webhook.persisted?
+        raise CreationFailed, "could not create webhook:#{attributes}: #{webhook.errors.values.join(',')}" unless webhook.persisted?
         webhook
       end
 
