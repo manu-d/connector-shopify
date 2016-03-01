@@ -1,7 +1,15 @@
 module Shopify
   module Webhooks
+
     class WebhooksManager
-      class CreationFailed < StandardError;
+      class CreationFailed < StandardError
+      end
+
+      def self.get_manager(params)
+        org_uid = params.fetch(:org_uid)
+        shop_name = params.fetch(:shop_name)
+        token = params.fetch(:token)
+        WebhooksManager.new(org_uid, shop_name, token)
       end
 
       def self.queue_create_webhooks(org_uid, shop_name, token)
@@ -11,6 +19,8 @@ module Shopify
       def self.queue_destroy_webhooks(org_uid, shop_name, token)
         WebhooksDestructionJob.perform_later(org_uid: org_uid, shop_name: shop_name, token: token)
       end
+
+
 
       def initialize(org_uid, shop_name, token)
         @org_uid, @shop_name, @token = org_uid, shop_name, token
