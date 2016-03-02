@@ -30,7 +30,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       if parent_id.nil?
         items_with_variant.push item
       else
-        items_with_variant[parent_id].push item
+        item_variants[parent_id].push item
       end
     end
 

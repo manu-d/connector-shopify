@@ -5,7 +5,7 @@ class Maestrano::Connector::Rails::Entity
   # If you add new entities, you need to generate
   # a migration to add them to existing organizations
   def self.entities_list
-    %w(item person sales_order)
+    %w(item person sales_order invoice)
   end
 
   # Return an array of entities from the external app

@@ -8,10 +8,10 @@ class ShopifyClient
   end
 
 
-  def find(external_entity_name)
+  def find(external_entity_name, params = {})
     with_shopify_session do
       # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
-      find_all(get_shopify_entity_constant(external_entity_name)).map { |x| JSON.parse(x.to_json) }
+      find_all(get_shopify_entity_constant(external_entity_name), params).map { |x| JSON.parse(x.to_json) }
     end
   end
 
