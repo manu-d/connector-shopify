@@ -66,6 +66,10 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     end.flatten
   end
 
+  def get_last_update_date_from_external_entity_hash(entity)
+    entity['created_at'].to_time
+  end
+
   class LineMapper
     extend HashMapper
 
