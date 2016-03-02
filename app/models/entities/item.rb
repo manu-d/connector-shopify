@@ -12,38 +12,38 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     ItemMapper
   end
 
-  # ----------------------------------------------
-  #                 General methods
-  # ----------------------------------------------
-  # * Discards entities that do not need to be pushed because they have not been updated since their last push
-  # * Discards entities from one of the two source in case of conflict
-  # * Maps not discarded entities and associates them with their idmap, or create one if there isn't any
+  def object_name_from_connec_entity_hash(entity)
+    entity['name']
+  end
+
+  def object_name_from_external_entity_hash(entity)
+    entity['title']
+  end
+
   def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
     # group connec entities into variants
-    new_connec_entities = []
+    items_with_variant = []
     # create default value with a mutable empty array
     item_variants = Hash.new { |h, k| h[k] = [] }
     connec_entities.each do |item|
       parent_id = item['parent_item_id']
       if parent_id.nil?
-        new_connec_entities.push item
+        items_with_variant.push item
       else
-        item_variants[parent_id].push item
+        items_with_variant[parent_id].push item
       end
     end
 
-    new_connec_entities.each do |parent_item|
+    items_with_variant.each do |parent_item|
       variants = parent_item['variants'] = item_variants[parent_item['id']] || []
+      # get the max of the updated time on all the variant
       parent_item['updated_at'] = [parent_item['updated_at'].to_time, variants.map { |x| x['updated_at'].to_time }].flatten!.max.iso8601
     end
-    connec_entities.clear
-    connec_entities.push *new_connec_entities
-    super(connec_entities, external_entities, organization, opts)
-
+    super(items_with_variant, external_entities, organization, opts)
   end
 
   def push_entities_to_connec(connec_client, mapped_external_entities_with_idmaps, organization)
-
+    # 1/ push the orders
     self.push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, self.connec_entity_name, organization)
     variants = []
     mapped_external_entities_with_idmaps.each do |product|
@@ -51,9 +51,10 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       product[:entity][:variants].each do |variant|
         variant[:parent_item_id] = parent_connect_id
         idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: variant[:external_id], connec_entity: connec_entity_name.downcase, external_entity: 'variant', organization_id: organization.id)
-        variants.push({entity: variant, idmap: idmap || Maestrano::Connector::Rails::IdMap.create(external_id: variant[:external_id], connec_entity: connec_entity_name, external_entity: 'variant', organization_id: organization.id)})
+        variants.push({entity: variant, idmap: idmap || create_id_map( variant, organization)})
       end
     end
+    # 2/ push the variants
     self.push_entities_to_connec_to(connec_client, variants, self.connec_entity_name, organization)
   end
 
@@ -66,6 +67,11 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     end
     push_entities_to_external_to(external_client, mapped_connec_entities_with_idmaps, self.external_entity_name, organization)
   end
+  private
+  def create_id_map(variant, organization)
+    Maestrano::Connector::Rails::IdMap.create(external_id: variant[:external_id], connec_entity: connec_entity_name, external_entity: 'variant', organization_id: organization.id, name:variant[:name])
+  end
+
 end
 
 class VariantMapper

@@ -9,6 +9,7 @@
 
         - if @idmaps
           %table.table.table-condensed
+            %th Entity name
             %th Connec!™ entity
             %th Connec!™ id
             %th SalesForce entity
@@ -17,6 +18,7 @@
 
             - @idmaps.each do |idmap|
               %tr
+                %td= idmap.name
                 %td= idmap.connec_entity ? idmap.connec_entity.humanize : nil
                 %td= idmap.connec_id
                 %td= idmap.external_entity ? idmap.external_entity.humanize : nil

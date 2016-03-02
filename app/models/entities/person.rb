@@ -11,6 +11,15 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
   def mapper_class
     PersonMapper
   end
+
+  def object_name_from_connec_entity_hash(entity)
+    "#{entity['first_name']} #{entity['last_name']}"
+  end
+
+  def object_name_from_external_entity_hash(entity)
+    "#{entity['first_name']} #{entity['last_name']}"
+  end
+
 end
 
 class PersonMapper
