@@ -122,7 +122,7 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-connector-rails (0.2.14)
+    maestrano-connector-rails (0.2.15)
       hash_mapper
       maestrano-rails
       sidekiq

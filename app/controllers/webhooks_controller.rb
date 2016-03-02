@@ -4,9 +4,16 @@ class WebhooksController < ApplicationController
   before_action :verify_request
 
   def receive
-    job_args = {shop_domain: shop_domain, webhook: webhook_params}
-    p "WebhooksController:#{shop_domain}, #{webhook_params}"
-    head 200, content_type: "application/json"
+    org_uid = params[:org_uid]
+    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
+    if organization
+      Rails.logger.debug("WebhooksController.receive with params: #{webhook_params}")
+      entities_hash ={params[:entity].singularize.capitalize => [webhook_params]}
+      Maestrano::Connector::Rails::PushToConnecJob.perform_later organization, entities_hash
+    else
+      Rails.logger.debug('WebhooksController.receive: could not find organization: ' + org_uid)
+    end
+    head 200, content_type: 'application/json'
   end
 
   private
