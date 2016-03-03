@@ -9,14 +9,16 @@ describe Entities::SalesOrder do
     it { expect(subject.external_entity_name).to eql('Order') }
     it { expect(subject.mapper_class).to eql(Entities::SalesOrder::SalesOrderMapper) }
 
-    it { expect(subject.object_name_from_connec_entity_hash({'description'=> 'the description'})).to eql('the description') }
+    it { expect(subject.object_name_from_connec_entity_hash({'description' => 'the description'})).to eql('the description') }
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the description'})).to eql('the description') }
 
     describe 'connec_model_to_external_model' do
+      let(:organization) { create(:organization) }
+      let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
 
       let(:connec_hash) {
         {
-            status:'DRAFT',
+            status: 'DRAFT',
             billing_address: {
                 line1: 'line1',
                 line2: 'line2',
@@ -41,14 +43,15 @@ describe Entities::SalesOrder do
                         net_amount: 55
                     },
                     quantity: '48',
-                    description: 'description'
+                    description: 'description',
+                    item_id: 'item_connec_id_id'
                 }
             ]
         }
       }
       let(:external_hash) {
         {
-            financial_status:'pending',
+            financial_status: 'pending',
             billing_address: {
                 address1: 'line1',
                 address2: 'line2',
@@ -71,14 +74,15 @@ describe Entities::SalesOrder do
                 {
                     price: 55,
                     quantity: '48',
-                    title: 'description'
+                    title: 'description',
+                    product_id: 'item_external_id'
                 }
             ]
         }
       }
 
-      it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
-      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, nil)).to eql(external_hash) }
+      it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, organization)).to eql(connec_hash) }
+      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, organization)).to eql(external_hash) }
     end
 
   end

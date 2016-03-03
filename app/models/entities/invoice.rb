@@ -78,11 +78,11 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     map from('/description'), to('/title')
     map from('/item_id'), to('/product_id')
 
-
   end
 
   class InvoiceMapper
     extend HashMapper
+
     STATUS_MAPPING = {
         'DRAFT' => 'pending',
         'SUBMITTED' => 'pending',
@@ -98,6 +98,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
         'success' => 'AUTHORISED',
         'error' => 'VOIDED'
     }
+    map from('/sales_order_id'), to('/order_id')
     map from('/transaction_date'), to('/created_at')
     map from('/lines'), to('/line_items'), using: LineMapper
 

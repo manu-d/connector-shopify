@@ -20,6 +20,29 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     entity['title']
   end
 
+  def map_to_connec(entity, organization)
+
+    entity['line_items'].each do |item|
+      id = item['product_id']
+      if id
+        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', external_id: id, connec_entity: 'item', organization_id: organization.id)
+        item['product_id'] = idmap ? idmap.connec_id : ''
+      end
+    end
+    super
+  end
+
+  def map_to_external(entity, organization)
+    entity['lines'].each do |item|
+      id = item['item_id']
+      if id
+        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', connec_id: id, connec_entity: 'item', organization_id: organization.id)
+        item['item_id'] = idmap ? idmap.external_id : ''
+      end
+    end
+
+    super
+  end
 
   class LineMapper
     extend HashMapper
@@ -27,7 +50,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     map from('/unit_price/net_amount'), to('/price')
     map from('/quantity'), to('/quantity')
     map from('/description'), to('/title')
-
+    map from('/item_id'), to('/product_id')
   end
 
   class SalesOrderMapper
