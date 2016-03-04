@@ -58,9 +58,11 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   def get_external_entities(client, last_synchronization, organization, opts={})
     orders = client.find('Order')
     orders.map { |order|
-      transactions = client.find('Transaction', {:order_id => order['id']})
+      order_id = order['id']
+      transactions = client.find('Transaction', {:order_id => order_id})
       transactions.each do |transaction|
         transaction['line_items'] = order['line_items']
+        transaction['order_id'] = order_id
       end
       transactions
     }.flatten

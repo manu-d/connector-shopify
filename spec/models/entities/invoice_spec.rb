@@ -99,7 +99,39 @@ describe Entities::Invoice do
       it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, organization)).to eql(connec_hash) }
 
     end
+    describe 'get_external_entities' do
+      let(:orders) { [
+          {
+              'id' => 'order_id_1',
+              'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}]
+          }, {
+              'id' => 'order_id_2',
+              'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}]
+          }
+      ] }
+      let(:transactions) { {
+          'order_id_1' => [{'id' => 'transactions_1'}, {'id' => 'transactions_2'}],
+          'order_id_2' => [{'id' => 'transactions_3'}, {'id' => 'transactions_4'}]
+      }
+      }
+      let(:expected_transactions) { [
+          {'id' => 'transactions_1', 'order_id' => 'order_id_1', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}]},
+          {'id' => 'transactions_2', 'order_id' => 'order_id_1', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}]},
+          {'id' => 'transactions_3', 'order_id' => 'order_id_2', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}]},
+          {'id' => 'transactions_4', 'order_id' => 'order_id_2', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}]}
+      ]
+      }
 
+
+      let(:client) { ShopifyClient.new(1, 2) }
+      it 'returns the entities' do
+        allow(client).to receive(:find).with('Order').and_return(orders)
+        allow(client).to receive(:find).with('Transaction', {:order_id => 'order_id_1'}).and_return(transactions['order_id_1'])
+        allow(client).to receive(:find).with('Transaction', {:order_id => 'order_id_2'}).and_return(transactions['order_id_2'])
+        expect(subject.get_external_entities(client, nil, nil)).to eql(expected_transactions)
+      end
+
+    end
 
   end
 end

@@ -74,9 +74,9 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
         end
       end
       items_with_variant.each do |parent_item|
-        variants = parent_item['variants'] = item_variants[parent_item['id']] || []
+        parent_item['variants'] = item_variants[parent_item['id']] || []
         # get the max of the updated time on all the variant
-        parent_item['updated_at'] = variants.map { |x| x['updated_at'].to_time }.push(parent_item['updated_at'].to_time).max.iso8601
+        parent_item['updated_at'] = parent_item['variants'].map { |x| x['updated_at'].to_time }.push(parent_item['updated_at'].to_time).max.iso8601
       end
       items_with_variant
     end
