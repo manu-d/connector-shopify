@@ -53,6 +53,9 @@ app_host: 'https://aee0c964.ngrok.
 ```
 then edit your app settings in Shopify https://app.shopify.com/services/partners/api_clients/[YOURAPPID]/edit
 add the redirection URL:
-[[https://github.com/maestrano/connector-shopify/blob/master/edit-shopify-app-url.png|alt=edit-shopify-app-url.png]]
-
+<p align="center">
+  <img src="https://raw.github.com/maestrano/connector-shopify/master/edit-shopify-app-url.png" alt="edit-shopify-app-url.png">
+  <br/>
+  <br/>
+</p>
 
