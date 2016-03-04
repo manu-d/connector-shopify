@@ -1,5 +1,6 @@
-OmniAuth.config.logger = Rails.logger
-
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :salesforce, ENV['salesforce_client_id'], ENV['salesforce_client_secret']
+  provider :shopify,
+   ENV['shopify_api_id'],
+   ENV['shopify_api_key'],
+   :scope => 'write_orders,write_products,write_customers'
 end

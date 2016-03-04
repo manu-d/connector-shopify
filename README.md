@@ -1,34 +1,58 @@
-# SalesForce Connector
+# Shopify Connector
 
-The aim of this connector is to implement data sharing between Connec! and SalesForce
+The aim of this connector is to implement data sharing between Connec! and Shopify
 
 ### Configuration
-Configure your SalesForce application. To create a new SalesForce application: http://geekymartian.com/articles/ruby-on-rails-4-salesforce-oauth-implementation/
 
-Create a configuration file `config/application.yml` with the following settigns (complete with your SalesForce / Connec! credentials)
+Configure your Shopify application. To create a new Shopify application:
+https://docs.shopify.com/api/guides/introduction/getting-started
+
+Create a configuration file `config/application.yml` with the following settings (complete with your Shopify / Connec! credentials)
 ```
-connec_api_id: 
-connec_api_key: 
-salesforce_client_id: 
-salesforce_client_secret: 
+connec_api_id:
+connec_api_key:
+shopify_api_id:
+shopify_api_key:
+```
+### Run the connector
+#### First time setup
+```
+
+# Install JRuby and gems the first time, install redis-server
+rvm install jruby-9.0.5.0
+gem install bundler
+bundle
+gem install foreman
+sudo apt-get install redis-server
+```
+
+#### Start the application
+```
+export PORT=8080
+export RACK_ENV=development
+foreman start
 ```
 
 ### Run the connector locally against the Maestrano production environment
-In the initialize `config/initializers/maestrano.rb`
+Add in the application.yml file the following properties:
 ```
-config.app.host = 'http://localhost:3001'
-```
-
-### Run the connector
-```
-rvm install jruby-9.0.4.0
-gem install bundler
-bundle
-rails s -p 3001
+api_host: 'http://localhost:3000'
+connec_host: 'http://localhost:8080'
 ```
 
-### Heroku
-Start the Delayed Jobs manually with the command
+### Test webhooks
+Install [ngrok](https://ngrok.com)
+Start in on your application port (for example 5678)
 ```
-heroku run bundle exec rake jobs:work
+ngrok http 5678
 ```
+this will open a console with an url that is tunnelling to your localhost (for example https://aee0c964.ngrok.io)
+update the `app_host` in the application.yml
+```
+app_host: 'https://aee0c964.ngrok.
+```
+then edit your app settings in Shopify https://app.shopify.com/services/partners/api_clients/[YOURAPPID]/edit
+add the redirection URL:
+[[https://github.com/maestrano/connector-shopify/blob/master/edit-shopify-app-url.png|alt=edit-shopify-app-url.png]]
+
+

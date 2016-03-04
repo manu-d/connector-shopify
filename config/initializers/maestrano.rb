@@ -8,13 +8,26 @@ Maestrano['default'].configure do |config|
   # The api-sandbox allows you to easily test integration scenarios.
   # More details on http://api-sandbox.maestrano.io
   #
-  config.environment = Rails.env.development? ? 'test' : 'production'
+  config.environment = Rails.env.development? ? 'local' : 'production'
+
+  if ENV['connec_host']
+    config.connec.host = ENV['connec_host']
+  end
+  if ENV['api_host']
+    config.api.host = ENV['api_host']
+  end
 
   # ==> Application host
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
-  config.app.host = Rails.env.development? ? 'http://localhost:5000' : 'http://connector-salesforce.herokuapp.com'
+  if ENV['app_host']
+    config.app.host = ENV['app_host']
+  else
+    config.app.host = Rails.env.development? ? 'http://localhost:5678' : 'http://connector-shopify.herokuapp.com'
+  end
+
+
   
   # ==> App ID & API key
   # Your application App ID and API key which you can retrieve on http://maestrano.com
@@ -137,41 +150,78 @@ Maestrano['default'].configure do |config|
   # notified upon creation/update in Connec!™
   # 
   config.webhook.connec.subscriptions = {
-    accounts: false,
-    company: true,
-    employees: false,
-    events: false,
-    event_orders: false,
-    invoices: false,
-    items: true,
-    journals: false,
-    opportunities: true,
-    organizations: true,
-    payments: false,
-    pay_items: false,
-    pay_schedules: false,
-    pay_stubs: false,
-    pay_runs: false,
-    people: true,
-    projects: false,
-    purchase_orders: false,
-    quotes: false,
-    sales_orders: false,
-    tax_codes: false,
-    tax_rates: false,
-    time_activities: false,
-    time_sheets: false,
-    venues: false,
-    warehouses: false,
-    work_locations: false
+      accounts: false,
+      company: true,
+      employees: false,
+      events: false,
+      event_orders: false,
+      invoices: true,
+      items: true,
+      journals: false,
+      opportunities: false,
+      organizations: true,
+      payments: false,
+      pay_items: false,
+      pay_schedules: false,
+      pay_stubs: false,
+      pay_runs: false,
+      people: true,
+      projects: false,
+      purchase_orders: false,
+      quotes: false,
+      sales_orders: true,
+      tax_codes: false,
+      tax_rates: false,
+      time_activities: false,
+      time_sheets: false,
+      venues: false,
+      warehouses: false,
+      work_locations: false
   }
 end
 
-# Example of multi-tenant configuration
-Maestrano['other-tenant'].configure do |config|
-  config.environment = 'test'
-  config.app.host = (config.environment == 'production' ? 'https://my-app.com' : 'http://localhost:3000')
+# Maestrano UAT
+Maestrano['maestrano-uat'].configure do |config|
+  config.environment = 'uat'
+  config.app.host = Rails.env.development? ? 'http://localhost:3001' : 'http://connector-shopify.herokuapp.com'
 
-  config.api.id = (config.environment == 'production' ? 'prod_app_id' : 'sandbox_app_id')
-  config.api.key = (config.environment == 'production' ? 'prod_api_key' : 'sandbox_api_key')
+  config.api.host = 'https://uat.maestrano.io'
+  config.api.id = ENV['maestrano_uat_connec_api_id']
+  config.api.key = ENV['maestrano_uat_connec_api_key']
+
+  config.sso.init_path = '/maestrano/auth/saml/init/maestrano-uat'
+  config.sso.consume_path = '/maestrano/auth/saml/consume/maestrano-uat'
+  config.sso.x509_certificate = "-----BEGIN CERTIFICATE-----\nMIIDezCCAuSgAwIBAgIJAMzy+weDPp7qMA0GCSqGSIb3DQEBBQUAMIGGMQswCQYD\nVQQGEwJBVTEMMAoGA1UECBMDTlNXMQ8wDQYDVQQHEwZTeWRuZXkxGjAYBgNVBAoT\nEU1hZXN0cmFubyBQdHkgTHRkMRYwFAYDVQQDEw1tYWVzdHJhbm8uY29tMSQwIgYJ\nKoZIhvcNAQkBFhVzdXBwb3J0QG1hZXN0cmFuby5jb20wHhcNMTQwMTA0MDUyMzE0\nWhcNMzMxMjMwMDUyMzE0WjCBhjELMAkGA1UEBhMCQVUxDDAKBgNVBAgTA05TVzEP\nMA0GA1UEBxMGU3lkbmV5MRowGAYDVQQKExFNYWVzdHJhbm8gUHR5IEx0ZDEWMBQG\nA1UEAxMNbWFlc3RyYW5vLmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBtYWVz\ndHJhbm8uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+2uyQeAOc/iro\nhCyT33RkkWfTGeJ8E/mu9F5ORWoCZ/h2J+QDuzuc69Rf1LoO4wZVQ8LBeWOqMBYz\notYFUIPlPfIBXDNL/stHkpg28WLDpoJM+46WpTAgp89YKgwdAoYODHiUOcO/uXOO\n2i9Ekoa+kxbvBzDJf7uuR/io6GERXwIDAQABo4HuMIHrMB0GA1UdDgQWBBTGRDBT\nie5+fHkB0+SZ5g3WY/D2RTCBuwYDVR0jBIGzMIGwgBTGRDBTie5+fHkB0+SZ5g3W\nY/D2RaGBjKSBiTCBhjELMAkGA1UEBhMCQVUxDDAKBgNVBAgTA05TVzEPMA0GA1UE\nBxMGU3lkbmV5MRowGAYDVQQKExFNYWVzdHJhbm8gUHR5IEx0ZDEWMBQGA1UEAxMN\nbWFlc3RyYW5vLmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBtYWVzdHJhbm8u\nY29tggkAzPL7B4M+nuowDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQAw\nRxg3rZrML//xbsS3FFXguzXiiNQAvA4KrMWhGh3jVrtzAlN1/okFNy6zuN8gzdKD\nYw2n0c/u3cSpUutIVZOkwQuPCMC1hoP7Ilat6icVewNcHayLBxKgRxpBhr5Sc4av\n3HOW5Bi/eyC7IjeBTbTnpziApEC7uUsBou2rlKmTGw==\n-----END CERTIFICATE-----"
+  config.sso.x509_fingerprint = '8a:1e:2e:76:c4:67:80:68:6c:81:18:f7:d3:29:5d:77:f8:79:54:2f'
+
+  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/maestrano-uat'
+  config.webhook.connec.subscriptions = {
+      accounts: false,
+      company: true,
+      employees: false,
+      events: false,
+      event_orders: false,
+      invoices: true,
+      items: true,
+      journals: false,
+      opportunities: false,
+      organizations: false,
+      payments: false,
+      pay_items: false,
+      pay_schedules: false,
+      pay_stubs: false,
+      pay_runs: false,
+      people: true,
+      projects: false,
+      purchase_orders: false,
+      quotes: false,
+      sales_orders: true,
+      tax_codes: false,
+      tax_rates: false,
+      time_activities: false,
+      time_sheets: false,
+      venues: false,
+      warehouses: false,
+      work_locations: false
+  }
 end
