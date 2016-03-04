@@ -35,8 +35,8 @@ describe Maestrano::Connector::Rails::Entity do
 
     describe 'create_external_entity' do
       it 'calls create' do
-        expect(client).to receive(:create).with(external_name, {})
-        subject.create_external_entity(client, {}, external_name, organization)
+        expect(client).to receive(:create).with(external_name, {}).and_return('ID')
+        expect(subject.create_external_entity(client, {}, external_name, organization)).to eql('ID')
       end
     end
 

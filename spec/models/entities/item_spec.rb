@@ -12,7 +12,7 @@ describe Entities::Item do
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the name'})).to eql('the name') }
 
 
-    describe 'connec_model_to_external_model' do
+    describe 'mapping' do
 
       let(:connec_hash) {
         {

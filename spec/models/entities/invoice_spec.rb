@@ -18,7 +18,7 @@ describe Entities::Invoice do
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the title'})).to eql('the title') }
     it { expect(subject.get_last_update_date_from_external_entity_hash({'created_at' => Time.new(1985, 9, 17).iso8601})).to eql(Time.new(1985, 9, 17)) }
 
-    describe 'connec_model_to_external_model' do
+    describe 'map_to_external' do
       let(:organization) { create(:organization) }
       let!(:idmap_sales_order) { create(:idmap, organization: organization, connec_id: 'sales_order_connec_id', connec_entity: 'sales_order', external_id: 'sales_order_external_id', external_entity: 'order') }
       let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
@@ -59,7 +59,7 @@ describe Entities::Invoice do
       it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, organization)).to eql(external_hash) }
     end
 
-    describe 'external_model_to_connec_model' do
+    describe 'map_to_connec' do
 
 
       let(:external_hash) {

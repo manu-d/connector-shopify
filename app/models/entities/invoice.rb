@@ -57,13 +57,13 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
 
   def get_external_entities(client, last_synchronization, organization, opts={})
     orders = client.find('Order')
-    orders.map do |order|
+    orders.map { |order|
       transactions = client.find('Transaction', {:order_id => order['id']})
       transactions.each do |transaction|
         transaction['line_items'] = order['line_items']
       end
       transactions
-    end.flatten
+    }.flatten
   end
 
   def get_last_update_date_from_external_entity_hash(entity)
