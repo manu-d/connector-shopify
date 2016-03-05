@@ -21,14 +21,14 @@ Maestrano['default'].configure do |config|
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
-  if ENV['app_host']
-    config.app.host = ENV['app_host']
+  if Rails.env.development?
+    config.app.host = 'http://localhost:3001'
+  elsif Rails.env.uat?
+    config.app.host = 'http://connector-shopify-uat.herokuapp.com'
   else
-    config.app.host = Rails.env.development? ? 'http://localhost:5678' : 'http://connector-shopify.herokuapp.com'
+    config.app.host = 'http://connector-shopify.herokuapp.com'
   end
 
-
-  
   # ==> App ID & API key
   # Your application App ID and API key which you can retrieve on http://maestrano.com
   # via your cloud partner dashboard.
@@ -183,7 +183,13 @@ end
 # Maestrano UAT
 Maestrano['maestrano-uat'].configure do |config|
   config.environment = 'uat'
-  config.app.host = Rails.env.development? ? 'http://localhost:3001' : 'http://connector-shopify.herokuapp.com'
+  if Rails.env.development?
+    config.app.host = 'http://localhost:3001'
+  elsif Rails.env.uat?
+    config.app.host = 'http://connector-shopify-uat.herokuapp.com'
+  else
+    config.app.host = 'http://connector-shopify.herokuapp.com'
+  end
 
   config.api.host = 'https://uat.maestrano.io'
   config.api.id = ENV['maestrano_uat_connec_api_id']
