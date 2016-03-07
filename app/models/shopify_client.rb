@@ -10,8 +10,11 @@ class ShopifyClient
 
   def find(external_entity_name, params = {})
     with_shopify_session do
-      # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
-      find_all(get_shopify_entity_constant(external_entity_name), params).map { |x| JSON.parse(x.to_json) }
+      if (external_entity_name == 'Shop')
+        [convert_to_hash(ShopifyAPI::Shop.current)]
+      else
+        find_all(get_shopify_entity_constant(external_entity_name), params).map {|x| convert_to_hash x }
+      end
     end
   end
 
@@ -32,27 +35,31 @@ class ShopifyClient
   end
 
   private
-    def get_shopify_entity_constant(external_entity_name)
-      "ShopifyAPI::#{external_entity_name}".constantize
-    end
-
-    def with_shopify_session
-      ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
-        yield
-      end
-    end
-
-    # shopify paginate its result
-    def find_all(shopify_instance, params = {})
-      params[:limit] ||= 50
-      params[:page] = 1
-      result = []
-      begin
-        entities = shopify_instance.find(:all, :params => params)
-        params[:page] += 1
-        result.push *(entities.to_a)
-      end while entities.length == params[:limit]
-      result
+  def get_shopify_entity_constant(external_entity_name)
+    "ShopifyAPI::#{external_entity_name}".constantize
   end
 
+  def with_shopify_session
+    ShopifyAPI::Session.temp(@oauth_uid, @oauth_token) do
+      yield
+    end
+  end
+
+  # shopify paginate its result
+  def find_all(shopify_instance, params = {})
+    params[:limit] ||= 50
+    params[:page] = 1
+    result = []
+    begin
+      entities = shopify_instance.find(:all, :params => params)
+      params[:page] += 1
+      result.push *(entities.to_a)
+    end while entities.length == params[:limit]
+    result
+  end
+
+  # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
+  def convert_to_hash (x)
+    JSON.parse(x.to_json)
+  end
 end
