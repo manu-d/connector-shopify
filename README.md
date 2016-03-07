@@ -28,7 +28,7 @@ sudo apt-get install redis-server
 
 #### Start the application
 ```
-export PORT=8080
+export PORT=5678
 export RACK_ENV=development
 foreman start
 ```
