@@ -13,9 +13,20 @@ $(document).ready(function () {
                         message: 'The shop is mandatory'
                     },
                     callback: {
-                        message: 'Not ending with myshopify.com',
                         callback: function (value, validator, $field) {
-                            return value.endsWith('.myshopify.com')
+                            value = value.trim();
+                            if (!value.endsWith('.myshopify.com')){
+                                return {
+                                    valid: false,
+                                    message: 'Your domain should ends with myshopify.com'
+                                }
+                            }else if (value.startsWith('http')){
+                                return {
+                                    valid: false,
+                                    message: "Your domain should not contains the http"
+                                }
+                            }
+                            return true;
                         }
                     }
                 },
