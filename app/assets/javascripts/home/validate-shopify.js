@@ -2,28 +2,26 @@ $(document).ready(function () {
     $('#authentify-shopify').bootstrapValidator({
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
             shop: {
-                message: 'The username is not valid.',
                 validators: {
                     notEmpty: {
-                        message: 'The shop is mandatory'
+                        message: 'Shop domain is mandatory'
                     },
                     callback: {
                         callback: function (value, validator, $field) {
                             value = value.trim();
-                            if (!value.endsWith('.myshopify.com')){
+                            if (value.endsWith('.myshopify.com')){
                                 return {
                                     valid: false,
-                                    message: 'Your domain should ends with myshopify.com'
+                                    message: 'No need to add ".myshopify.com", we are taking care of it'
                                 }
                             }else if (value.startsWith('http')){
                                 return {
                                     valid: false,
-                                    message: "Your domain should not contains the http"
+                                    message: 'No need to add the "http", we are "taking care of it'
                                 }
                             }
                             return true;

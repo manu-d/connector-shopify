@@ -20,22 +20,19 @@ class OauthController < ApplicationController
       redirect_to root_url
       return
     end
-    shop_name = shop_name.strip
-    if !shop_name.end_with? 'myshopify.com'
-      flash[:error] = 'My shopify store url is required with myshopify.com'
-      redirect_to root_url
+    shop = shop_name.strip + '.myshopify.com'
+
+    if is_admin
+      auth_params = {
+          :state => current_organization.uid,
+          :shop => shop
+      }
+      auth_params = URI.escape(auth_params.collect { |k, v| "#{k}=#{v}" }.join('&'))
+      redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: 'sign_in'
     else
-      if is_admin
-        auth_params = {
-            :state => current_organization.uid,
-            :shop => shop_name
-        }
-        auth_params = URI.escape(auth_params.collect { |k, v| "#{k}=#{v}" }.join('&'))
-        redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: 'sign_in'
-      else
-        redirect_to root_url
-      end
+      redirect_to root_url
     end
+
   end
 
   # Link an Organization to Shopify OAuth account
