@@ -42,18 +42,19 @@
           .col-md-2.text-center.link-step-action
             = link_to "Disconnect",(is_admin ?  signout_omniauth_path(organization_id: @organization.id) : '#'), :disabled => !is_admin, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
         - else
-          %form#authentify-shopify{:action => "/auth/shopify/request", :method => "GET" }
-            .col-md-3
+          %form#authentify-shopify.form-inline{:action => "/auth/shopify/request", :method => "GET" }
+            .col-md-6
               %p Your Shopify account is not linked
               %p Please enter the “myshopify” domain of your store
-            .col-md-3.link-step-description
               .form-group
-                %input{:name => "shop", :placeholder => "blabla.myshopify.com", :type => "text", :class => "form-control", :disabled => !is_admin}
+                %label{:for => 'shop-name'}https://
+                %input#shop-name{:name => "shop", :placeholder => 'your-store-1234', :type => 'text', :class => 'form-control', :disabled => !is_admin}
+                %label .myshopify.com
                 %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
             .col-md-2.text-center.link-step-action
               %button{:type => "submit", :class => 'btn btn-warning btn-lg', :disabled => !is_admin, :rel => 'tooltip', :title => "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"} Link to Shopify
-      .spacer1
 
+      .spacer1
       .row.link-step
         .col-md-1.text-center.link-step-number
           %span.badge.link-step-badge
