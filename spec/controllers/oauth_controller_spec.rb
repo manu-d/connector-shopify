@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe OauthController, :type => :controller do
-  let(:shop) { 'test-store-1234.myshopify.com' }
+  let(:shop) { 'test-store-1234' }
   let(:uid) { 'uid-123' }
   let(:organization) { create(:organization, uid: uid) }
 
@@ -18,13 +18,6 @@ describe OauthController, :type => :controller do
         expect(flash[:error]).to eql('My shopify store url is required')
       end
     end
-    context 'shop is invalid' do
-      let(:shop) { 'invalid.com' }
-      it 'flash an error' do
-        subject
-        expect(flash[:error]).to eql('My shopify store url is required with myshopify.com')
-      end
-    end
     context 'when not admin' do
       before {
         allow_any_instance_of(ApplicationHelper).to receive(:is_admin).and_return(false)
@@ -36,7 +29,7 @@ describe OauthController, :type => :controller do
       before {
         allow_any_instance_of(ApplicationHelper).to receive(:is_admin).and_return(true)
       }
-      it { expect(subject).to redirect_to("http://test.host/auth/shopify?state=#{uid}&shop=#{shop}") }
+      it { expect(subject).to redirect_to("http://test.host/auth/shopify?state=#{uid}&shop=#{shop}.myshopify.com") }
     end
   end
 
