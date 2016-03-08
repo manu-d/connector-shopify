@@ -21,7 +21,7 @@ $(document).ready(function () {
                             }else if (value.startsWith('http')){
                                 return {
                                     valid: false,
-                                    message: 'No need to add the "http", we are "taking care of it'
+                                    message: 'No need to add the "http", we are taking care of it'
                                 }
                             }
                             return true;
