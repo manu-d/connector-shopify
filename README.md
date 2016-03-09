@@ -1,3 +1,8 @@
+Develop
+[ ![Codeship Status for maestrano/connector-shopify](https://codeship.com/projects/e35577f0-c6dd-0133-72ca-1ac1b065c1d6/status?branch=develop)](https://codeship.com/projects/138863)
+Master
+[ ![Codeship Status for maestrano/connector-shopify](https://codeship.com/projects/e35577f0-c6dd-0133-72ca-1ac1b065c1d6/status?branch=master)](https://codeship.com/projects/138863)
+
 # Shopify Connector
 
 The aim of this connector is to implement data sharing between Connec! and Shopify
