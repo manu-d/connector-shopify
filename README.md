@@ -1,3 +1,8 @@
+Develop
+[ ![Codeship Status for maestrano/connector-shopify](https://codeship.com/projects/e35577f0-c6dd-0133-72ca-1ac1b065c1d6/status?branch=develop)](https://codeship.com/projects/138863)
+Master
+[ ![Codeship Status for maestrano/connector-shopify](https://codeship.com/projects/e35577f0-c6dd-0133-72ca-1ac1b065c1d6/status?branch=master)](https://codeship.com/projects/138863)
+
 # Shopify Connector
 
 The aim of this connector is to implement data sharing between Connec! and Shopify
@@ -28,7 +33,7 @@ sudo apt-get install redis-server
 
 #### Start the application
 ```
-export PORT=8080
+export PORT=5678
 export RACK_ENV=development
 foreman start
 ```
@@ -53,6 +58,9 @@ app_host: 'https://aee0c964.ngrok.
 ```
 then edit your app settings in Shopify https://app.shopify.com/services/partners/api_clients/[YOURAPPID]/edit
 add the redirection URL:
-[[https://github.com/maestrano/connector-shopify/blob/master/edit-shopify-app-url.png|alt=edit-shopify-app-url.png]]
-
+<p align="center">
+  <img src="https://raw.github.com/maestrano/connector-shopify/master/edit-shopify-app-url.png" alt="edit-shopify-app-url.png">
+  <br/>
+  <br/>
+</p>
 
