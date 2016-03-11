@@ -10,8 +10,11 @@ class ShopifyClient
 
   def find(external_entity_name, params = {})
     with_shopify_session do
-      # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
-      find_all(get_shopify_entity_constant(external_entity_name), params).map { |x| JSON.parse(x.to_json) }
+      if (external_entity_name == 'Shop')
+        [convert_to_hash(ShopifyAPI::Shop.current)]
+      else
+        find_all(get_shopify_entity_constant(external_entity_name), params).map {|x| convert_to_hash x }
+      end
     end
   end
 
@@ -53,6 +56,10 @@ class ShopifyClient
         result.push *(entities.to_a)
       end while entities.length == params[:limit]
       result
-  end
+    end
 
+    # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
+    def convert_to_hash (x)
+      JSON.parse(x.to_json)
+    end
 end

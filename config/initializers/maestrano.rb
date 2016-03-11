@@ -21,7 +21,9 @@ Maestrano['default'].configure do |config|
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
-  if Rails.env.development?
+  if ENV['app_host']
+    config.app.host = ENV['app_host']
+  elsif Rails.env.development?
     config.app.host = 'http://localhost:3001'
   elsif Rails.env.uat?
     config.app.host = 'http://connector-shopify-uat.herokuapp.com'

@@ -30,13 +30,14 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     # 1/ push the orders
     self.push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, self.connec_entity_name, organization)
     variants = []
-    mapped_external_entities_with_idmaps.each do |product|
-      parent_connect_id = product[:idmap].connec_id
-      product[:entity][:variants].each do |variant|
+    mapped_external_entities_with_idmaps.each do |mapped_external_entities_with_idmap|
+      parent_connect_id = mapped_external_entities_with_idmap[:idmap].connec_id
+      product = mapped_external_entities_with_idmap[:entity]
+      product[:variants].each do |variant|
         variant[:parent_item_id] = parent_connect_id
         idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: variant[:external_id], connec_entity: connec_entity_name.downcase, external_entity: 'variant', organization_id: organization.id)
         variants.push({entity: variant, idmap: idmap || create_id_map(variant, organization)})
-      end
+      end if product[:variants]
     end
     # 2/ push the variants
     self.push_entities_to_connec_to(connec_client, variants, self.connec_entity_name, organization)
