@@ -1,22 +1,22 @@
 class Entities::Invoice < Maestrano::Connector::Rails::Entity
 
-  def connec_entity_name
+  def self.connec_entity_name
     'invoice'
   end
 
-  def external_entity_name
+  def self.external_entity_name
     'Transaction'
   end
 
-  def mapper_class
+  def self.mapper_class
     InvoiceMapper
   end
 
-  def object_name_from_connec_entity_hash(entity)
+  def self.object_name_from_connec_entity_hash(entity)
     entity['description']
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     entity['title']
   end
 
@@ -68,7 +68,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     }.flatten
   end
 
-  def get_last_update_date_from_external_entity_hash(entity)
+  def self.last_update_date_from_external_entity_hash(entity)
     entity['created_at'].to_time
   end
 

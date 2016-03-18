@@ -1,22 +1,22 @@
 class Entities::Person < Maestrano::Connector::Rails::Entity
 
-  def connec_entity_name
+  def self.connec_entity_name
     'Person'
   end
 
-  def external_entity_name
+  def self.external_entity_name
     'Customer'
   end
 
-  def mapper_class
+  def self.mapper_class
     PersonMapper
   end
 
-  def object_name_from_connec_entity_hash(entity)
+  def self.object_name_from_connec_entity_hash(entity)
     "#{entity['first_name']} #{entity['last_name']}"
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     "#{entity['first_name']} #{entity['last_name']}"
   end
 
