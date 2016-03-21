@@ -1,15 +1,19 @@
 require 'spec_helper'
 
 describe Entities::Item do
-
-  describe 'instance methods' do
-    subject { Entities::Item.new }
+  describe 'class methods' do
+    subject { Entities::Item }
 
     it { expect(subject.connec_entity_name).to eql('Item') }
     it { expect(subject.external_entity_name).to eql('Product') }
     it { expect(subject.mapper_class).to eql(Entities::Item::ItemMapper) }
     it { expect(subject.object_name_from_connec_entity_hash({'name' => 'the name'})).to eql('the name') }
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the name'})).to eql('the name') }
+  end
+
+  describe 'instance methods' do
+    subject { Entities::Item.new }
+
 
 
     describe 'mapping' do

@@ -1,36 +1,36 @@
 class Entities::Invoice < Maestrano::Connector::Rails::Entity
 
-  def connec_entity_name
+  def self.connec_entity_name
     'invoice'
   end
 
-  def external_entity_name
+  def self.external_entity_name
     'Transaction'
   end
 
-  def mapper_class
+  def self.mapper_class
     InvoiceMapper
   end
 
-  def object_name_from_connec_entity_hash(entity)
+  def self.object_name_from_connec_entity_hash(entity)
     entity['description']
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     entity['title']
   end
 
   def map_to_connec(entity, organization)
     id = entity['order_id']
     if id
-      idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'order', external_id: id, connec_entity: 'sales_order', organization_id: organization.id)
+      idmap = Entities::SalesOrder.find_idmap({external_id: id, organization_id: organization.id})
       entity['order_id'] = idmap ? idmap.connec_id : ''
     end
 
     entity['line_items'].each do |item|
       id = item['product_id']
       if id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', external_id: id, connec_entity: 'item', organization_id: organization.id)
+        idmap = Entities::Item.find_idmap({external_id: id, organization_id: organization.id})
         item['product_id'] = idmap ? idmap.connec_id : ''
       end
     end
@@ -40,14 +40,14 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   def map_to_external(entity, organization)
     id = entity['sales_order_id']
     if id
-      idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'order', connec_id: id, connec_entity: 'sales_order', organization_id: organization.id)
+      idmap = Entities::SalesOrder.find_idmap({connec_id: id, organization_id: organization.id})
       entity['sales_order_id'] = idmap ? idmap.external_id : ''
     end
 
     entity['lines'].each do |item|
       id = item['item_id']
       if id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', connec_id: id, connec_entity: 'item', organization_id: organization.id)
+        idmap = Entities::Item.find_idmap({connec_id: id, organization_id: organization.id})
         item['item_id'] = idmap ? idmap.external_id : ''
       end
     end
@@ -68,7 +68,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     }.flatten
   end
 
-  def get_last_update_date_from_external_entity_hash(entity)
+  def self.last_update_date_from_external_entity_hash(entity)
     entity['created_at'].to_time
   end
 

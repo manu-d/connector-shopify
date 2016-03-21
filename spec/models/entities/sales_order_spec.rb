@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe Entities::SalesOrder do
-
-  describe 'instance methods' do
-    subject { Entities::SalesOrder.new }
+  describe 'class methods' do
+    subject { Entities::SalesOrder }
 
     it { expect(subject.connec_entity_name).to eql('sales_order') }
     it { expect(subject.external_entity_name).to eql('Order') }
@@ -11,6 +10,11 @@ describe Entities::SalesOrder do
 
     it { expect(subject.object_name_from_connec_entity_hash({'description' => 'the description'})).to eql('the description') }
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the description'})).to eql('the description') }
+  end
+
+  describe 'instance methods' do
+    subject { Entities::SalesOrder.new }
+
 
     describe 'connec_model_to_external_model' do
       let(:organization) { create(:organization) }
