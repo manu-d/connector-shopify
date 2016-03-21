@@ -58,7 +58,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       variants = product[:variants]
       product_id = product_id_map.external_id
       if variants.count == 1
-        variants[0][:id] = @products_first_variant[product_id]
+        variants[0][:id] = @products_first_variant[product_id.to_i].to_s
         variants[0][:product_id] = product_id
       else
         variants.each do |variant|
