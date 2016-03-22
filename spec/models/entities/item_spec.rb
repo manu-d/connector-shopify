@@ -14,8 +14,6 @@ describe Entities::Item do
   describe 'instance methods' do
     subject { Entities::Item.new }
 
-
-
     describe 'mapping' do
 
       let(:connec_hash) {
@@ -35,6 +33,19 @@ describe Entities::Item do
                     quantity_available: 12,
                     weight: 8,
                     weight_unit: 'lb'
+                },
+                {
+                    id: 'VARIANT_ID_2',
+                    external_id: 'EXTERNAL_ID_2',
+                    description: 'red|yellow',
+                    name: 'name2',
+                    code: 'code2',
+                    sale_price: {
+                        net_amount: 555
+                    },
+                    quantity_available: 20,
+                    weight: 1,
+                    weight_unit: 'kg'
                 }
             ]
         }
@@ -55,6 +66,18 @@ describe Entities::Item do
                     inventory_quantity: 12,
                     weight: 8,
                     weight_unit: 'lb'
+                },
+                {
+                    connec_id: 'VARIANT_ID_2',
+                    id: 'EXTERNAL_ID_2',
+                    option1: 'red',
+                    option2: 'yellow',
+                    title: 'name2',
+                    sku: 'code2',
+                    price: 555,
+                    inventory_quantity: 20,
+                    weight: 1,
+                    weight_unit: 'kg'
                 }
             ]
         }
@@ -141,7 +164,7 @@ describe Entities::Item do
       }
       # group_items_variants is a private method, using send to call it
       # http://stackoverflow.com/questions/16599256/testing-private-method-in-ruby-rspec
-      it { expect(subject.send(:group_items_variants,items.map(&:deep_stringify_keys))).to eql(item_with_variants.map(&:deep_stringify_keys)) }
+      it { expect(subject.send(:group_items_variants, items.map(&:deep_stringify_keys))).to eql(item_with_variants.map(&:deep_stringify_keys)) }
     end
   end
 end
