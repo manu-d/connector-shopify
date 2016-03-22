@@ -90,6 +90,44 @@ describe Entities::Item do
       it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
       it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, nil)).to eql(external_hash) }
     end
+    describe 'mapping item with one variant' do
+
+      let(:connec_hash) {
+        {
+            name: 'product name',
+            description: 'product description',
+            sale_price: {
+                net_amount: 450
+            },
+            code: 'nice-product',
+            quantity_available: 12,
+            weight: 8,
+            weight_unit: 'lb',
+            is_inventoried: true,
+            variants: []
+        }
+      }
+      let(:external_hash) {
+        {
+            title: 'product name',
+            body_html: 'product description',
+            variants: [
+                {
+                    sku: 'nice-product',
+                    price: 450,
+                    inventory_quantity: 12,
+                    weight: 8,
+                    weight_unit: 'lb',
+                    inventory_management: 'shopify'
+                }
+            ]
+        }
+      }
+
+      it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
+      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, nil)).to eql(external_hash) }
+    end
+
     describe 'group_items_variants' do
       let(:items) { [
           {

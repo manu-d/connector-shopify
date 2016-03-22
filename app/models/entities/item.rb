@@ -160,7 +160,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     after_denormalize do |input, output|
       if output[:variants] && output[:variants].count == 1
         variant_part = VariantMapper.denormalize(input['variants'][0])
-        output[:code] = variant_part[:sku]
+        output[:code] = variant_part[:code]
         output[:sale_price] = variant_part[:sale_price]
         output[:quantity_available] = variant_part[:quantity_available]
         output[:weight] = variant_part[:weight]
