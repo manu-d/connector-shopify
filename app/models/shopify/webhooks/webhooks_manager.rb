@@ -49,6 +49,13 @@ module Shopify
         end
       end
 
+      def destroy_all_webhooks
+        with_shopify_session do
+          ShopifyAPI::Webhook.all.each do |webhook|
+            ShopifyAPI::Webhook.delete(webhook.id)
+          end
+        end
+      end
       private
 
 
@@ -62,7 +69,6 @@ module Shopify
             # For only that one, it is 'update*d*'
             {topic: 'orders/updated', path: 'orders/update'},
             {topic: 'orders/delete', path: 'orders/delete'},
-            {topic: 'customers/create', path: 'customers/create'},
             {topic: 'customers/update', path: 'customers/update'},
             {topic: 'customers/delete', path: 'customers/delete'}
         ]
