@@ -13,11 +13,11 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   end
 
   def self.object_name_from_connec_entity_hash(entity)
-    entity['description']
+    entity['code']
   end
 
   def self.object_name_from_external_entity_hash(entity)
-    entity['title']
+    nil
   end
 
   def map_to_connec(entity, organization)
