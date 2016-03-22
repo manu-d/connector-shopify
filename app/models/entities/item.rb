@@ -112,17 +112,13 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     map from('weight_unit'), to('weight_unit')
 
 
-
     after_normalize do |input, output|
       # convert description to options
       options = input['description'].split('|')
       options.each_with_index do |val, index|
         output["option#{index+1}".to_sym] = val
       end
-      if input['is_inventoried']
-        output[:inventory_management] = 'shopify'
-      end
-
+      output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output
     end
 

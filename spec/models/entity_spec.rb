@@ -28,8 +28,8 @@ describe Maestrano::Connector::Rails::Entity do
     let(:client) { ShopifyClient.new(1,2) }
     let(:external_name) { 'external_name' }
     before {
-      allow(subject).to receive(:external_entity_name).and_return(external_name)
-      allow(subject).to receive(:external_attributes).and_return(%w(FirstName LastName))
+      allow(subject.class).to receive(:external_entity_name).and_return(external_name)
+      allow(subject.class).to receive(:external_attributes).and_return(%w(FirstName LastName))
     }
     describe 'get_external_entities' do
 

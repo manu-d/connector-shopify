@@ -32,7 +32,8 @@ describe Entities::Item do
                     },
                     quantity_available: 12,
                     weight: 8,
-                    weight_unit: 'lb'
+                    weight_unit: 'lb',
+                    is_inventoried: true
                 },
                 {
                     id: 'VARIANT_ID_2',
@@ -45,7 +46,8 @@ describe Entities::Item do
                     },
                     quantity_available: 20,
                     weight: 1,
-                    weight_unit: 'kg'
+                    weight_unit: 'kg',
+                    is_inventoried: false
                 }
             ]
         }
@@ -65,7 +67,8 @@ describe Entities::Item do
                     price: 450,
                     inventory_quantity: 12,
                     weight: 8,
-                    weight_unit: 'lb'
+                    weight_unit: 'lb',
+                    inventory_management: 'shopify'
                 },
                 {
                     connec_id: 'VARIANT_ID_2',
@@ -77,7 +80,8 @@ describe Entities::Item do
                     price: 555,
                     inventory_quantity: 20,
                     weight: 1,
-                    weight_unit: 'kg'
+                    weight_unit: 'kg',
+                    inventory_management: nil
                 }
             ]
         }
@@ -120,6 +124,13 @@ describe Entities::Item do
               external_id: 'EXTERNAL_ID_2',
               name: 'name2',
               updated_at: Time.new(1987, 9, 17).iso8601
+          },
+          {
+              id: 'VARIANT_ID_4',
+              parent_item_id: 'PARENT_ID_2',
+              external_id: 'EXTERNAL_ID_4',
+              name: 'name4',
+              updated_at: Time.new(1985, 9, 17).iso8601
           }]
       }
 
@@ -157,6 +168,13 @@ describe Entities::Item do
                       parent_item_id: 'PARENT_ID_2',
                       external_id: 'EXTERNAL_ID_3',
                       name: 'name3',
+                      updated_at: Time.new(1985, 9, 17).iso8601
+                  },
+                  {
+                      id: 'VARIANT_ID_4',
+                      parent_item_id: 'PARENT_ID_2',
+                      external_id: 'EXTERNAL_ID_4',
+                      name: 'name4',
                       updated_at: Time.new(1985, 9, 17).iso8601
                   }
               ]
