@@ -65,7 +65,7 @@ module Shopify
             {topic: 'products/create', path: 'products/create'},
             {topic: 'products/update', path: 'products/update'},
             {topic: 'products/delete', path: 'products/delete'},
-            {topic: 'orders/create', path: 'products/create'},
+            {topic: 'orders/create', path: 'orders/create'},
             # For only that one, it is 'update*d*'
             {topic: 'orders/updated', path: 'orders/update'},
             {topic: 'orders/delete', path: 'orders/delete'},

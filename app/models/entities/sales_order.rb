@@ -13,14 +13,21 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
   end
 
   def self.object_name_from_connec_entity_hash(entity)
-    entity['description']
-  end
-
-  def self.object_name_from_external_entity_hash(entity)
     entity['title']
   end
 
+  def self.object_name_from_external_entity_hash(entity)
+    entity['name']
+  end
+
   def map_to_connec(entity, organization)
+    if entity['customer']
+      customer_id = entity['customer']['id']
+      if customer_id
+        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'customer', external_id: customer_id, connec_entity: 'person', organization_id: organization.id)
+        entity['customer']['id'] = idmap ? idmap.connec_id : ''
+      end
+    end
 
     entity['line_items'].each do |item|
       id = item['product_id']
@@ -33,6 +40,12 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
   end
 
   def map_to_external(entity, organization)
+    person_id = entity['person_id']
+    if person_id
+      idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'customer', connec_id: person_id, connec_entity: 'person', organization_id: organization.id)
+      entity['person_id'] = idmap ? idmap.external_id : ''
+    end
+
     entity['lines'].each do |item|
       id = item['item_id']
       if id
@@ -76,6 +89,8 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     # normalize from Connec to Shopify
     # denormalize from Shopify to Connec
     # map from (connect_field) to (shopify_field)
+    map from('/title'), to('/name')
+    map from('/person_id'), to('/customer/id')
 
     map from('/billing_address/line1'), to('/billing_address/address1')
     map from('/billing_address/line2'), to('/billing_address/address2')
@@ -93,7 +108,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
 
     map from('/transaction_date'), to('/closed_at')
 
-    map from('/code'), to('/order_number')
+    map from('/transaction_number'), to('/order_number')
 
     map from('/lines'), to('/line_items'), using: LineMapper
 
