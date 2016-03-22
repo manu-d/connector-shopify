@@ -14,8 +14,6 @@ describe Entities::Person do
   describe 'instance methods' do
     subject { Entities::Person.new }
 
-
-
     describe 'connec_model_to_external_model' do
 
       let(:connec_hash) {
@@ -50,14 +48,14 @@ describe Entities::Person do
         {
             first_name: 'Robert',
             last_name: 'Patinson',
-            default_address: {
+            addresses: [{
                 address1: 'line1',
                 address2: 'line2',
                 city: 'city',
                 province: 'region',
                 zip: 'postal_code',
                 country: 'country'
-            },
+            }],
             email: 'robert.patinson@touilaight.com',
             note: 'very important'
         }
