@@ -91,6 +91,8 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     # map from (connect_field) to (shopify_field)
     map from('/title'), to('/name')
     map from('/person_id'), to('/customer/id')
+    map from('/transaction_date'), to('/closed_at')
+    map from('/transaction_number'), to('/order_number')
 
     map from('/billing_address/line1'), to('/billing_address/address1')
     map from('/billing_address/line2'), to('/billing_address/address2')
@@ -106,9 +108,6 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     map from('/shipping_address/postal_code'), to('/shipping_address/zip')
     map from('/shipping_address/country'), to('/shipping_address/country_code')
 
-    map from('/transaction_date'), to('/closed_at')
-
-    map from('/transaction_number'), to('/order_number')
 
     map from('/lines'), to('/line_items'), using: LineMapper
 

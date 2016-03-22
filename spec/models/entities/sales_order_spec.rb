@@ -8,8 +8,8 @@ describe Entities::SalesOrder do
     it { expect(subject.external_entity_name).to eql('Order') }
     it { expect(subject.mapper_class).to eql(Entities::SalesOrder::SalesOrderMapper) }
 
-    it { expect(subject.object_name_from_connec_entity_hash({'description' => 'the description'})).to eql('the description') }
-    it { expect(subject.object_name_from_external_entity_hash({'title' => 'the description'})).to eql('the description') }
+    it { expect(subject.object_name_from_connec_entity_hash({'title' => 'the title'})).to eql('the title') }
+    it { expect(subject.object_name_from_external_entity_hash({'name' => 'the name'})).to eql('the name') }
   end
 
   describe 'instance methods' do
@@ -22,6 +22,8 @@ describe Entities::SalesOrder do
 
       let(:connec_hash) {
         {
+            title: 'a sales order',
+            transaction_number: '123456',
             status: 'DRAFT',
             billing_address: {
                 line1: 'line1',
@@ -40,7 +42,6 @@ describe Entities::SalesOrder do
                 country: 'shipping_address.country'
             },
             transaction_date: Date.new(1985, 9, 17).iso8601,
-            code: 'code',
             lines: [
                 {
                     unit_price: {
@@ -55,6 +56,8 @@ describe Entities::SalesOrder do
       }
       let(:external_hash) {
         {
+            name: 'a sales order',
+            order_number: '123456',
             financial_status: 'pending',
             billing_address: {
                 address1: 'line1',
@@ -73,7 +76,6 @@ describe Entities::SalesOrder do
                 country_code: 'shipping_address.country'
             },
             closed_at: Date.new(1985, 9, 17).iso8601,
-            order_number: 'code',
             line_items: [
                 {
                     price: 55,
