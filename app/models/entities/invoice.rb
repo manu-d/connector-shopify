@@ -17,16 +17,14 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   end
 
   def self.object_name_from_external_entity_hash(entity)
+    # there is not field from shopify that can be used as an object_name
     nil
+  end
+  def self.references
+    [{reference_class: Entities::SalesOrder, connec_field: 'sales_order_id', external_field: 'order_id'}]
   end
 
   def map_to_connec(entity, organization)
-    id = entity['order_id']
-    if id
-      idmap = Entities::SalesOrder.find_idmap({external_id: id, organization_id: organization.id})
-      entity['order_id'] = idmap ? idmap.connec_id : ''
-    end
-
     entity['line_items'].each do |item|
       id = item['product_id']
       if id
@@ -38,12 +36,6 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   end
 
   def map_to_external(entity, organization)
-    id = entity['sales_order_id']
-    if id
-      idmap = Entities::SalesOrder.find_idmap({connec_id: id, organization_id: organization.id})
-      entity['sales_order_id'] = idmap ? idmap.external_id : ''
-    end
-
     entity['lines'].each do |item|
       id = item['item_id']
       if id
@@ -51,7 +43,6 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
         item['item_id'] = idmap ? idmap.external_id : ''
       end
     end
-
     super
   end
 

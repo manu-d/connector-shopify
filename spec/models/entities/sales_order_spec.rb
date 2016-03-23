@@ -19,12 +19,14 @@ describe Entities::SalesOrder do
     describe 'connec_model_to_external_model' do
       let(:organization) { create(:organization) }
       let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
+      let!(:idmap_item2) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
       let(:connec_hash) {
         {
             title: 'a sales order',
             transaction_number: '123456',
             status: 'DRAFT',
+            person_id: 'person_connec_id_id',
             billing_address: {
                 line1: 'line1',
                 line2: 'line2',
@@ -59,12 +61,13 @@ describe Entities::SalesOrder do
             name: 'a sales order',
             order_number: '123456',
             financial_status: 'pending',
+            customer: {id: 'person_external_id'},
             billing_address: {
                 address1: 'line1',
-                address2: 'line2',
-                city: 'city',
                 province: 'region',
                 zip: 'postal_code',
+                address2: 'line2',
+                city: 'city',
                 country_code: 'country'
             },
             shipping_address: {

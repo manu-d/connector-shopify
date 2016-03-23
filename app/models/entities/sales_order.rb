@@ -20,19 +20,18 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     entity['name']
   end
 
+  def self.references
+    [{reference_class: Entities::Person, connec_field: 'person_id', external_field: 'customer/id'}]
+  end
+
+
+
   def map_to_connec(entity, organization)
-    if entity['customer']
-      customer_id = entity['customer']['id']
-      if customer_id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'customer', external_id: customer_id, connec_entity: 'person', organization_id: organization.id)
-        entity['customer']['id'] = idmap ? idmap.connec_id : ''
-      end
-    end
 
     entity['line_items'].each do |item|
       id = item['product_id']
       if id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', external_id: id, connec_entity: 'item', organization_id: organization.id)
+        idmap = Entities::Item.find_idmap({organization_id: organization.id, external_id: id})
         item['product_id'] = idmap ? idmap.connec_id : ''
       end
     end
@@ -40,16 +39,10 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
   end
 
   def map_to_external(entity, organization)
-    person_id = entity['person_id']
-    if person_id
-      idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'customer', connec_id: person_id, connec_entity: 'person', organization_id: organization.id)
-      entity['person_id'] = idmap ? idmap.external_id : ''
-    end
-
     entity['lines'].each do |item|
       id = item['item_id']
       if id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', connec_id: id, connec_entity: 'item', organization_id: organization.id)
+        idmap = Entities::Item.find_idmap({organization_id: organization.id, connec_id: id})
         item['item_id'] = idmap ? idmap.external_id : ''
       end
     end
