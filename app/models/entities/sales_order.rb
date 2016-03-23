@@ -13,19 +13,25 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
   end
 
   def self.object_name_from_connec_entity_hash(entity)
-    entity['description']
+    entity['title']
   end
 
   def self.object_name_from_external_entity_hash(entity)
-    entity['title']
+    entity['name']
   end
+
+  def self.references
+    [{reference_class: Entities::Person, connec_field: 'person_id', external_field: 'customer/id'}]
+  end
+
+
 
   def map_to_connec(entity, organization)
 
     entity['line_items'].each do |item|
       id = item['product_id']
       if id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', external_id: id, connec_entity: 'item', organization_id: organization.id)
+        idmap = Entities::Item.find_idmap({organization_id: organization.id, external_id: id})
         item['product_id'] = idmap ? idmap.connec_id : ''
       end
     end
@@ -36,7 +42,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     entity['lines'].each do |item|
       id = item['item_id']
       if id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'product', connec_id: id, connec_entity: 'item', organization_id: organization.id)
+        idmap = Entities::Item.find_idmap({organization_id: organization.id, connec_id: id})
         item['item_id'] = idmap ? idmap.external_id : ''
       end
     end
@@ -76,6 +82,10 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     # normalize from Connec to Shopify
     # denormalize from Shopify to Connec
     # map from (connect_field) to (shopify_field)
+    map from('/title'), to('/name')
+    map from('/person_id'), to('/customer/id')
+    map from('/transaction_date'), to('/closed_at')
+    map from('/transaction_number'), to('/order_number')
 
     map from('/billing_address/line1'), to('/billing_address/address1')
     map from('/billing_address/line2'), to('/billing_address/address2')
@@ -91,9 +101,6 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     map from('/shipping_address/postal_code'), to('/shipping_address/zip')
     map from('/shipping_address/country'), to('/shipping_address/country_code')
 
-    map from('/transaction_date'), to('/closed_at')
-
-    map from('/code'), to('/order_number')
 
     map from('/lines'), to('/line_items'), using: LineMapper
 

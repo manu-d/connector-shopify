@@ -72,4 +72,8 @@ org_uid = 'cld-9p9y'
 o = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
 Shopify::Webhooks::WebhooksManager.new(org_uid, o.oauth_uid, o.oauth_token).destroy_all_webhooks
 ```
-
+```
+shop = 'uat-test-store.myshopify.com'
+o = Maestrano::Connector::Rails::Organization.find_by_oauth_uid(shop)
+Shopify::Webhooks::WebhooksManager.new(o.uid, o.oauth_uid, o.oauth_token).destroy_all_webhooks
+```
