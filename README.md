@@ -51,7 +51,7 @@ Start in on your application port (for example 5678)
 ```
 ngrok http 5678
 ```
-this will open a consoe with an url that is tunnelling to your localhost (for example https://aee0c964.ngrok.io)
+this will open a console with an url that is tunnelling to your localhost (for example https://aee0c964.ngrok.io)
 update the `app_host` in the application.yml
 ```
 app_host: 'https://aee0c964.ngrok.
