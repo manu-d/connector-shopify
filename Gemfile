@@ -34,7 +34,7 @@ gem 'redis-rails'
 # jQuery based field validator for Twitter Bootstrap 3.
 gem 'bootstrap-validator-rails'
 
-group :production do
+group :production, :uat do
   gem 'rails_12factor'
   gem 'activerecord-jdbcpostgresql-adapter'
 end
