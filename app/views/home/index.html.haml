@@ -45,6 +45,8 @@
           %form#authentify-shopify.form-inline{:action => "/auth/shopify/request", :method => "GET" }
             .col-md-6
               %p Your Shopify account is not linked
+              %p
+                = link_to 'Create your shopify store', 'https://www.shopify.com/website'
               %p Please enter the “myshopify” domain of your store
               .form-group
                 %label{:for => 'shop-name'}https://
