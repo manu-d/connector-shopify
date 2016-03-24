@@ -24,10 +24,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     [{reference_class: Entities::Person, connec_field: 'person_id', external_field: 'customer/id'}]
   end
 
-
-
   def map_to_connec(entity, organization)
-
     entity['line_items'].each do |item|
       id = item['product_id']
       if id
@@ -52,7 +49,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
 
   class LineMapper
     extend HashMapper
-
+    map from('/id'), to('/id')
     map from('/unit_price/net_amount'), to('/price')
     map from('/quantity'), to('/quantity')
     map from('/description'), to('/title')
@@ -61,6 +58,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
 
   class SalesOrderMapper
     extend HashMapper
+
     STATUS_MAPPING = {
         'DRAFT' => 'pending',
         'SUBMITTED' => 'pending',
