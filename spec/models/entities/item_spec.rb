@@ -222,5 +222,14 @@ describe Entities::Item do
       # http://stackoverflow.com/questions/16599256/testing-private-method-in-ruby-rspec
       it { expect(subject.send(:group_items_variants, items.map(&:deep_stringify_keys))).to eql(item_with_variants.map(&:deep_stringify_keys)) }
     end
+    
+    describe 'minimal mapping' do
+
+      let(:connec_hash) { {name: 'product name'} }
+      let(:external_hash) { {title: 'product name'} }
+
+      it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
+      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, nil)).to eql(external_hash) }
+    end
   end
 end
