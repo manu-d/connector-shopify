@@ -41,6 +41,16 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     ]
   end
 
+  def self.get_order_transaction(client, order)
+    transaction = client.find('Transaction', {:order_id => order['id']}).last
+    if transaction
+      transaction['line_items'] = order['line_items']
+      transaction['order_id'] = order['id']
+      transaction['customer'] = order['customer']
+    end
+    transaction
+  end
+
   def map_to_connec(entity, organization)
     entity['line_items'].each do |item|
       id = item['product_id']
@@ -55,13 +65,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   def get_external_entities(client, last_synchronization, organization, opts={})
     orders = client.find('Order')
     orders.map { |order|
-      transaction = client.find('Transaction', {:order_id => order['id']}).last
-      if transaction
-        transaction['line_items'] = order['line_items']
-        transaction['order_id'] = order['id']
-        transaction['customer'] = order['customer']
-      end
-      transaction
+      self.class.get_order_transaction client, order
     }.compact
   end
 
@@ -92,7 +96,6 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     map from('/sales_order_id'), to('/order_id')
     map from('/transaction_date'), to('/created_at')
     map from('/lines'), to('/line_items'), using: LineMapper
-
 
 
     after_denormalize do |input, output|

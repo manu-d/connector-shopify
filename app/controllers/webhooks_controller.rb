@@ -8,13 +8,16 @@ class WebhooksController < ApplicationController
     organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
     if organization
       Rails.logger.debug("WebhooksController.receive with params: #{webhook_params}")
-      if(params[:entity] === 'orders')
-        # invoices are not sending via webhooks
-        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization, {only_entities: %w(sales_order invoice)})
+      if (params[:entity] === 'orders')
+        # invoices are not sent via webhooks
+        client = Maestrano::Connector::Rails::External.get_client organization
+        transaction = Entities::Invoice.get_order_transaction client, webhook_params
+        entities_hash = {'Order' => [webhook_params]}
+        entities_hash['Transaction'] = [transaction] if transaction
       else
-        entities_hash ={params[:entity].singularize.capitalize => [webhook_params]}
-        Maestrano::Connector::Rails::PushToConnecJob.perform_later organization, entities_hash
+        entities_hash = {params[:entity].singularize.capitalize => [webhook_params]}
       end
+      Maestrano::Connector::Rails::PushToConnecJob.perform_later organization, entities_hash
     else
       Rails.logger.debug('WebhooksController.receive: could not find organization: ' + org_uid)
     end
