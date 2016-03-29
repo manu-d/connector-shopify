@@ -60,6 +60,7 @@ class OauthController < ApplicationController
       organization.oauth_uid = nil
       organization.oauth_token = nil
       organization.refresh_token = nil
+      organization.sync_enabled = false
       organization.save
       Shopify::Webhooks::WebhooksManager.queue_destroy_webhooks(organization.uid, shop_name, token) unless shop_name.blank? || organization.uid.blank? || token.blank?
     end
