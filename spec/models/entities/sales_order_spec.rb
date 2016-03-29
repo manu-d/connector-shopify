@@ -19,7 +19,7 @@ describe Entities::SalesOrder do
     describe 'connec_model_to_external_model' do
       let(:organization) { create(:organization) }
       let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
-      let!(:idmap_item2) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
+      let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
       let(:connec_hash) {
         {
@@ -93,7 +93,6 @@ describe Entities::SalesOrder do
       }
 
       it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, organization)).to eql(connec_hash) }
-      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, organization)).to eql(external_hash) }
     end
 
   end

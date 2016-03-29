@@ -24,6 +24,14 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     [{reference_class: Entities::Person, connec_field: 'person_id', external_field: 'customer/id'}]
   end
 
+  def self.can_write_external?
+    false
+  end
+
+  def self.can_update_external?
+    false
+  end
+
   def map_to_connec(entity, organization)
     entity['line_items'].each do |item|
       id = item['product_id']
@@ -35,17 +43,6 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     super
   end
 
-  def map_to_external(entity, organization)
-    entity['lines'].each do |item|
-      id = item['item_id']
-      if id
-        idmap = Entities::Item.find_idmap({organization_id: organization.id, connec_id: id})
-        item['item_id'] = idmap ? idmap.external_id : ''
-      end
-    end
-
-    super
-  end
 
   class LineMapper
     extend HashMapper
@@ -102,11 +99,6 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
 
     map from('/lines'), to('/line_items'), using: LineMapper
 
-
-    after_normalize do |input, output|
-      output[:financial_status] = STATUS_MAPPING[input['status']]
-      output
-    end
 
     after_denormalize do |input, output|
       output[:status] = STATUS_MAPPING_INV[input['financial_status']]
