@@ -41,8 +41,11 @@ class OauthController < ApplicationController
     if omniauth_params && org_uid = omniauth_params['state']
       organization = Maestrano::Connector::Rails::Organization.find_by_uid_and_tenant(org_uid, current_user.tenant)
       if organization && is_admin?(current_user, organization) && response = request.env['omniauth.auth']
-        organization.from_omniauth(response)
         shop_name = response.uid
+        organization.from_omniauth(response)
+        organization.instance_url = "https://#{shop_name}/admin"
+        organization.save!
+
         token = response['credentials']['token']
         Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
 
