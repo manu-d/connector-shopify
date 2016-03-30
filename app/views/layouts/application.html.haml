@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title Shopify Connector for Connec!™
+    %title Shopify Connector
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
@@ -10,7 +10,7 @@
       .container-fluid
         .collapse.navbar-collapse#maestrano-navbar-collapse
           %ul.nav.navbar-nav
-            =image_tag "logos/default.png", class: 'external-logo'
+            =image_tag "logos/default.png", class: 'logo'
 
           %ul.nav.navbar-nav
             %li
@@ -44,5 +44,4 @@
         .row
           .col-xs-12
             .copyright
-              © Copyright #{Time.now.year} Maestrano Pty Ltd (ABN: 80 152 564 424).
-              All rights reserved. Various trademarks held by their respective owners.
+              © Copyright #{Time.now.year}. All rights reserved. Various trademarks held by their respective owners.
