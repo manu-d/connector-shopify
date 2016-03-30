@@ -16,49 +16,10 @@ describe Entities::Invoice do
     let(:organization) { create(:organization) }
     let!(:idmap_sales_order) { create(:idmap, organization: organization, connec_id: 'sales_order_connec_id', connec_entity: 'sales_order', external_id: 'sales_order_external_id', external_entity: 'order') }
     let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
+    let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
     subject { Entities::Invoice.new }
 
-    describe 'map_to_external' do
-      let(:organization) { create(:organization) }
-      let!(:idmap_sales_order) { create(:idmap, organization: organization, connec_id: 'sales_order_connec_id', connec_entity: 'sales_order', external_id: 'sales_order_external_id', external_entity: 'order') }
-      let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
-
-      let(:connec_hash) {
-        {
-            sales_order_id: 'sales_order_connec_id',
-            transaction_date: Time.new(1985, 9, 17).iso8601,
-            type: 'CUSTOMER',
-            status: 'PAID',
-            lines: [
-                {
-                    unit_price: {
-                        net_amount: 55
-                    },
-                    quantity: '48',
-                    description: 'description',
-                    item_id: 'item_connec_id_id'
-                }
-            ]
-        }
-      }
-      let(:external_hash) {
-        {
-            order_id: 'sales_order_external_id',
-            created_at: Time.new(1985, 9, 17).iso8601,
-            financial_status: 'success',
-            line_items: [
-                {
-                    price: 55,
-                    quantity: '48',
-                    title: 'description',
-                    product_id: 'item_external_id'
-                }
-            ]
-        }
-      }
-      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, organization)).to eql(external_hash) }
-    end
 
     describe 'map_to_connec' do
 
@@ -68,7 +29,8 @@ describe Entities::Invoice do
             order_id: 'sales_order_external_id',
             created_at: Time.new(1985, 9, 17).iso8601,
             financial_status: 'pending',
-            kind: 'refund',
+            kind: 'sale',
+            customer: {id: 'person_external_id'},
             line_items: [
                 {
                     price: 55,
@@ -83,8 +45,9 @@ describe Entities::Invoice do
         {
             sales_order_id: 'sales_order_connec_id',
             transaction_date: Time.new(1985, 9, 17).iso8601,
-            type: 'SUPPLIER',
-            status: 'DRAFT',
+            person_id: 'person_connec_id_id',
+            type: 'CUSTOMER',
+            status: 'PAID',
             lines: [
                 {
                     unit_price: {
@@ -104,10 +67,12 @@ describe Entities::Invoice do
       let(:orders) { [
           {
               'id' => 'order_id_1',
-              'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}]
+              'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}],
+              'customer' => {'id' => 'c1'}
           }, {
               'id' => 'order_id_2',
-              'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}]
+              'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}],
+              'customer' => {'id' => 'c2'}
           }
       ] }
       let(:transactions) { {
@@ -116,10 +81,8 @@ describe Entities::Invoice do
       }
       }
       let(:expected_transactions) { [
-          {'id' => 'transactions_1', 'order_id' => 'order_id_1', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}]},
-          {'id' => 'transactions_2', 'order_id' => 'order_id_1', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}]},
-          {'id' => 'transactions_3', 'order_id' => 'order_id_2', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}]},
-          {'id' => 'transactions_4', 'order_id' => 'order_id_2', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}]}
+          {'id' => 'transactions_2', 'order_id' => 'order_id_1', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}], 'customer' => {'id' => 'c1'}},
+          {'id' => 'transactions_4', 'order_id' => 'order_id_2', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}], 'customer' => {'id' => 'c2'}}
       ]
       }
 

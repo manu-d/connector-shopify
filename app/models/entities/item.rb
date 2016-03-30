@@ -114,9 +114,11 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
 
       after_normalize do |input, output|
         # convert description to options
-        options = input['description'].split('|')
-        options.each_with_index do |val, index|
-          output["option#{index+1}".to_sym] = val
+        if input['description']
+          options = input['description'].split('|')
+          options.each_with_index do |val, index|
+            output["option#{index+1}".to_sym] = val
+          end
         end
         output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
         output
@@ -147,7 +149,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       map from('/variants'), to('/variants'), using: VariantMapper
 
       after_normalize do |input, output|
-        variants = output[:variants]
+        variants = output[:variants] || []
         if variants.count == 0
           # generate the default variant
           variants[0] = VariantMapper.normalize(input)

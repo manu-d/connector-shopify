@@ -35,6 +35,7 @@ describe Entities::Person do
             },
             notes: [
                 {
+                    id: 'shopify',
                     description: 'very important'
                 }
             ],
@@ -49,13 +50,13 @@ describe Entities::Person do
             first_name: 'Robert',
             last_name: 'Patinson',
             addresses: [{
-                address1: 'line1',
-                address2: 'line2',
-                city: 'city',
-                province: 'region',
-                zip: 'postal_code',
-                country: 'country'
-            }],
+                            address1: 'line1',
+                            address2: 'line2',
+                            city: 'city',
+                            province: 'region',
+                            zip: 'postal_code',
+                            country: 'country'
+                        }],
             email: 'robert.patinson@touilaight.com',
             note: 'very important'
         }

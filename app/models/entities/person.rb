@@ -22,6 +22,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
 
   class PersonMapper
     extend HashMapper
+    SHOPIFY_NOTE_ID = 'shopify'
     # normalize from Connec to Shopify
     # denormalize from Shopify to Connec
     # map from (connect_field) to (shopify_field)
@@ -44,7 +45,19 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
 
 
     map from('email/address'), to('email')
-    map from('notes[0]/description'), to('note')
+
+    after_normalize do |input, output|
+      notes = input['notes']
+      note = notes.find { |n| n['id'] === SHOPIFY_NOTE_ID } if notes
+      output[:note] = note['description'] if note
+      output
+    end
+
+    after_denormalize do |input, output|
+      output[:notes] = [{id: SHOPIFY_NOTE_ID, description: input['note']}] if input['note']
+      output
+    end
+
 
   end
 

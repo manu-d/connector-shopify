@@ -19,7 +19,7 @@ describe Entities::SalesOrder do
     describe 'connec_model_to_external_model' do
       let(:organization) { create(:organization) }
       let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
-      let!(:idmap_item2) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
+      let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
       let(:connec_hash) {
         {
@@ -46,6 +46,7 @@ describe Entities::SalesOrder do
             transaction_date: Date.new(1985, 9, 17).iso8601,
             lines: [
                 {
+                    id: 'line_id',
                     unit_price: {
                         net_amount: 55
                     },
@@ -81,6 +82,7 @@ describe Entities::SalesOrder do
             closed_at: Date.new(1985, 9, 17).iso8601,
             line_items: [
                 {
+                    id: 'line_id',
                     price: 55,
                     quantity: '48',
                     title: 'description',
@@ -91,7 +93,6 @@ describe Entities::SalesOrder do
       }
 
       it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, organization)).to eql(connec_hash) }
-      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, organization)).to eql(external_hash) }
     end
 
   end
