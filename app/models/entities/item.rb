@@ -35,6 +35,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     entities.map { |product|
       self.class.get_product_variants(product)
     }.flatten!
+    entities
   end
 
 
