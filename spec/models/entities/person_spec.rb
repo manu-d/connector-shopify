@@ -1,16 +1,18 @@
 require 'spec_helper'
 
 describe Entities::Person do
-
-  describe 'instance methods' do
-    subject { Entities::Person.new }
+  describe 'class methods' do
+    subject { Entities::Person }
 
     it { expect(subject.connec_entity_name).to eql('Person') }
     it { expect(subject.external_entity_name).to eql('Customer') }
     it { expect(subject.mapper_class).to eql(Entities::Person::PersonMapper) }
     it { expect(subject.object_name_from_connec_entity_hash({'first_name' => 'Robert', 'last_name' => 'Patinson'})).to eql('Robert Patinson') }
     it { expect(subject.object_name_from_external_entity_hash({'first_name' => 'Robert', 'last_name' => 'Patinson'})).to eql('Robert Patinson') }
+  end
 
+  describe 'instance methods' do
+    subject { Entities::Person.new }
 
     describe 'connec_model_to_external_model' do
 
@@ -33,6 +35,7 @@ describe Entities::Person do
             },
             notes: [
                 {
+                    id: 'shopify',
                     description: 'very important'
                 }
             ],
@@ -46,14 +49,14 @@ describe Entities::Person do
         {
             first_name: 'Robert',
             last_name: 'Patinson',
-            default_address: {
-                address1: 'line1',
-                address2: 'line2',
-                city: 'city',
-                province: 'region',
-                zip: 'postal_code',
-                country: 'country'
-            },
+            addresses: [{
+                            address1: 'line1',
+                            address2: 'line2',
+                            city: 'city',
+                            province: 'region',
+                            zip: 'postal_code',
+                            country: 'country'
+                        }],
             email: 'robert.patinson@touilaight.com',
             note: 'very important'
         }

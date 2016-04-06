@@ -1,24 +1,32 @@
 require 'spec_helper'
 
 describe Entities::SalesOrder do
-
-  describe 'instance methods' do
-    subject { Entities::SalesOrder.new }
+  describe 'class methods' do
+    subject { Entities::SalesOrder }
 
     it { expect(subject.connec_entity_name).to eql('sales_order') }
     it { expect(subject.external_entity_name).to eql('Order') }
     it { expect(subject.mapper_class).to eql(Entities::SalesOrder::SalesOrderMapper) }
 
-    it { expect(subject.object_name_from_connec_entity_hash({'description' => 'the description'})).to eql('the description') }
-    it { expect(subject.object_name_from_external_entity_hash({'title' => 'the description'})).to eql('the description') }
+    it { expect(subject.object_name_from_connec_entity_hash({'title' => 'the title'})).to eql('the title') }
+    it { expect(subject.object_name_from_external_entity_hash({'name' => 'the name'})).to eql('the name') }
+  end
+
+  describe 'instance methods' do
+    subject { Entities::SalesOrder.new }
+
 
     describe 'connec_model_to_external_model' do
       let(:organization) { create(:organization) }
-      let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
+      let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'variant') }
+      let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
       let(:connec_hash) {
         {
+            title: 'a sales order',
+            transaction_number: '123456',
             status: 'DRAFT',
+            person_id: 'person_connec_id_id',
             billing_address: {
                 line1: 'line1',
                 line2: 'line2',
@@ -36,9 +44,9 @@ describe Entities::SalesOrder do
                 country: 'shipping_address.country'
             },
             transaction_date: Date.new(1985, 9, 17).iso8601,
-            code: 'code',
             lines: [
                 {
+                    id: 'line_id',
                     unit_price: {
                         net_amount: 55
                     },
@@ -51,13 +59,16 @@ describe Entities::SalesOrder do
       }
       let(:external_hash) {
         {
+            name: 'a sales order',
+            order_number: '123456',
             financial_status: 'pending',
+            customer: {id: 'person_external_id'},
             billing_address: {
                 address1: 'line1',
-                address2: 'line2',
-                city: 'city',
                 province: 'region',
                 zip: 'postal_code',
+                address2: 'line2',
+                city: 'city',
                 country_code: 'country'
             },
             shipping_address: {
@@ -69,20 +80,19 @@ describe Entities::SalesOrder do
                 country_code: 'shipping_address.country'
             },
             closed_at: Date.new(1985, 9, 17).iso8601,
-            order_number: 'code',
             line_items: [
                 {
+                    id: 'line_id',
                     price: 55,
                     quantity: '48',
                     title: 'description',
-                    product_id: 'item_external_id'
+                    variant_id: 'item_external_id'
                 }
             ]
         }
       }
 
       it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, organization)).to eql(connec_hash) }
-      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, organization)).to eql(external_hash) }
     end
 
   end

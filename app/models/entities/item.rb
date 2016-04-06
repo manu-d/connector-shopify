@@ -1,133 +1,124 @@
 class Entities::Item < Maestrano::Connector::Rails::Entity
 
-  def connec_entity_name
+  def self.connec_entity_name
     'Item'
   end
 
-  def external_entity_name
-    'Product'
+  def self.external_entity_name
+    'Variant'
   end
 
-  def mapper_class
+  def self.mapper_class
     ItemMapper
   end
 
-  def object_name_from_connec_entity_hash(entity)
+  def self.object_name_from_connec_entity_hash(entity)
     entity['name']
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     entity['title']
   end
 
-
-  def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
-    items_with_variant = group_items_variants(connec_entities)
-    super(items_with_variant, external_entities, organization, opts)
+  def self.get_product_variants(product)
+    product['variants'].each do |variant|
+      variant['product_id'] = product['id']
+      variant['product_title'] = product['title']
+      variant['body_html'] = product['body_html']
+      variant['updated_at'] = [variant['updated_at'].to_time, product['updated_at'].to_time].max.iso8601
+    end
+    product['variants']
   end
 
-  def push_entities_to_connec(connec_client, mapped_external_entities_with_idmaps, organization)
-    # 1/ push the orders
-    self.push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, self.connec_entity_name, organization)
-    variants = []
-    mapped_external_entities_with_idmaps.each do |mapped_external_entities_with_idmap|
-      parent_connect_id = mapped_external_entities_with_idmap[:idmap].connec_id
-      product = mapped_external_entities_with_idmap[:entity]
-      product[:variants].each do |variant|
-        variant[:parent_item_id] = parent_connect_id
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: variant[:external_id], connec_entity: connec_entity_name.downcase, external_entity: 'variant', organization_id: organization.id)
-        variants.push({entity: variant, idmap: idmap || create_id_map(variant, organization)})
-      end if product[:variants]
-    end
-    # 2/ push the variants
-    self.push_entities_to_connec_to(connec_client, variants, self.connec_entity_name, organization)
+  def get_external_entities(client, last_synchronization, organization, opts={})
+    entities = client.find('Product')
+    entities.map { |product|
+      self.class.get_product_variants(product)
+    }.flatten!
   end
 
-  def push_entities_to_external(external_client, mapped_connec_entities_with_idmaps, organization)
-    mapped_connec_entities_with_idmaps.each do |mapped_connec_entity_with_idmap|
-      product = mapped_connec_entity_with_idmap[:entity]
-      product_id_map = mapped_connec_entity_with_idmap[:idmap]
-      product[:variants].each do |variant|
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(connec_id: variant[:connec_id], connec_entity: connec_entity_name.downcase, external_entity: 'variant', organization_id: organization.id)
-        variant[:id] = idmap.external_id if idmap
-        variant[:product_id] = product_id_map.external_id
-      end
-    end
-    super(external_client, mapped_connec_entities_with_idmaps, organization)
+
+  def create_connec_entity(connec_client, external_entity, connec_entity_name, organization)
+    connec_entity = super
+    create_or_update_product_id_map external_entity, connec_entity, organization
+    connec_entity
   end
 
-  private
-    def create_id_map(variant, organization)
-      Maestrano::Connector::Rails::IdMap.create(external_id: variant[:external_id], connec_entity: connec_entity_name, external_entity: 'variant', organization_id: organization.id, name: variant[:name])
+  def update_connec_entity(connec_client, external_entity, connec_id, connec_entity_name, organization)
+    connec_entity = super
+    create_or_update_product_id_map external_entity, connec_entity, organization
+    connec_entity
+  end
+
+  def create_or_update_product_id_map(external_entity, connec_entity, organization)
+    product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: external_entity[:product_id], connec_id: connec_entity['id'], connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
+    product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: external_entity[:product_name])
+  end
+
+
+  def push_entity_to_external(client, mapped_connec_entity_with_idmap, external_entity_name, organization)
+    idmap = mapped_connec_entity_with_idmap[:idmap]
+    connec_entity = mapped_connec_entity_with_idmap[:entity]
+
+    begin
+      title = connec_entity[:product_title]
+      product = {
+          title: title,
+          body_html: connec_entity[:body_html],
+          variants: [connec_entity]
+      }
+      if idmap.external_id.blank?
+        created_entity = client.update('Product', product)
+        idmap.update_attributes(external_id: created_entity['variants'][0]['id'], last_push_to_external: Time.now, message: nil)
+        product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: created_entity['id'], connec_id: idmap.connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
+        product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: title)
+      else
+        connec_entity[:id] = idmap.external_id
+        product_id_map = Maestrano::Connector::Rails::IdMap.find_by(connec_id: idmap.connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
+        product[:id] = product_id_map.external_id
+        client.update('Product', product)
+        idmap.update_attributes(last_push_to_external: Time.now, message: nil)
+        product_id_map.update_attributes(last_push_to_external: Time.now, message: nil)
+      end
+    rescue => e
+      # Store External error
+      Maestrano::Connector::Rails::ConnectorLogger.log('error', organization, "Error while pushing to #{Maestrano::Connector::Rails::External.external_name}: #{e}")
+      idmap.update_attributes(message: e.message)
+    end
+  end
+
+
+  class ItemMapper
+    extend HashMapper
+    # normalize from Connec to Shopify
+    # denormalize from Shopify to Connec
+    # map from (connect_field) to (shopify_field)
+    map from('description'), to('body_html')
+    map from('product_id'), to('product_id')
+    map from('code'), to('sku')
+    map from('sale_price/net_amount'), to('price')
+    map from('quantity_available'), to('inventory_quantity', &:to_i)
+
+    map from('weight'), to('weight')
+    map from('weight_unit'), to('weight_unit')
+    map from('description'), to('body_html')
+
+    after_normalize do |input, output|
+      output[:product_title] = input['name']
+      output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
+      output
     end
 
-    # regroup the items that are variants (with parentid nil) to their parents in a variants field
-    def group_items_variants(connec_entities)
-      items_with_variant = []
-      # create default value with a mutable empty array
-      item_variants = Hash.new { |h, k| h[k] = [] }
-      connec_entities.each do |item|
-        parent_id = item['parent_item_id']
-        if parent_id
-          item_variants[parent_id].push item
-        else
-          items_with_variant.push item
-        end
-      end
-      items_with_variant.each do |parent_item|
-        parent_item['variants'] = item_variants[parent_item['id']] || []
-        # get the max of the updated time on all the variant
-        parent_item['updated_at'] = parent_item['variants'].map { |x| x['updated_at'].to_time }.push(parent_item['updated_at'].to_time).max.iso8601
-      end
-      items_with_variant
+    after_denormalize do |input, output|
+      output[:name] = input['product_title']
+      output[:name] += ' ' +  input['title'] if input['title']  && input['title'] != 'Default Title'
+      output[:product_name] = input['product_title']
+      output[:is_inventoried] = input['inventory_management'] == 'shopify'
+      output
     end
 
-    class VariantMapper
-      extend HashMapper
-      map from('id'), to('connec_id')
-      map from('external_id'), to('id')
-      map from('name'), to('title')
+  end
 
-      map from('code'), to('sku')
-      map from('sale_price/net_amount'), to('price')
-      map from('quantity_available'), to('inventory_quantity', &:to_i)
-
-      map from('weight'), to('weight')
-      map from('weight_unit'), to('weight_unit')
-
-      after_normalize do |input, output|
-        # convert description to options
-        options = input['description'].split('|')
-        options.each_with_index do |val, index|
-          output["option#{index+1}".to_sym] = val
-        end
-        output
-      end
-
-      after_denormalize do |input, output|
-        index = 0
-        options = []
-        while option = input["option#{index+1}"]
-          options.push option
-          index +=1
-        end
-        output[:description] = options.join('|')
-        output
-      end
-
-    end
-
-    class ItemMapper
-      extend HashMapper
-      # normalize from Connec to Shopify
-      # denormalize from Shopify to Connec
-      # map from (connect_field) to (shopify_field)
-
-      map from('description'), to('body_html')
-      map from('name'), to('title')
-      map from('/variants'), to('/variants'), using: VariantMapper
-
-    end
 end
 
 

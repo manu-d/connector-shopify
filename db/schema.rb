@@ -14,19 +14,19 @@
 ActiveRecord::Schema.define(version: 20160304150162) do
 
   create_table "id_maps", force: :cascade do |t|
-    t.string   "connec_id",             limit: 255
-    t.string   "connec_entity",         limit: 255
-    t.string   "external_id",           limit: 255
-    t.string   "external_entity",       limit: 255
+    t.string   "connec_id"
+    t.string   "connec_entity"
+    t.string   "external_id"
+    t.string   "external_entity"
     t.integer  "organization_id"
     t.datetime "last_push_to_connec"
     t.datetime "last_push_to_external"
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.boolean  "to_connec",                         default: true
-    t.boolean  "to_external",                       default: true
-    t.string   "name",                  limit: 255
-    t.string   "message",               limit: 255
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.boolean  "to_connec",             default: true
+    t.boolean  "to_external",           default: true
+    t.string   "name"
+    t.string   "message"
   end
 
   add_index "id_maps", ["connec_id", "connec_entity", "organization_id"], name: "idmap_connec_index"
@@ -34,31 +34,31 @@ ActiveRecord::Schema.define(version: 20160304150162) do
   add_index "id_maps", ["organization_id"], name: "idmap_organization_index"
 
   create_table "organizations", force: :cascade do |t|
-    t.string   "provider",              limit: 255
-    t.string   "uid",                   limit: 255
-    t.string   "name",                  limit: 255
-    t.string   "tenant",                limit: 255
-    t.string   "oauth_provider",        limit: 255
-    t.string   "oauth_uid",             limit: 255
-    t.string   "oauth_name",            limit: 255
-    t.string   "oauth_token",           limit: 255
-    t.string   "refresh_token",         limit: 255
-    t.string   "instance_url",          limit: 255
-    t.string   "synchronized_entities", limit: 255
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
-    t.boolean  "sync_enabled",                      default: false
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "name"
+    t.string   "tenant"
+    t.string   "oauth_provider"
+    t.string   "oauth_uid"
+    t.string   "oauth_name"
+    t.string   "oauth_token"
+    t.string   "refresh_token"
+    t.string   "instance_url"
+    t.string   "synchronized_entities"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.boolean  "sync_enabled",          default: false
   end
 
   add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"
 
   create_table "synchronizations", force: :cascade do |t|
     t.integer  "organization_id"
-    t.string   "status",          limit: 255
+    t.string   "status"
     t.text     "message"
-    t.boolean  "partial",                     default: false
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.boolean  "partial",         default: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   add_index "synchronizations", ["organization_id"], name: "synchronization_orga_id_index"
@@ -74,16 +74,16 @@ ActiveRecord::Schema.define(version: 20160304150162) do
   add_index "user_organization_rels", ["user_id"], name: "rels_user_index"
 
   create_table "users", force: :cascade do |t|
-    t.string   "provider",   limit: 255
-    t.string   "uid",        limit: 255
-    t.string   "first_name", limit: 255
-    t.string   "last_name",  limit: 255
-    t.string   "email",      limit: 255
-    t.string   "locale",     limit: 255
-    t.string   "timezone",   limit: 255
-    t.string   "tenant",     limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "locale"
+    t.string   "timezone"
+    t.string   "tenant"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_index "users", ["uid", "tenant"], name: "user_uid_index"
