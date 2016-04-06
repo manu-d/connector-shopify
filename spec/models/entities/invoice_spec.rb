@@ -15,7 +15,7 @@ describe Entities::Invoice do
   describe 'instance methods' do
     let(:organization) { create(:organization) }
     let!(:idmap_sales_order) { create(:idmap, organization: organization, connec_id: 'sales_order_connec_id', connec_entity: 'sales_order', external_id: 'sales_order_external_id', external_entity: 'order') }
-    let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
+    let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'variant') }
     let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
     subject { Entities::Invoice.new }
@@ -36,7 +36,7 @@ describe Entities::Invoice do
                     price: 55,
                     quantity: '48',
                     title: 'description',
-                    product_id: 'item_external_id'
+                    variant_id: 'item_external_id'
                 }
             ]
         }

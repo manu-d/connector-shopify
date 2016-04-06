@@ -28,7 +28,7 @@ class ShopifyClient
       with_shopify_session do
         element = get_shopify_entity_constant(external_entity_name).create mapped_connec_entity
         raise "could not update Shopify entity: #{element.errors.messages}" unless element.errors.messages.empty?
-        element
+        convert_to_hash element
       end
     rescue ActiveResource::BadRequest => e
       raise 'could not update Shopify entity ' + e.message + ' , ' + e.response.body

@@ -18,7 +18,7 @@ describe Entities::SalesOrder do
 
     describe 'connec_model_to_external_model' do
       let(:organization) { create(:organization) }
-      let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'product') }
+      let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'variant') }
       let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
       let(:connec_hash) {
@@ -86,7 +86,7 @@ describe Entities::SalesOrder do
                     price: 55,
                     quantity: '48',
                     title: 'description',
-                    product_id: 'item_external_id'
+                    variant_id: 'item_external_id'
                 }
             ]
         }
