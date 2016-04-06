@@ -53,10 +53,10 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
 
   def map_to_connec(entity, organization)
     entity['line_items'].each do |item|
-      id = item['product_id']
+      id = item['variant_id']
       if id
         idmap = Entities::Item.find_idmap({external_id: id, organization_id: organization.id})
-        item['product_id'] = idmap ? idmap.connec_id : ''
+        item['variant_id'] = idmap ? idmap.connec_id : ''
       end
     end
     super
@@ -79,7 +79,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     map from('/unit_price/net_amount'), to('/price')
     map from('/quantity'), to('/quantity')
     map from('/description'), to('/title')
-    map from('/item_id'), to('/product_id')
+    map from('/item_id'), to('/variant_id')
 
   end
 
