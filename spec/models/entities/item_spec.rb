@@ -11,6 +11,19 @@ describe Entities::Item do
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the name'})).to eql('the name') }
   end
 
+  describe 'get_external_entities' do
+    let(:client) { Object.new }
+    before { allow(client).to receive(:find).and_return(entities) }
+
+    context 'when no entities' do
+      let(:entities) { [] }
+
+      it 'returns an empty array' do
+        expect(subject.get_external_entities(client, nil, nil)).to eq([])
+      end
+    end
+  end
+
   describe 'instance methods' do
     subject { Entities::Item.new }
 
