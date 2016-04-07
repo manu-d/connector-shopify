@@ -111,9 +111,12 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     end
 
     after_denormalize do |input, output|
-      output[:name] = input['product_title']
-      output[:name] += ' ' +  input['title'] if input['title']  && input['title'] != 'Default Title'
-      output[:product_name] = input['product_title']
+      output[:product_name] = input['product_title'] || ''
+      name_join = [output[:product_name]]
+      if input['title'] && input['title'] != 'Default Title'
+        name_join << input['title']
+      end
+      output[:name] = name_join.reject(&:blank?).join(' ')
       output[:is_inventoried] = input['inventory_management'] == 'shopify'
       output
     end
