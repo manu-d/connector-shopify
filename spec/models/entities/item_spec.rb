@@ -28,64 +28,85 @@ describe Entities::Item do
     subject { Entities::Item.new }
 
     describe 'mapping to connec' do
-      let(:external_hash) {
-        [
-            {
-                title: 'red',
-                product_title: 'product name',
-                body_html: 'product description',
-                sku: 'code',
-                price: 450,
-                inventory_quantity: 12,
-                weight: 8,
-                weight_unit: 'lb',
-                inventory_management: 'shopify'
-            },
-            {
-                title: 'blue',
-                product_title: 'product name 2',
-                body_html: 'product description 2',
-                sku: 'code2',
-                price: 555,
-                inventory_quantity: 20,
-                weight: 1,
-                weight_unit: 'kg',
-                inventory_management: nil
-            }
-        ]
-      }
-      let(:connec_hash) {
-        [
-            {
-                name: 'product name red',
-                product_name: 'product name',
-                description: 'product description',
-                code: 'code',
-                sale_price: {
-                    net_amount: 450
-                },
-                quantity_available: 12,
-                weight: 8,
-                weight_unit: 'lb',
-                is_inventoried: true
-            },
-            {
-                name: 'product name 2 blue',
-                product_name: 'product name 2',
-                description: 'product description 2',
-                code: 'code2',
-                sale_price: {
-                    net_amount: 555
-                },
-                quantity_available: 20,
-                weight: 1,
-                weight_unit: 'kg',
-                is_inventoried: false
-            }
-        ]
-      }
 
-      it { expect(external_hash.map { |hash| subject.map_to_connec(hash.deep_stringify_keys, nil) }).to eql(connec_hash) }
+      context 'nominal mapping' do
+
+        let(:external_hash) {
+          [
+              {
+                  title: 'red',
+                  product_title: 'product name',
+                  body_html: 'product description',
+                  sku: 'code',
+                  price: 450,
+                  inventory_quantity: 12,
+                  weight: 8,
+                  weight_unit: 'lb',
+                  inventory_management: 'shopify'
+              },
+              {
+                  title: 'blue',
+                  product_title: 'product name 2',
+                  body_html: 'product description 2',
+                  sku: 'code2',
+                  price: 555,
+                  inventory_quantity: 20,
+                  weight: 1,
+                  weight_unit: 'kg',
+                  inventory_management: nil
+              }
+          ]
+        }
+        let(:connec_hash) {
+          [
+              {
+                  name: 'product name red',
+                  product_name: 'product name',
+                  description: 'product description',
+                  code: 'code',
+                  sale_price: {
+                      net_amount: 450
+                  },
+                  quantity_available: 12,
+                  weight: 8,
+                  weight_unit: 'lb',
+                  is_inventoried: true
+              },
+              {
+                  name: 'product name 2 blue',
+                  product_name: 'product name 2',
+                  description: 'product description 2',
+                  code: 'code2',
+                  sale_price: {
+                      net_amount: 555
+                  },
+                  quantity_available: 20,
+                  weight: 1,
+                  weight_unit: 'kg',
+                  is_inventoried: false
+              }
+          ]
+        }
+
+        it { expect(external_hash.map { |hash| subject.map_to_connec(hash.deep_stringify_keys, nil) }).to eql(connec_hash) }
+      end
+
+      context 'there is not product title' do
+        let(:external_hash) {
+          {
+              title: 'red'
+          }
+        }
+        let(:connec_hash) {
+          {
+              name: 'red',
+              product_name: '',
+              is_inventoried: false
+          }
+        }
+
+        it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
+      end
     end
 
     describe 'mapping to external' do
