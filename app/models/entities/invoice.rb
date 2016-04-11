@@ -24,8 +24,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   def self.id_from_external_entity_hash(entity)
     entity['order_id']
   end
-
-
+  
   def self.can_write_external?
     false
   end
