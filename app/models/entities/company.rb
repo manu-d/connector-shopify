@@ -24,12 +24,8 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
     CompanyMapper
   end
 
-  # Shopify Shop is a Read-Only Resource
-  def update_external_entity(client, mapped_connec_entity, external_id, external_entity_name, organization)
-    # do nothing
-  end
-  def create_external_entity(client, mapped_connec_entity, external_entity_name, organization)
-    # do nothing
+  def self.can_write_external?
+    false
   end
 
   class CompanyMapper
