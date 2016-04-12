@@ -26,9 +26,9 @@ Maestrano['default'].configure do |config|
   elsif Rails.env.development?
     config.app.host = 'http://localhost:3001'
   elsif Rails.env.uat?
-    config.app.host = 'http://connector-shopify-uat.herokuapp.com'
+    config.app.host = 'https://connector-shopify-uat.herokuapp.com'
   else
-    config.app.host = 'http://connector-shopify.herokuapp.com'
+    config.app.host = 'https://connector-shopify.herokuapp.com'
   end
 
   # ==> App ID & API key
@@ -188,9 +188,9 @@ Maestrano['maestrano-uat'].configure do |config|
   if Rails.env.development?
     config.app.host = 'http://localhost:3001'
   elsif Rails.env.uat?
-    config.app.host = 'http://connector-shopify-uat.herokuapp.com'
+    config.app.host = 'https://connector-shopify-uat.herokuapp.com'
   else
-    config.app.host = 'http://connector-shopify.herokuapp.com'
+    config.app.host = 'https://connector-shopify.herokuapp.com'
   end
 
   config.api.host = 'https://uat.maestrano.io'
