@@ -233,3 +233,105 @@ Maestrano['maestrano-uat'].configure do |config|
       work_locations: false
   }
 end
+
+# NAB UAT
+Maestrano['nab-uat'].configure do |config|
+  config.environment = 'uat'
+  if Rails.env.development?
+    config.app.host = 'http://localhost:3001'
+  else
+    config.app.host = 'https://connector-shopify-uat.herokuapp.com'
+  end
+
+  config.api.host = 'https://api-hub-uat.bio.cd.non.whu.nab.com.au'
+  config.api.id = ENV['nab_uat_connec_api_id']
+  config.api.key = ENV['nab_uat_connec_api_key']
+
+  config.sso.init_path = '/maestrano/auth/saml/init/nab-uat?settings=true'
+  config.sso.consume_path = '/maestrano/auth/saml/consume/nab-uat'
+  config.sso.x509_certificate = "-----BEGIN CERTIFICATE-----\nMIIDezCCAuSgAwIBAgIJAMzy+weDPp7qMA0GCSqGSIb3DQEBBQUAMIGGMQswCQYD\nVQQGEwJBVTEMMAoGA1UECBMDTlNXMQ8wDQYDVQQHEwZTeWRuZXkxGjAYBgNVBAoT\nEU1hZXN0cmFubyBQdHkgTHRkMRYwFAYDVQQDEw1tYWVzdHJhbm8uY29tMSQwIgYJ\nKoZIhvcNAQkBFhVzdXBwb3J0QG1hZXN0cmFuby5jb20wHhcNMTQwMTA0MDUyMzE0\nWhcNMzMxMjMwMDUyMzE0WjCBhjELMAkGA1UEBhMCQVUxDDAKBgNVBAgTA05TVzEP\nMA0GA1UEBxMGU3lkbmV5MRowGAYDVQQKExFNYWVzdHJhbm8gUHR5IEx0ZDEWMBQG\nA1UEAxMNbWFlc3RyYW5vLmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBtYWVz\ndHJhbm8uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+2uyQeAOc/iro\nhCyT33RkkWfTGeJ8E/mu9F5ORWoCZ/h2J+QDuzuc69Rf1LoO4wZVQ8LBeWOqMBYz\notYFUIPlPfIBXDNL/stHkpg28WLDpoJM+46WpTAgp89YKgwdAoYODHiUOcO/uXOO\n2i9Ekoa+kxbvBzDJf7uuR/io6GERXwIDAQABo4HuMIHrMB0GA1UdDgQWBBTGRDBT\nie5+fHkB0+SZ5g3WY/D2RTCBuwYDVR0jBIGzMIGwgBTGRDBTie5+fHkB0+SZ5g3W\nY/D2RaGBjKSBiTCBhjELMAkGA1UEBhMCQVUxDDAKBgNVBAgTA05TVzEPMA0GA1UE\nBxMGU3lkbmV5MRowGAYDVQQKExFNYWVzdHJhbm8gUHR5IEx0ZDEWMBQGA1UEAxMN\nbWFlc3RyYW5vLmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBtYWVzdHJhbm8u\nY29tggkAzPL7B4M+nuowDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQAw\nRxg3rZrML//xbsS3FFXguzXiiNQAvA4KrMWhGh3jVrtzAlN1/okFNy6zuN8gzdKD\nYw2n0c/u3cSpUutIVZOkwQuPCMC1hoP7Ilat6icVewNcHayLBxKgRxpBhr5Sc4av\n3HOW5Bi/eyC7IjeBTbTnpziApEC7uUsBou2rlKmTGw==\n-----END CERTIFICATE-----"
+  config.sso.x509_fingerprint = '8a:1e:2e:76:c4:67:80:68:6c:81:18:f7:d3:29:5d:77:f8:79:54:2f'
+
+  config.connec.host = 'https://api-connec-uat.bio.cd.non.whu.nab.com.au'
+  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/nab-uat'
+  config.webhook.connec.subscriptions = {
+      accounts: false,
+      company: true,
+      employees: false,
+      events: false,
+      event_orders: false,
+      invoices: true,
+      items: true,
+      journals: false,
+      opportunities: false,
+      organizations: false,
+      payments: false,
+      pay_items: false,
+      pay_schedules: false,
+      pay_stubs: false,
+      pay_runs: false,
+      people: true,
+      projects: false,
+      purchase_orders: false,
+      quotes: false,
+      sales_orders: true,
+      tax_codes: false,
+      tax_rates: false,
+      time_activities: false,
+      time_sheets: false,
+      venues: false,
+      warehouses: false,
+      work_locations: false
+  }
+end
+
+# NAB Production
+Maestrano['nab-production'].configure do |config|
+  config.environment = 'production'
+  if Rails.env.development?
+    config.app.host = 'http://localhost:3001'
+  else
+    config.app.host = 'https://connector-shopify.herokuapp.com'
+  end
+
+  config.api.host = 'https://api-hub.bio.nab.com.au'
+  config.api.id = ENV['nab_connec_api_id']
+  config.api.key = ENV['nab_connec_api_key']
+
+  config.sso.init_path = '/maestrano/auth/saml/init/nab-production?settings=true'
+  config.sso.consume_path = '/maestrano/auth/saml/consume/nab-production'
+  config.sso.x509_certificate = "-----BEGIN CERTIFICATE-----\nMIIDezCCAuSgAwIBAgIJAPFpcH2rW0pyMA0GCSqGSIb3DQEBBQUAMIGGMQswCQYD\nVQQGEwJBVTEMMAoGA1UECBMDTlNXMQ8wDQYDVQQHEwZTeWRuZXkxGjAYBgNVBAoT\nEU1hZXN0cmFubyBQdHkgTHRkMRYwFAYDVQQDEw1tYWVzdHJhbm8uY29tMSQwIgYJ\nKoZIhvcNAQkBFhVzdXBwb3J0QG1hZXN0cmFuby5jb20wHhcNMTQwMTA0MDUyNDEw\nWhcNMzMxMjMwMDUyNDEwWjCBhjELMAkGA1UEBhMCQVUxDDAKBgNVBAgTA05TVzEP\nMA0GA1UEBxMGU3lkbmV5MRowGAYDVQQKExFNYWVzdHJhbm8gUHR5IEx0ZDEWMBQG\nA1UEAxMNbWFlc3RyYW5vLmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBtYWVz\ndHJhbm8uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD3feNNn2xfEz5/\nQvkBIu2keh9NNhobpre8U4r1qC7h7OeInTldmxGL4cLHw4ZAqKbJVrlFWqNevM5V\nZBkDe4mjuVkK6rYK1ZK7eVk59BicRksVKRmdhXbANk/C5sESUsQv1wLZyrF5Iq8m\na9Oy4oYrIsEF2uHzCouTKM5n+O4DkwIDAQABo4HuMIHrMB0GA1UdDgQWBBSd/X0L\n/Pq+ZkHvItMtLnxMCAMdhjCBuwYDVR0jBIGzMIGwgBSd/X0L/Pq+ZkHvItMtLnxM\nCAMdhqGBjKSBiTCBhjELMAkGA1UEBhMCQVUxDDAKBgNVBAgTA05TVzEPMA0GA1UE\nBxMGU3lkbmV5MRowGAYDVQQKExFNYWVzdHJhbm8gUHR5IEx0ZDEWMBQGA1UEAxMN\nbWFlc3RyYW5vLmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBtYWVzdHJhbm8u\nY29tggkA8WlwfatbSnIwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQDE\nhe/18oRh8EqIhOl0bPk6BG49AkjhZZezrRJkCFp4dZxaBjwZTddwo8O5KHwkFGdy\nyLiPV326dtvXoKa9RFJvoJiSTQLEn5mO1NzWYnBMLtrDWojOe6Ltvn3x0HVo/iHh\nJShjAn6ZYX43Tjl1YXDd1H9O+7/VgEWAQQ32v8p5lA==\n-----END CERTIFICATE-----",
+  config.sso.x509_fingerprint = '2f:57:71:e4:40:19:57:37:a6:2c:f0:c5:82:52:2f:2e:41:b7:9d:7e'
+
+  config.connec.host = 'https://api-connec.bio.nab.com.au'
+  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/nab-production'
+  config.webhook.connec.subscriptions = {
+      accounts: false,
+      company: true,
+      employees: false,
+      events: false,
+      event_orders: false,
+      invoices: true,
+      items: true,
+      journals: false,
+      opportunities: false,
+      organizations: false,
+      payments: false,
+      pay_items: false,
+      pay_schedules: false,
+      pay_stubs: false,
+      pay_runs: false,
+      people: true,
+      projects: false,
+      purchase_orders: false,
+      quotes: false,
+      sales_orders: true,
+      tax_codes: false,
+      tax_rates: false,
+      time_activities: false,
+      time_sheets: false,
+      venues: false,
+      warehouses: false,
+      work_locations: false
+  }
+end
