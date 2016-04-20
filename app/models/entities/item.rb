@@ -89,7 +89,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     # map from (connect_field) to (shopify_field)
     map from('description'), to('body_html')
     map from('product_id'), to('product_id')
-    map from('code'), to('sku')
+    map from('reference'), to('sku')
     map from('sale_price/net_amount'), to('price')
     map from('quantity_available'), to('inventory_quantity', &:to_i)
 
@@ -100,6 +100,8 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     after_normalize do |input, output|
       output[:product_title] = input['name']
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
+      output[:sku] =  input['reference'] || input['code']
+
       output
     end
 
@@ -112,6 +114,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       # input['product_title'] or  input['title'] can be blank, this is to not have empty space
       output[:name] = name_join.reject(&:blank?).join(' ')
       output[:is_inventoried] = input['inventory_management'] == 'shopify'
+      output[:reference] = input['sku'] if input['sku']
       output
     end
 
