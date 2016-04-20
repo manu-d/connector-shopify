@@ -20,7 +20,7 @@ class ShopifyClient
 
   def create(external_entity_name, mapped_connec_entity)
     element = update external_entity_name, mapped_connec_entity
-    element.id
+    element['id']
   end
 
   def update(external_entity_name, mapped_connec_entity)
