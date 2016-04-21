@@ -89,7 +89,6 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     # map from (connect_field) to (shopify_field)
     map from('description'), to('body_html')
     map from('product_id'), to('product_id')
-    map from('reference'), to('sku')
     map from('sale_price/net_amount'), to('price')
     map from('quantity_available'), to('inventory_quantity', &:to_i)
 
