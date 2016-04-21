@@ -32,10 +32,10 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
 
   def get_external_entities(client, last_synchronization, organization, opts={})
     entities = client.find('Product')
-    entities.map { |product|
+    variants = entities.map { |product|
       self.class.get_product_variants(product)
-    }.flatten!
-    entities
+    }.flatten
+    variants
   end
 
 
@@ -52,13 +52,13 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
 
   def push_entity_to_external(client, mapped_connec_entity_with_idmap, external_entity_name, organization)
     idmap = mapped_connec_entity_with_idmap[:idmap]
-    connec_entity = mapped_connec_entity_with_idmap[:entity]
+    variant = mapped_connec_entity_with_idmap[:entity]
 
     begin
-      title = connec_entity[:product_title]
+      title = variant[:product_title]
       product = {
-          body_html: connec_entity[:body_html],
-          variants: [connec_entity]
+          body_html: variant[:body_html],
+          variants: [variant]
       }
       if idmap.external_id.blank?
         product[:title] =  title
@@ -67,7 +67,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
         product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: created_entity['id'], connec_id: idmap.connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
         product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: title)
       else
-        connec_entity[:id] = idmap.external_id
+        variant[:id] = idmap.external_id
         product_id_map = Maestrano::Connector::Rails::IdMap.find_by(connec_id: idmap.connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
         product[:id] = product_id_map.external_id
         client.update('Product', product)
