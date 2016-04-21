@@ -63,7 +63,7 @@ describe Entities::Item do
                   name: 'product name red',
                   product_name: 'product name',
                   description: 'product description',
-                  code: 'code',
+                  reference: 'code',
                   sale_price: {
                       net_amount: 450
                   },
@@ -76,7 +76,7 @@ describe Entities::Item do
                   name: 'product name 2 blue',
                   product_name: 'product name 2',
                   description: 'product description 2',
-                  code: 'code2',
+                  reference: 'code2',
                   sale_price: {
                       net_amount: 555
                   },
@@ -128,7 +128,7 @@ describe Entities::Item do
             {
                 name: 'product name 2',
                 description: 'product description 2',
-                code: 'code2',
+                reference: 'code2',
                 sale_price: {
                     net_amount: 555
                 },

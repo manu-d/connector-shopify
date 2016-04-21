@@ -39,23 +39,16 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
   end
 
 
-  def create_connec_entity(connec_client, external_entity, connec_entity_name, organization)
-    connec_entity = super
-    create_or_update_product_id_map external_entity, connec_entity, organization
-    connec_entity
-  end
+  def push_entities_to_connec(connec_client, mapped_external_entities_with_idmaps, organization)
+    super
+    mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
+      entity = mapped_external_entity_with_idmap[:entity]
+      connec_id = mapped_external_entity_with_idmap[:idmap].connec_id
+      product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: entity[:product_id], connec_id: connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
+      product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: entity[:product_name])
+    end
 
-  def update_connec_entity(connec_client, external_entity, connec_id, connec_entity_name, organization)
-    connec_entity = super
-    create_or_update_product_id_map external_entity, connec_entity, organization
-    connec_entity
   end
-
-  def create_or_update_product_id_map(external_entity, connec_entity, organization)
-    product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: external_entity[:product_id], connec_id: connec_entity['id'], connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: organization.id)
-    product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: external_entity[:product_name])
-  end
-
 
   def push_entity_to_external(client, mapped_connec_entity_with_idmap, external_entity_name, organization)
     idmap = mapped_connec_entity_with_idmap[:idmap]
@@ -96,7 +89,6 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     # map from (connect_field) to (shopify_field)
     map from('description'), to('body_html')
     map from('product_id'), to('product_id')
-    map from('code'), to('sku')
     map from('sale_price/net_amount'), to('price')
     map from('quantity_available'), to('inventory_quantity', &:to_i)
 
@@ -107,6 +99,8 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     after_normalize do |input, output|
       output[:product_title] = input['name']
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
+      output[:sku] =  input['reference'] || input['code']
+
       output
     end
 
@@ -119,6 +113,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       # input['product_title'] or  input['title'] can be blank, this is to not have empty space
       output[:name] = name_join.reject(&:blank?).join(' ')
       output[:is_inventoried] = input['inventory_management'] == 'shopify'
+      output[:reference] = input['sku'] if input['sku']
       output
     end
 
