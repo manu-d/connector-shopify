@@ -34,10 +34,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   end
 
   def self.references
-    [
-        {reference_class: Entities::SalesOrder, connec_field: 'sales_order_id', external_field: 'order_id'},
-        {reference_class: Entities::Person, connec_field: 'person_id', external_field: 'customer/id'}
-    ]
+    %w(sales_order_id person_id lines/item_id)
   end
 
   def self.get_order_transaction(client, order)
@@ -50,21 +47,10 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     transaction
   end
 
-  def map_to_connec(entity, organization)
-    entity['line_items'].each do |item|
-      id = item['variant_id']
-      if id
-        idmap = Entities::Item.find_idmap({external_id: id, organization_id: organization.id})
-        item['variant_id'] = idmap ? idmap.connec_id : ''
-      end
-    end
-    super
-  end
-
-  def get_external_entities(client, last_synchronization, organization, opts={})
-    orders = client.find('Order')
+  def get_external_entities(last_synchronization)
+    orders = @external_client.find('Order')
     orders.map { |order|
-      self.class.get_order_transaction client, order
+      self.class.get_order_transaction @external_client, order
     }.compact
   end
 
@@ -93,6 +79,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
         'refund' => 'AUTHORISED'
     }
     map from('/sales_order_id'), to('/order_id')
+    map from('/person_id'), to('/customer/id')
     map from('/transaction_date'), to('/created_at')
     map from('/lines'), to('/line_items'), using: LineMapper
 
