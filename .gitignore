@@ -21,3 +21,4 @@
 .project
 
 .idea/*
+/config/settings/*.local.yml
