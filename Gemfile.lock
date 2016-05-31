@@ -252,7 +252,7 @@ GEM
     rufus-scheduler (3.2.1)
     sass (3.4.22)
     sexp_processor (4.7.0)
-    shopify_api (4.2.1)
+    shopify_api (4.2.2)
       activeresource
       rack
     shoulda-matchers (3.1.1)
@@ -329,7 +329,7 @@ DEPENDENCIES
   rails_12factor
   redis-rails
   rspec-rails
-  shopify_api (~> 4.1)
+  shopify_api
   shoulda-matchers
   sidekiq
   sidekiq-cron

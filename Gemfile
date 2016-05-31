@@ -17,7 +17,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'maestrano-connector-rails'
 gem 'config'
 gem 'omniauth-shopify-oauth2', '~> 1.1'
-gem 'shopify_api', '~> 4.1'
+gem 'shopify_api'
 
 gem 'haml-rails'
 gem 'bootstrap-sass'
