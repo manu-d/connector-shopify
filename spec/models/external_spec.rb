@@ -5,10 +5,6 @@ describe Maestrano::Connector::Rails::External do
   describe 'class methods' do
     subject { Maestrano::Connector::Rails::External }
 
-    describe 'self.entities_list' do
-      it { expect(subject.entities_list).to be_a(Array) }
-    end
-
     describe 'creates a shopify client' do
       it { expect(subject.external_name).to eql('Shopify') }
     end

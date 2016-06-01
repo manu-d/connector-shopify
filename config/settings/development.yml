@@ -1,6 +1,0 @@
-environment: 'local'
-app_host: 'http://localhost:3001/'
-
-default:
-  api_host: 'https://maestrano.com'
-  connec_host: 'https://api-connec.maestrano.com'

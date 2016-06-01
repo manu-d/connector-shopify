@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160504144149) do
+ActiveRecord::Schema.define(version: 20160304150162) do
 
   create_table "id_maps", force: :cascade do |t|
     t.string   "connec_id"
@@ -21,13 +21,12 @@ ActiveRecord::Schema.define(version: 20160504144149) do
     t.integer  "organization_id"
     t.datetime "last_push_to_connec"
     t.datetime "last_push_to_external"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.boolean  "to_connec",             default: true
     t.boolean  "to_external",           default: true
     t.string   "name"
     t.string   "message"
-    t.boolean  "external_inactive",     default: false
   end
 
   add_index "id_maps", ["connec_id", "connec_entity", "organization_id"], name: "idmap_connec_index"
