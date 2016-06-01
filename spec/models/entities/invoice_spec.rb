@@ -13,11 +13,12 @@ describe Entities::Invoice do
   end
 
   describe 'instance methods' do
-    let!(:organization) { create(:organization) }
-    let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'variant') }
+    let(:organization) { create(:organization) }
+    let!(:idmap_sales_order) { create(:idmap, organization: organization, connec_id: 'sales_order_connec_id', connec_entity: 'sales_order', external_id: 'sales_order_external_id', external_entity: 'order') }
+    let!(:idmap_item) { create(:idmap, organization: organization, connec_id: 'item_connec_id_id', connec_entity: 'item', external_id: 'item_external_id', external_entity: 'variant') }
+    let!(:idmap_person) { create(:idmap, organization: organization, connec_id: 'person_connec_id_id', connec_entity: 'person', external_id: 'person_external_id', external_entity: 'customer') }
 
-    let!(:client) { ShopifyClient.new(1, 2) }
-    subject { Entities::Invoice.new(organization, nil, client, nil) }
+    subject { Entities::Invoice.new }
 
 
     describe 'map_to_connec' do
@@ -25,7 +26,7 @@ describe Entities::Invoice do
 
       let(:external_hash) {
         {
-            order_id: 'order_id',
+            order_id: 'sales_order_external_id',
             created_at: Time.new(1985, 9, 17).iso8601,
             financial_status: 'pending',
             kind: 'sale',
@@ -35,17 +36,16 @@ describe Entities::Invoice do
                     price: 55,
                     quantity: '48',
                     title: 'description',
-                    variant_id: 'item_id'
+                    variant_id: 'item_external_id'
                 }
             ]
         }
       }
       let(:connec_hash) {
         {
-            id: [{id: 'order_id', provider: nil, realm: nil}],
-            sales_order_id: [{id: 'order_id', provider: nil, realm: nil}],
+            sales_order_id: 'sales_order_connec_id',
             transaction_date: Time.new(1985, 9, 17).iso8601,
-            person_id: [{id: 'person_external_id', :provider => nil, :realm => nil}],
+            person_id: 'person_connec_id_id',
             type: 'CUSTOMER',
             status: 'PAID',
             lines: [
@@ -55,14 +55,12 @@ describe Entities::Invoice do
                     },
                     quantity: '48',
                     description: 'description',
-                    item_id: [{id: 'item_id', provider: nil, realm: nil}]
+                    item_id: 'item_connec_id_id'
                 }
             ]
         }
       }
-      it {
-        expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.with_indifferent_access)
-      }
+      it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, organization)).to eql(connec_hash) }
 
     end
     describe 'get_external_entities' do
@@ -89,12 +87,14 @@ describe Entities::Invoice do
       }
 
 
+      let(:client) { ShopifyClient.new(1, 2) }
       it 'returns the entities' do
         allow(client).to receive(:find).with('Order').and_return(orders)
         allow(client).to receive(:find).with('Transaction', {:order_id => 'order_id_1'}).and_return(transactions['order_id_1'])
         allow(client).to receive(:find).with('Transaction', {:order_id => 'order_id_2'}).and_return(transactions['order_id_2'])
-        expect(subject.get_external_entities(nil)).to eql(expected_transactions)
+        expect(subject.get_external_entities(client, nil, nil)).to eql(expected_transactions)
       end
+
     end
 
   end

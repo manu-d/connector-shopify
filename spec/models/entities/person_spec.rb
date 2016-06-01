@@ -12,8 +12,7 @@ describe Entities::Person do
   end
 
   describe 'instance methods' do
-    let!(:organization) { create(:organization) }
-    subject { Entities::Person.new(organization,nil,nil) }
+    subject { Entities::Person.new }
 
     describe 'connec_model_to_external_model' do
 
@@ -48,7 +47,6 @@ describe Entities::Person do
       }
       let(:external_hash) {
         {
-            id: 'id',
             first_name: 'Robert',
             last_name: 'Patinson',
             addresses: [{
@@ -64,8 +62,8 @@ describe Entities::Person do
         }
       }
 
-      it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider:nil, realm: nil}]}).with_indifferent_access) }
-      it { expect(subject.map_to_external(connec_hash.with_indifferent_access)).to eql(external_hash.with_indifferent_access.except(:id)) }
+      it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
+      it { expect(subject.map_to_external(connec_hash.deep_stringify_keys, nil)).to eql(external_hash) }
     end
 
 

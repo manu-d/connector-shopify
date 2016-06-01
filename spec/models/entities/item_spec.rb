@@ -14,28 +14,26 @@ describe Entities::Item do
   describe 'get_external_entities' do
     let(:client) { Object.new }
     before { allow(client).to receive(:find).and_return(entities) }
-    subject { Entities::Item.new(nil, nil, client, nil) }
+
     context 'when no entities' do
       let(:entities) { [] }
 
       it 'returns an empty array' do
-        expect(subject.get_external_entities(nil)).to eq([])
+        expect(subject.get_external_entities(client, nil, nil)).to eq([])
       end
     end
   end
 
   describe 'instance methods' do
-    let!(:organization) { create(:organization) }
-    subject { Entities::Item.new(organization, nil, nil, nil) }
+    subject { Entities::Item.new }
 
     describe 'mapping to connec' do
 
       context 'nominal mapping' do
 
-        let(:external_hashes) {
+        let(:external_hash) {
           [
               {
-                  id: 'id-red',
                   title: 'red',
                   product_title: 'product name',
                   body_html: 'product description',
@@ -47,7 +45,6 @@ describe Entities::Item do
                   inventory_management: 'shopify'
               },
               {
-                  id: 'id-blue',
                   title: 'blue',
                   product_title: 'product name 2',
                   body_html: 'product description 2',
@@ -60,10 +57,9 @@ describe Entities::Item do
               }
           ]
         }
-        let(:connec_hashes) {
+        let(:connec_hash) {
           [
               {
-                  id: [{id: 'id-red', provider: nil, realm: nil}],
                   name: 'product name red',
                   product_name: 'product name',
                   description: 'product description',
@@ -77,7 +73,6 @@ describe Entities::Item do
                   is_inventoried: true
               },
               {
-                  id: [{id: 'id-blue', provider: nil, realm: nil}],
                   name: 'product name 2 blue',
                   product_name: 'product name 2',
                   description: 'product description 2',
@@ -92,10 +87,8 @@ describe Entities::Item do
               }
           ]
         }
-        it {
-          expect(subject.map_to_connec(external_hashes[0].with_indifferent_access)).to eql(connec_hashes[0].with_indifferent_access)
-          expect(subject.map_to_connec(external_hashes[1].with_indifferent_access)).to eql(connec_hashes[1].with_indifferent_access)
-        }
+
+        it { expect(external_hash.map { |hash| subject.map_to_connec(hash.deep_stringify_keys, nil) }).to eql(connec_hash) }
       end
 
       context 'there is not product title' do
@@ -106,20 +99,19 @@ describe Entities::Item do
         }
         let(:connec_hash) {
           {
-              id: nil,
               name: 'red',
               product_name: '',
               is_inventoried: false
           }
         }
 
-        it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+        it { expect(subject.map_to_connec(external_hash.deep_stringify_keys, nil)).to eql(connec_hash) }
       end
     end
 
     describe 'mapping to external' do
 
-      let(:connec_hashes) {
+      let(:connec_hash) {
         [
             {
                 name: 'product name',
@@ -147,7 +139,7 @@ describe Entities::Item do
             }
         ]
       }
-      let(:external_hashes) {
+      let(:external_hash) {
         [
             {
                 product_title: 'product name',
@@ -171,11 +163,7 @@ describe Entities::Item do
             }
         ]
       }
-      it {
-        expect(subject.map_to_external(connec_hashes[0].with_indifferent_access)).to eql(external_hashes[0].with_indifferent_access)
-        expect(subject.map_to_external(connec_hashes[1].with_indifferent_access)).to eql(external_hashes[1].with_indifferent_access)
-      }
-
+      it { expect(connec_hash.map { |hash| subject.map_to_external(hash.deep_stringify_keys, nil) }).to eql(external_hash) }
     end
   end
 end

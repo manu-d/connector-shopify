@@ -26,7 +26,7 @@ class HomeController < ApplicationController
 
   def synchronize
     if is_admin
-      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, (params['opts'] || {}).merge(forced: true))
+      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, params['opts'] || {})
       flash[:info] = 'Synchronization requested'
     end
 
