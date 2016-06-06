@@ -48,4 +48,7 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
     map from('/currency'), to('/currency')
 
   end
+  def self.id_from_external_entity_hash(entity)
+    'SHOP_ID'
+  end
 end
