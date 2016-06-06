@@ -1,0 +1,2 @@
+environment: 'uat'
+app_host: 'https://connector-shopify-uat.herokuapp.com/'

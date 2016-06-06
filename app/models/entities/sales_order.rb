@@ -21,7 +21,7 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
   end
 
   def self.references
-    [{reference_class: Entities::Person, connec_field: 'person_id', external_field: 'customer/id'}]
+    %w(person_id lines/item_id)
   end
 
   def self.can_write_external?
@@ -32,21 +32,8 @@ class Entities::SalesOrder < Maestrano::Connector::Rails::Entity
     false
   end
 
-  def map_to_connec(entity, organization)
-    entity['line_items'].each do |item|
-      id = item['variant_id']
-      if id
-        idmap = Entities::Item.find_idmap({organization_id: organization.id, external_id: id})
-        item['variant_id'] = idmap ? idmap.connec_id : ''
-      end
-    end
-    super
-  end
-
-
   class LineMapper
     extend HashMapper
-    map from('/id'), to('/id')
     map from('/unit_price/net_amount'), to('/price')
     map from('/quantity'), to('/quantity')
     map from('/description'), to('/title')
