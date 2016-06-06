@@ -28,7 +28,12 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     # map from (connect_field) to (shopify_field)
 
     before_denormalize do |input, output|
-      output[:opts] = {create_default_organization: true}
+      if input['company'].blank?
+        output[:opts] = {create_default_organization: true}
+      else
+        output[:opts] = {attach_to_organization: input['company']}
+      end
+
       input
     end
 
