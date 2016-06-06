@@ -68,7 +68,11 @@ describe Entities::Person do
       it { expect(subject.map_to_external(connec_hash.with_indifferent_access)).to eql(external_hash.with_indifferent_access.except(:id)) }
 
       context 'with company' do
-        it { expect(subject.map_to_connec(external_hash.merge(company: 'Pty Ltd').with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider:nil, realm: nil}], opts: {attach_to_organization: 'Pty Ltd'}}).with_indifferent_access) }
+        before {
+            external_hash[:addresses].first.merge!(company: 'Pty Ltd')
+        }
+
+        it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider:nil, realm: nil}], opts: {attach_to_organization: 'Pty Ltd'}}).with_indifferent_access) }
       end
     end
 
