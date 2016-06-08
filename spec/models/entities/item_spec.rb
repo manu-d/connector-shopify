@@ -11,22 +11,105 @@ describe Entities::Item do
     it { expect(subject.object_name_from_external_entity_hash({'title' => 'the name'})).to eql('the name') }
   end
 
-  describe 'get_external_entities' do
-    let(:client) { Object.new }
-    before { allow(client).to receive(:find).and_return(entities) }
-    subject { Entities::Item.new(nil, nil, client, nil) }
-    context 'when no entities' do
-      let(:entities) { [] }
+  describe 'instance methods' do
+    let(:external_client) { Object.new }
+    let!(:organization) { create(:organization) }
+    subject { Entities::Item.new(organization, nil, external_client, nil) }
 
-      it 'returns an empty array' do
-        expect(subject.get_external_entities(nil)).to eq([])
+    describe 'get_external_entities' do
+      before { allow(external_client).to receive(:find).and_return(entities) }
+
+      context 'when no entities' do
+        let(:entities) { [] }
+
+        it 'returns an empty array' do
+          expect(subject.get_external_entities(nil)).to eql([])
+        end
+      end
+
+      context 'when entities' do
+        let(:product) { {
+          'id' => 'id',
+          'title' => 'title',
+          'body_html' => 'body',
+          'updated_at' => product_updated_at,
+          'variants' => [variant1]}
+        }
+        let(:variant1) { {'price' => 123, 'updated_at' => variant_updated_at} }
+
+        let(:complete_variant) {
+          {
+            'price' => variant1['price'],
+            'product_id' => product['id'],
+            'product_title' => product['title'],
+            'body_html' => product['body_html'],
+            'updated_at' => complete_updated_at
+          }
+        }
+        let(:entities) { [product] }
+
+        context 'when product is more recent' do
+          let(:product_updated_at) { 1.day.ago }
+          let(:variant_updated_at) { 1.month.ago }
+          let(:complete_updated_at) { product_updated_at.to_time.iso8601 }
+
+          it 'extracts the products variants' do
+            expect(subject.get_external_entities(nil)).to eql([complete_variant])
+          end
+        end
+
+        context 'when variant is more recent' do
+          let(:product_updated_at) { 1.year.ago }
+          let(:variant_updated_at) { 1.month.ago }
+          let(:complete_updated_at) { variant_updated_at.to_time.iso8601 }
+
+          it 'extracts the products variants' do
+            expect(subject.get_external_entities(nil)).to eql([complete_variant])
+          end
+        end
+
       end
     end
-  end
 
-  describe 'instance methods' do
-    let!(:organization) { create(:organization) }
-    subject { Entities::Item.new(organization, nil, nil, nil) }
+    describe 'push_entities_to_connec' do
+      xit { 'TODO' }
+    end
+
+    describe 'push_entity_to_external' do
+      xit { 'Better specs here' }
+
+      context 'when no external_id in idmap' do
+        let!(:idmap) { create(:idmap, organization: organization, connec_entity: 'item', external_entity: 'variant', external_id: nil) }
+
+        it 'does a call to shopify and handle idmaps' do
+          expect(external_client).to receive(:update).and_return({'id' => 'id', 'variants' => [{'id' => 'variant_id'}]})
+          expect(subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')).to eql(idmap)
+        end
+
+        it 'does not store an error in the idmap' do
+          allow(external_client).to receive(:update).and_return({'id' => 'id', 'variants' => [{'id' => 'variant_id'}]})
+          subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')
+          expect(idmap.reload.message).to be nil
+        end
+      end
+
+      context 'when external_id in idmap' do
+        let(:external_id) { 'external_id' }
+        let!(:idmap) { create(:idmap, organization: organization, connec_entity: 'item', external_entity: 'variant', external_id: external_id) }
+        let!(:product_id_map) { create(:idmap, organization: organization, connec_entity: 'Item', external_entity: 'product', connec_id: idmap.connec_id) }
+
+        it 'does calls to shopify' do
+          expect(external_client).to receive(:update).twice
+          expect(subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')).to eql(nil)
+        end
+
+        it 'does not store an error in the idmap' do
+          allow(external_client).to receive(:update)
+          subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')
+          expect(idmap.reload.message).to be nil
+        end  
+      end
+    end
 
     describe 'mapping to connec' do
 

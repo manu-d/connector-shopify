@@ -12,4 +12,6 @@ describe ShopifyClient do
   it 'oauth_token getter is working' do
     expect(client.oauth_token).to be(oauth_token)
   end
+
+  xit { 'TO SPEC' }
 end
