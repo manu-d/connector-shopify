@@ -80,6 +80,7 @@ describe OauthController, :type => :controller do
           allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
         }
 
+        xit { 'TODO' }
       end
     end
   end
