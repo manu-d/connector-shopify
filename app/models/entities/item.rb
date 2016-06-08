@@ -61,7 +61,6 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
             variants: [variant],
             title: variant[:product_title]
         }
-        product[:title] =  title
         created_entity = @external_client.update('Product', product)
         idmap.update_attributes(external_id: created_entity['variants'][0]['id'], last_push_to_external: Time.now, message: nil)
         product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: created_entity['id'], connec_id: idmap.connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: @organization.id)
