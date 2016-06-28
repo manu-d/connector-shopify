@@ -34,7 +34,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
   end
 
   def self.references
-    %w(sales_order_id person_id lines/item_id)
+    %w(sales_order_id person_id lines/item_id lines/id)
   end
 
   def self.get_order_transaction(client, order)
@@ -65,7 +65,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     map from('/quantity'), to('/quantity')
     map from('/description'), to('/title')
     map from('/item_id'), to('/variant_id')
-
+    map from('/id'), to('/id')
   end
 
   class InvoiceMapper
