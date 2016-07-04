@@ -30,7 +30,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     product['variants']
   end
 
-  def get_external_entities(last_synchronization)
+  def get_external_entities(last_synchronization = nil)
     entities = @external_client.find('Product')
     variants = entities.map { |product|
       self.class.get_product_variants(product)

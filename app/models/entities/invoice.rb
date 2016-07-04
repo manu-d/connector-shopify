@@ -47,7 +47,7 @@ class Entities::Invoice < Maestrano::Connector::Rails::Entity
     transaction
   end
 
-  def get_external_entities(last_synchronization)
+  def get_external_entities(last_synchronization = nil)
     orders = @external_client.find('Order')
     orders.map { |order|
       self.class.get_order_transaction @external_client, order
