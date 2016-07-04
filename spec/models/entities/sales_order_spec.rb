@@ -81,7 +81,7 @@ describe Entities::SalesOrder do
             transaction_date: Date.new(1985, 9, 17).iso8601,
             lines: [
                 {
-                    id: 'line_id',
+                    id: [{id: 'line_id', provider: nil, realm: nil}],
                     unit_price: {
                         net_amount: 55
                     },

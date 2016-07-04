@@ -51,7 +51,7 @@ describe Entities::Invoice do
             status: 'PAID',
             lines: [
                 {
-                    id: 'line_id',
+                    id: [{id: 'line_id', provider: nil, realm: nil}],
                     unit_price: {
                         net_amount: 55
                     },
