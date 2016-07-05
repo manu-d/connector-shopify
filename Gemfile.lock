@@ -60,9 +60,9 @@ GEM
       jquery-rails (>= 3.0)
       railties (>= 3.0)
     builder (3.2.2)
-    coffee-rails (4.1.1)
+    coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.1.x)
+      railties (>= 4.0.0, < 5.2.x)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -134,17 +134,21 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-connector-rails (1.2.1)
+    maestrano-connector-rails (1.2.2)
       attr_encrypted (~> 1.4.0)
       autoprefixer-rails
       bootstrap-sass
       config
+      figaro
       haml-rails
       hash_mapper
       maestrano-rails
-      rails (~> 4.0)
+      rails (~> 4.2)
       sidekiq
+      sidekiq-cron
       sidekiq-unique-jobs
+      sinatra
+      slim
     maestrano-rails (0.15.4)
       jquery-rails
       maestrano

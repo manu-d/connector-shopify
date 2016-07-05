@@ -17,7 +17,6 @@ class WebhooksController < ApplicationController
         entities = [webhook_params]
       end
 
-
       if (entity_name === 'orders')
         # invoices are not sent via webhooks
         client = Maestrano::Connector::Rails::External.get_client organization
@@ -27,7 +26,7 @@ class WebhooksController < ApplicationController
       else
         entities_hash = {entity_name.singularize.capitalize => entities}
       end
-      Maestrano::Connector::Rails::PushToConnecJob.perform_later organization, entities_hash
+      Maestrano::Connector::Rails::PushToConnecWorker.perform_async(organization.id, entities_hash)
     else
       Rails.logger.debug('WebhooksController.receive: could not find organization: ' + org_uid)
     end
