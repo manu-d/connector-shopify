@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
+#ruby '2.2.3'
 # we are depending on a method that only appears in activesupport 4.2.5.1
 # ActiveSupport::SecurityUtils.variable_size_secure_compare
 gem 'rails', '4.2.5.1'
@@ -20,6 +21,7 @@ gem 'omniauth-shopify-oauth2', '~> 1.1'
 gem 'shopify_api'
 
 gem 'haml-rails'
+gem 'coffee-rails'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
@@ -31,17 +33,21 @@ gem 'slim'
 # Redis caching
 gem 'redis-rails'
 
+# Generates attr_accessors that transparently encrypt and decrypt attributes.
+gem 'attr_encrypted', '~> 1.4.0'
 
 # jQuery based field validator for Twitter Bootstrap 3.
 gem 'bootstrap-validator-rails'
 
 group :production, :uat do
   gem 'rails_12factor'
-  gem 'activerecord-jdbcpostgresql-adapter'
+  gem 'activerecord-jdbcpostgresql-adapter', :platforms => :jruby
+  gem 'pg', :platforms => :ruby
 end
 
 group :test, :develpment do
-  gem 'activerecord-jdbcsqlite3-adapter'
+  gem 'activerecord-jdbcsqlite3-adapter', :platforms => :jruby
+  gem 'sqlite3', :platforms => :ruby
 end
 
 group :test do

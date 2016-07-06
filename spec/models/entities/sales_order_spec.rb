@@ -45,6 +45,7 @@ describe Entities::SalesOrder do
             closed_at: Date.new(1985, 9, 17).iso8601,
             line_items: [
                 {
+                    id: 'line_id',
                     price: 55,
                     quantity: '48',
                     title: 'description',
@@ -80,6 +81,7 @@ describe Entities::SalesOrder do
             transaction_date: Date.new(1985, 9, 17).iso8601,
             lines: [
                 {
+                    id: [{id: 'line_id', provider: nil, realm: nil}],
                     unit_price: {
                         net_amount: 55
                     },

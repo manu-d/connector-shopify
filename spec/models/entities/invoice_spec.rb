@@ -32,6 +32,7 @@ describe Entities::Invoice do
             customer: {id: 'person_external_id'},
             line_items: [
                 {
+                    id: 'line_id',
                     price: 55,
                     quantity: '48',
                     title: 'description',
@@ -50,6 +51,7 @@ describe Entities::Invoice do
             status: 'PAID',
             lines: [
                 {
+                    id: [{id: 'line_id', provider: nil, realm: nil}],
                     unit_price: {
                         net_amount: 55
                     },
