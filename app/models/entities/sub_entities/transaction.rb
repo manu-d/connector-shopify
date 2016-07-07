@@ -16,26 +16,23 @@ class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntit
 
   def self.references
     {
-        'Payment' => %w( person_id payment_lines/id payment_lines/linked_transactions/id),
-        'Opportunity' => %w(lead_id)
+        'Payment' => Entities::SubEntities::Payment::REFERENCES,
+        'Opportunity' => Entities::SubEntities::Opportunity::REFERENCES
     }
   end
 
   def self.object_name_from_external_entity_hash(entity)
-    entity['order_id']
+    entity['id']
   end
 
+  def self.last_update_date_from_external_entity_hash(entity)
+    entity['created_at'].to_time
+  end
 
   def get_external_entities(last_synchronization = nil)
-    orders = @external_client.find('Order')
-    orders.map { |order|
-      transactions = @external_client.find('Transaction', {:order_id => order['id']})
-      transactions.each { |transaction|
-        transaction['line_items'] = order['line_items']
-        transaction['order_id'] = order['id']
-        transaction['customer'] = order['customer']
-      } if transactions
-    }.compact.flatten
+    []
   end
+
+
 end
 

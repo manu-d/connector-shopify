@@ -7,7 +7,9 @@ describe Entities::SubEntities::Transaction do
 
     it { expect(subject.entity_name).to eql('Transaction') }
     it { expect(subject.external?).to eql(true) }
-    it { expect(subject.object_name_from_external_entity_hash({'order_id' => 'ABC'})).to eql('ABC') }
+    it { expect(subject.object_name_from_external_entity_hash({'id' => 'ABC'})).to eql('ABC') }
+    it { expect(subject.last_update_date_from_external_entity_hash({'created_at' => Time.new(1985, 9, 17).iso8601})).to eql(Time.new(1985, 9, 17)) }
+
   end
 
   describe 'instance methods' do
@@ -20,43 +22,43 @@ describe Entities::SubEntities::Transaction do
     describe 'mapping to connec!' do
       let(:transaction) {
         {
-          'id' => '1',
-          'order_id' => 'N11003',
-          'created_at' => '2016-06-12 23:26:26',
-          'currency' => 'AUD',
-          'amount' => 155.00,
-          'customer' => {
-              'id' => 'USER-ID'
-          }
+            'id' => '1',
+            'order_id' => 'N11003',
+            'created_at' => '2016-06-12 23:26:26',
+            'currency' => 'AUD',
+            'amount' => 155.00,
+            'customer' => {
+                'id' => 'USER-ID'
+            }
         }
       }
 
       describe 'payment' do
         let(:connec_payment) {
           {
-            'id' => [{'id'=>'1', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-            'payment_lines' => [
-              {
-                'id'=>[{'id'=>'shopify-payment', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-                'amount'=>155.0,
-                'linked_transactions'=>[
+              'id' => [{'id'=>'1', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+              'payment_lines' => [
                   {
-                    'id'=>[{'id'=>'N11003', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-                    'class'=>'Invoice'
-                  },
-                  {
-                    'id'=>[{'id'=>'N11003', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-                    'class'=>'SalesOrder'
+                      'id'=>[{'id'=>'shopify-payment', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+                      'amount'=>155.0,
+                      'linked_transactions'=>[
+                          {
+                              'id'=>[{'id'=>'N11003', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+                              'class'=>'Invoice'
+                          },
+                          {
+                              'id'=>[{'id'=>'N11003', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+                              'class'=>'SalesOrder'
+                          }
+                      ]
                   }
-                ]
-              }
-            ],
-            'amount' => {'currency'=>'AUD', 'total_amount'=>155.0},
-            'title' => 'N11003',
-            'person_id' => [{'id'=>'USER-ID', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-            'transaction_date' => '2016-06-12 23:26:26',
-            'type' => 'CUSTOMER',
-            'status' => 'ACTIVE'
+              ],
+              'amount' => {'currency'=>'AUD', 'total_amount'=>155.0},
+              'title' => 'N11003',
+              'person_id' => [{'id'=>'USER-ID', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+              'transaction_date' => '2016-06-12 23:26:26',
+              'type' => 'CUSTOMER',
+              'status' => 'ACTIVE'
           }
         }
 
@@ -67,13 +69,13 @@ describe Entities::SubEntities::Transaction do
       describe 'opportunity' do
         let(:connec_opportunity) {
           {
-            'id' => [{'id'=>'1', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-            'amount' => {'total_amount'=>155.0, 'currency' => 'AUD'},
-            'name' => 'N11003',
-            'probability' => 100,
-            'sales_stage' => 'Closed Won',
-            'sales_stage' => 'Closed Won',
-            'lead_id' => [{'id'=>'USER-ID', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}]
+              'id' => [{'id'=>'1', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+              'amount' => {'total_amount'=>155.0, 'currency' => 'AUD'},
+              'name' => 'N11003',
+              'probability' => 100,
+              'sales_stage' => 'Closed Won',
+              'sales_stage' => 'Closed Won',
+              'lead_id' => [{'id'=>'USER-ID', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}]
           }
         }
 

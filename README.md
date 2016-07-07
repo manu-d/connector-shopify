@@ -77,3 +77,19 @@ shop = 'uat-test-store.myshopify.com'
 o = Maestrano::Connector::Rails::Organization.find_by_oauth_uid(shop)
 Shopify::Webhooks::WebhooksManager.new(o.uid, o.oauth_uid, o.oauth_token).destroy_all_webhooks
 ```
+
+
+### Update application metadata
+
+How to update the application metadata in MnoHub console
+
+```
+url =  'https://aa386fdb.ngrok.io'
+metadata_url =  url + '/maestrano/metadata'
+app = App.where("name LIKE :prefix", prefix: "%shopify%").first
+if app
+  app.fetch_metadata!(metadata_url)
+else
+  p 'could not find shopify App'	
+end
+```
