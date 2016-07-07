@@ -57,11 +57,11 @@ describe Entities::SalesOrder do
 
       let(:connec_hash) {
         {
-            id: [{id: 'id', provider: nil, realm: nil}],
+            id: [{id: 'id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
             title: 'a sales order',
             transaction_number: '123456',
             status: 'DRAFT',
-            person_id: [{id: 'person_id', provider: nil, realm: nil}],
+            person_id: [{id: 'person_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
             billing_address: {
                 line1: 'line1',
                 line2: 'line2',
@@ -81,13 +81,13 @@ describe Entities::SalesOrder do
             transaction_date: Date.new(1985, 9, 17).iso8601,
             lines: [
                 {
-                    id: [{id: 'line_id', provider: nil, realm: nil}],
+                    id: [{id: 'line_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                     unit_price: {
                         net_amount: 55
                     },
                     quantity: '48',
                     description: 'description',
-                    item_id: [{id: 'item_id', provider: nil, realm: nil}]
+                    item_id: [{id: 'item_id', provider: organization.oauth_provider, realm: organization.oauth_uid}]
                 }
             ]
         }

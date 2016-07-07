@@ -5,7 +5,7 @@ class Maestrano::Connector::Rails::External
   # If you add new entities, you need to generate
   # a migration to add them to existing organizations
   def self.entities_list
-    %w(item person sales_order invoice company)
+    %w(item person sales_order invoice company payment)
   end
 
   def self.external_name

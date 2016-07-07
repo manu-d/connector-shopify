@@ -43,21 +43,21 @@ describe Entities::Invoice do
       }
       let(:connec_hash) {
         {
-            id: [{id: 'order_id', provider: nil, realm: nil}],
-            sales_order_id: [{id: 'order_id', provider: nil, realm: nil}],
+            id: [{id: 'order_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
+            sales_order_id: [{id: 'order_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
             transaction_date: Time.new(1985, 9, 17).iso8601,
-            person_id: [{id: 'person_external_id', :provider => nil, :realm => nil}],
+            person_id: [{id: 'person_external_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
             type: 'CUSTOMER',
             status: 'PAID',
             lines: [
                 {
-                    id: [{id: 'line_id', provider: nil, realm: nil}],
+                    id: [{id: 'line_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                     unit_price: {
                         net_amount: 55
                     },
                     quantity: '48',
                     description: 'description',
-                    item_id: [{id: 'item_id', provider: nil, realm: nil}]
+                    item_id: [{id: 'item_id', provider: organization.oauth_provider, realm: organization.oauth_uid}]
                 }
             ]
         }
