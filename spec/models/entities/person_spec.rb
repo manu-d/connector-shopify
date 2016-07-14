@@ -64,7 +64,7 @@ describe Entities::Person do
         }
       }
 
-      it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider:nil, realm: nil}]}).with_indifferent_access) }
+      it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider: organization.oauth_provider, realm: organization.oauth_uid}]}).with_indifferent_access) }
       it { expect(subject.map_to_external(connec_hash.with_indifferent_access)).to eql(external_hash.with_indifferent_access.except(:id)) }
 
       context 'with company' do
@@ -72,7 +72,7 @@ describe Entities::Person do
             external_hash[:addresses].first.merge!(company: 'Pty Ltd')
         }
 
-        it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider:nil, realm: nil}], opts: {attach_to_organization: 'Pty Ltd'}}).with_indifferent_access) }
+        it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider: organization.oauth_provider, realm: organization.oauth_uid}], opts: {attach_to_organization: 'Pty Ltd'}}).with_indifferent_access) }
       end
     end
 
