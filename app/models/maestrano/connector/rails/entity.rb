@@ -25,11 +25,11 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
   end
 
   def self.creation_date_from_external_entity_hash(entity)
-    entity['created_at'] ? entity['created_at'].to_time : nil
+    entity['created_at'].to_time
   end
 
 
   def self.last_update_date_from_external_entity_hash(entity)
-    entity['updated_at'] ? entity['updated_at'].to_time : nil
+    entity['updated_at'].to_time
   end
 end

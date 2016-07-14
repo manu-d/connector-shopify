@@ -18,16 +18,37 @@ describe Entities::Financial do
 
 
     describe 'external_model_to_connec_model' do
-      expected =     {
-          'Order' => {'Sales Order' => [{}]},
-          'Shopify Invoice' => {'Invoice' => []},
-          'Transaction' => {
-              'Payment' => [],
-              'Opportunity' => []
+      context 'without transactions' do
+        let(:expected) {
+          {
+              'Order' => {'Sales Order' => [{}]},
+              'Shopify Invoice' => {'Invoice' => []},
+              'Transaction' => {
+                  'Payment' => [],
+                  'Opportunity' => []
+              }
           }
-      }
+        }
 
-      it { expect(subject.external_model_to_connec_model({'Order' => [{}]})).to eql(expected) }
+        it { expect(subject.external_model_to_connec_model({'Order' => [{}]})).to eql(expected) }
+      end
+      context 'transactions' do
+        let(:transactions) { [{'id' => 1}, {'id' => 2}] }
+        let(:orders) { [{'id' => 'id', 'transactions' => transactions}] }
+        let(:expected) {
+          {
+              'Order' => {'Sales Order' => orders},
+              'Shopify Invoice' => {'Invoice' => [transactions.last]},
+              'Transaction' => {
+                  'Payment' => transactions,
+                  'Opportunity' => transactions
+              }
+          }
+        }
+        it { expect(subject.external_model_to_connec_model({'Order' => orders})).to eql(expected) }
+      end
     end
   end
 end
+
+
