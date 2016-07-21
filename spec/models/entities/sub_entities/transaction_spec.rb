@@ -36,26 +36,26 @@ describe Entities::SubEntities::Transaction do
       describe 'payment' do
         let(:connec_payment) {
           {
-              'id' => [{'id'=>'1', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+              'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
               'payment_lines' => [
                   {
-                      'id'=>[{'id'=>'shopify-payment', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-                      'amount'=>155.0,
-                      'linked_transactions'=>[
+                      'id' => [{'id' => 'shopify-payment', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+                      'amount' => 155.0,
+                      'linked_transactions' => [
                           {
-                              'id'=>[{'id'=>'N11003', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-                              'class'=>'Invoice'
+                              'id' => [{'id' => 'N11003', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+                              'class' => 'Invoice'
                           },
                           {
-                              'id'=>[{'id'=>'N11003', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-                              'class'=>'SalesOrder'
+                              'id' => [{'id' => 'N11003', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+                              'class' => 'SalesOrder'
                           }
                       ]
                   }
               ],
-              'amount' => {'currency'=>'AUD', 'total_amount'=>155.0},
+              'amount' => {'currency' => 'AUD', 'total_amount' => 155.0},
               'title' => 'N11003',
-              'person_id' => [{'id'=>'USER-ID', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
+              'person_id' => [{'id' => 'USER-ID', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
               'transaction_date' => '2016-06-12 23:26:26',
               'type' => 'CUSTOMER',
               'status' => 'ACTIVE'
@@ -63,19 +63,36 @@ describe Entities::SubEntities::Transaction do
         }
 
 
-        it { expect(subject.map_to('Payment', transaction)).to eql(connec_payment) }
+        context 'connec version is >= 1.1.12' do
+          before do
+            expect(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.12')
+          end
+          it { expect(subject.map_to('Payment', transaction)).to eql(connec_payment) }
+        end
+
+        context 'connec version is < 1.1.12' do
+          before do
+            expect(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.11')
+          end
+
+          it {
+            connec_payment['payment_lines'].each{|line| line.delete('linked_transactions')}
+            expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
+          }
+
+        end
       end
 
       describe 'opportunity' do
         let(:connec_opportunity) {
           {
-              'id' => [{'id'=>'1', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}],
-              'amount' => {'total_amount'=>155.0, 'currency' => 'AUD'},
+              'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+              'amount' => {'total_amount' => 155.0, 'currency' => 'AUD'},
               'name' => 'N11003',
               'probability' => 100,
               'sales_stage' => 'Closed Won',
               'sales_stage' => 'Closed Won',
-              'lead_id' => [{'id'=>'USER-ID', 'provider'=>organization.oauth_provider, 'realm'=>organization.oauth_uid}]
+              'lead_id' => [{'id' => 'USER-ID', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}]
           }
         }
 
