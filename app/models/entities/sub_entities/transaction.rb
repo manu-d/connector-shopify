@@ -1,5 +1,5 @@
 class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntityBase
-  # Linked transactions are only managed starting from Connec!@1.1.12
+  # There is a bug that prevent to save linked_transactions before Connec!@1.1.12
   LINKED_TRANSACTIONS_CONNEC_VERSION = Gem::Version.new('1.1.12')
 
   def self.entity_name
