@@ -1,6 +1,6 @@
 class Entities::SubEntities::ShopifyInvoice < Maestrano::Connector::Rails::SubEntityBase
   def self.entity_name
-    'ShopifyInvoice'
+    'Shopify Invoice'
   end
 
   def self.external?
