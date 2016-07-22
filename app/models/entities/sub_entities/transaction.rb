@@ -46,6 +46,8 @@ class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntit
 
   private
     def connec_version
-      Gem::Version.new(Maestrano::Connector::Rails::ConnecHelper.connec_version(@organization))
+      ##Gem::Version.new(Maestrano::Connector::Rails::ConnecHelper.connec_version(@organization))
+      # connec_version is not working for now
+      Gem::Version.new('1.1.11')
     end
 end

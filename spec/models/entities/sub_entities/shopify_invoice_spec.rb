@@ -5,7 +5,7 @@ describe Entities::SubEntities::ShopifyInvoice do
   describe 'class methods' do
     subject { Entities::SubEntities::ShopifyInvoice }
 
-    it { expect(subject.entity_name).to eql('ShopifyInvoice') }
+    it { expect(subject.entity_name).to eql('Shopify Invoice') }
     it { expect(subject.external?).to eql(true) }
     it { expect(subject.object_name_from_external_entity_hash({'order_id' => 'ABC'})).to eql('ABC') }
     it { expect(subject.last_update_date_from_external_entity_hash({'created_at' => Time.new(1985, 9, 17).iso8601})).to eql(Time.new(1985, 9, 17)) }
