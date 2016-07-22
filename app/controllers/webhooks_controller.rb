@@ -17,17 +17,18 @@ class WebhooksController < ApplicationController
         entities = [webhook_params]
       end
 
-
       if (entity_name === 'orders')
-        # invoices are not sent via webhooks
+        # transactions are not sent via webhooks, we need to manually retrieve them
+        # webhook_params is read-only, we need to make a copy to add 'transactions'
+        order = webhook_params.to_hash
         client = Maestrano::Connector::Rails::External.get_client organization
-        transaction = Entities::Invoice.get_order_transaction client, webhook_params
-        entities_hash = {'Order' => [webhook_params]}
-        entities_hash['Transaction'] = [transaction] if transaction
+        transactions = Entities::SubEntities::Order.get_order_transactions client, order
+        order['transactions'] = transactions
+        entities_hash = {'Order' => [order]}
       else
         entities_hash = {entity_name.singularize.capitalize => entities}
       end
-      Maestrano::Connector::Rails::PushToConnecJob.perform_later organization, entities_hash
+      Maestrano::Connector::Rails::PushToConnecWorker.perform_async(organization.id, entities_hash)
     else
       Rails.logger.debug('WebhooksController.receive: could not find organization: ' + org_uid)
     end

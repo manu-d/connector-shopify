@@ -107,7 +107,7 @@ describe Entities::Item do
           allow(external_client).to receive(:update)
           subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')
           expect(idmap.reload.message).to be nil
-        end  
+        end
       end
     end
 
@@ -146,7 +146,7 @@ describe Entities::Item do
         let(:connec_hashes) {
           [
               {
-                  id: [{id: 'id-red', provider: nil, realm: nil}],
+                  id: [{id: 'id-red', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                   name: 'product name red',
                   product_name: 'product name',
                   description: 'product description',
@@ -160,7 +160,7 @@ describe Entities::Item do
                   is_inventoried: true
               },
               {
-                  id: [{id: 'id-blue', provider: nil, realm: nil}],
+                  id: [{id: 'id-blue', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                   name: 'product name 2 blue',
                   product_name: 'product name 2',
                   description: 'product description 2',
