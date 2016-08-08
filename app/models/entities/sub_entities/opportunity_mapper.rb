@@ -7,7 +7,7 @@ class Entities::SubEntities::OpportunityMapper
     output
   end
 
-  map from('/lead_id'), to('/customer/id')
+  map from('lead_id'), to('customer/id')
   map from('name'), to('order_id')
   map from('amount/total_amount'), to('amount')
   map from('amount/currency'), to('currency')

@@ -51,29 +51,22 @@ GEM
     arel (6.0.3)
     attr_encrypted (1.4.0)
       encryptor (~> 1.3.0)
-    autoprefixer-rails (6.3.7)
+    autoprefixer-rails (6.4.0.1)
       execjs
-    bootstrap-sass (3.3.6)
+    bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     bootstrap-validator-rails (0.5.3)
       jquery-rails (>= 3.0)
       railties (>= 3.0)
     builder (3.2.2)
-    coffee-rails (4.2.1)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.2.x)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.10.0)
     concurrent-ruby (1.0.2)
     concurrent-ruby (1.0.2-java)
     config (1.2.1)
       activesupport (>= 3.0)
       deep_merge (~> 1.0, >= 1.0.1)
     connection_pool (2.2.0)
-    deep_merge (1.0.1)
+    deep_merge (1.1.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
     domain_name (0.5.20160615)
@@ -90,7 +83,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     figaro (1.1.1)
       thor (~> 0.14)
-    globalid (0.3.6)
+    globalid (0.3.7)
       activesupport (>= 4.1.0)
     haml (4.0.7)
       tilt
@@ -110,8 +103,7 @@ GEM
       ruby_parser (~> 3.5)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    httparty (0.13.7)
-      json (~> 1.8)
+    httparty (0.14.0)
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
     jdbc-postgres (9.4.1206)
@@ -134,7 +126,7 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-connector-rails (1.2.3)
+    maestrano-connector-rails (1.3.4)
       attr_encrypted (~> 1.4.0)
       autoprefixer-rails
       bootstrap-sass
@@ -222,24 +214,8 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (11.2.2)
     redis (3.3.1)
-    redis-actionpack (4.0.1)
-      actionpack (~> 4)
-      redis-rack (~> 1.5.0)
-      redis-store (~> 1.1.0)
-    redis-activesupport (4.1.5)
-      activesupport (>= 3, < 5)
-      redis-store (~> 1.1.0)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
-    redis-rack (1.5.0)
-      rack (~> 1.5)
-      redis-store (~> 1.1.0)
-    redis-rails (4.0.0)
-      redis-actionpack (~> 4)
-      redis-activesupport (~> 4)
-      redis-store (~> 1.1.0)
-    redis-store (1.1.7)
-      redis (>= 2.2)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -280,7 +256,7 @@ GEM
       redis-namespace (>= 1.5.2)
       rufus-scheduler (>= 2.0.24)
       sidekiq (>= 4.0.0)
-    sidekiq-unique-jobs (4.0.17)
+    sidekiq-unique-jobs (4.0.18)
       sidekiq (>= 2.6)
       thor
     simplecov (0.12.0)
@@ -295,7 +271,7 @@ GEM
     slim (3.0.7)
       temple (~> 0.7.6)
       tilt (>= 1.3.3, < 2.1)
-    sprockets (3.6.3)
+    sprockets (3.7.0)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.1.1)
@@ -319,10 +295,7 @@ GEM
       tzinfo (>= 1.0.0)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
-    unf (0.1.4)
-      unf_ext
     unf (0.1.4-java)
-    unf_ext (0.0.7.2)
     uuid (2.3.8)
       macaddr (~> 1.0)
 
@@ -333,15 +306,9 @@ PLATFORMS
 DEPENDENCIES
   activerecord-jdbcpostgresql-adapter
   activerecord-jdbcsqlite3-adapter
-  attr_encrypted (~> 1.4.0)
-  autoprefixer-rails
-  bootstrap-sass
   bootstrap-validator-rails
-  coffee-rails
-  config
   factory_girl_rails
   figaro
-  haml-rails
   httparty
   jquery-rails
   maestrano-connector-rails
@@ -350,15 +317,11 @@ DEPENDENCIES
   puma
   rails (= 4.2.5.1)
   rails_12factor
-  redis-rails
   rspec-rails
   shopify_api
   shoulda-matchers
-  sidekiq
-  sidekiq-cron
   simplecov
   sinatra
-  slim
   sqlite3
   timecop
   turbolinks

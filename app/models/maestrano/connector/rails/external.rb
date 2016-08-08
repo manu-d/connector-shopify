@@ -8,6 +8,10 @@ class Maestrano::Connector::Rails::External
     %w(item person company financial)
   end
 
+  def self.create_account_link(organization = nil)
+    'https://www.shopify.com/?ref=maestrano'
+  end
+
   def self.external_name
     'Shopify'
   end
@@ -16,5 +20,4 @@ class Maestrano::Connector::Rails::External
     # Create New Client
     ShopifyClient.new organization.oauth_uid, organization.oauth_token
   end
-
 end

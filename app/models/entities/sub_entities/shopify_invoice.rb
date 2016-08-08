@@ -25,10 +25,7 @@ class Entities::SubEntities::ShopifyInvoice < Maestrano::Connector::Rails::SubEn
     entity['created_at'].to_time
   end
 
-  def get_external_entities(last_synchronization = nil)
-    []
+  def self.can_read_external?
+    false
   end
-
-
 end
-

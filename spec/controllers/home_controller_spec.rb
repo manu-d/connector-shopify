@@ -66,7 +66,7 @@ describe HomeController, :type => :controller do
 
     context 'when user is not admin' do
       before {
-        allow_any_instance_of(ApplicationHelper).to receive(:is_admin).and_return(false)
+        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(false)
       }
 
       it { expect(subject).to redirect_to back_path }
@@ -79,7 +79,7 @@ describe HomeController, :type => :controller do
 
     context 'when user is admin' do
       before {
-        allow_any_instance_of(ApplicationHelper).to receive(:is_admin).and_return(true)
+        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
       }
 
       it { expect(subject).to redirect_to back_path }

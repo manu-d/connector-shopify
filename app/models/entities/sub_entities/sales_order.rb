@@ -13,7 +13,6 @@ class Entities::SubEntities::SalesOrder < Maestrano::Connector::Rails::SubEntity
     false
   end
 
-
   def self.object_name_from_external_entity_hash(entity)
     entity['name']
   end
@@ -25,6 +24,4 @@ class Entities::SubEntities::SalesOrder < Maestrano::Connector::Rails::SubEntity
   def self.mapper_classes
     {'Order' => Entities::SubEntities::SalesOrderMapper}
   end
-
 end
-
