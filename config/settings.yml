@@ -60,7 +60,7 @@ nab-production:
   connec_host: 'https://api-connec.bio.nab.com.au'
   webhook:
     account:
-      groups_path: '/maestrano/account/groups/:id/nab-uat'
-      group_users_path: '/maestrano/account/groups/:group_id/users/:id/nab-uat'
+      groups_path: '/maestrano/account/groups/:id/nab-production'
+      group_users_path: '/maestrano/account/groups/:group_id/users/:id/nab-production'
     connec:
       notifications_path: '/maestrano/connec/notifications/nab-production'
