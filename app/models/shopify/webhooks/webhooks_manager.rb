@@ -37,15 +37,16 @@ module Shopify
         return unless required_webhooks.present?
 
         with_shopify_session do
+          webhooks = current_webhooks
           required_webhooks.each do |webhook|
-            create_webhook(webhook) unless webhook_exists?(webhook)
+            create_webhook(webhook) unless webhook_exists?(webhooks, webhook)
           end
         end
       end
 
       def destroy_webhooks
         with_shopify_session do
-          ShopifyAPI::Webhook.all.each do |webhook|
+          current_webhooks.each do |webhook|
               ShopifyAPI::Webhook.delete(webhook.id) if webhook.address.end_with? @org_uid
             end
           end
@@ -53,7 +54,7 @@ module Shopify
 
         def destroy_all_webhooks
           with_shopify_session do
-            ShopifyAPI::Webhook.all.each do |webhook|
+            current_webhooks.all.each do |webhook|
               ShopifyAPI::Webhook.delete(webhook.id)
             end
           end
@@ -86,14 +87,15 @@ module Shopify
           webhook
         end
 
-        def webhook_exists?(webhook)
-          current_webhooks.any? do |x|
+        def webhook_exists?(webhooks, webhook)
+          webhooks.any? do |x|
             x.topic == webhook[:topic] && x.address == webhook_address(webhook[:path])
           end
         end
 
         def current_webhooks
-          @current_webhooks ||= ShopifyAPI::Webhook.all
+           #Webook.all may return nil
+           ShopifyAPI::Webhook.all || []
         end
       end
   end
