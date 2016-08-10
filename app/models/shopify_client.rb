@@ -7,7 +7,6 @@ class ShopifyClient
     @oauth_token = oauth_token
   end
 
-
   def find(external_entity_name, params = {})
     with_shopify_session do
       if (external_entity_name == 'Shop')
@@ -19,21 +18,17 @@ class ShopifyClient
   end
 
   def create(external_entity_name, mapped_connec_entity)
-    element = update external_entity_name, mapped_connec_entity
-    element['id']
+    update external_entity_name, mapped_connec_entity
   end
 
   def update(external_entity_name, mapped_connec_entity)
-    begin
-      with_shopify_session do
-        element = get_shopify_entity_constant(external_entity_name).create mapped_connec_entity
-        raise "could not update Shopify entity: #{element.errors.messages}" unless element.errors.messages.empty?
-        convert_to_hash element
-      end
-    rescue ActiveResource::BadRequest => e
-      raise 'could not update Shopify entity ' + e.message + ' , ' + e.response.body
+    with_shopify_session do
+      element = get_shopify_entity_constant(external_entity_name).create mapped_connec_entity
+      raise "could not update Shopify entity: #{element.errors.messages}" unless element.errors.messages.empty?
+      convert_to_hash element
     end
-
+  rescue ActiveResource::BadRequest => e
+    raise 'could not update Shopify entity ' + e.message + ' , ' + e.response.body
   end
 
   private
@@ -61,7 +56,7 @@ class ShopifyClient
     end
 
     # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
-    def convert_to_hash (x)
+    def convert_to_hash(x)
       JSON.parse(x.to_json)
     end
 end

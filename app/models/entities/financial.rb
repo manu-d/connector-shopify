@@ -7,6 +7,10 @@ class Entities::Financial < Maestrano::Connector::Rails::ComplexEntity
     %w(Order Shopify\ Invoice Transaction)
   end
 
+  def self.public_external_entity_name
+    'Orders'
+  end
+
 #   # input :  {
 #   #             connec_entity_names[0]: [unmapped_connec_entitiy1, unmapped_connec_entitiy2],
 #   #             connec_entity_names[1]: [unmapped_connec_entitiy3, unmapped_connec_entitiy4]

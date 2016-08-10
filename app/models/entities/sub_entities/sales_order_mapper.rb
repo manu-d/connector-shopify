@@ -41,9 +41,7 @@ class Entities::SubEntities::SalesOrderMapper
   map from('/shipping_address/postal_code'), to('/shipping_address/zip')
   map from('/shipping_address/country'), to('/shipping_address/country_code')
 
-
   map from('/lines'), to('/line_items'), using: Entities::SubEntities::LineMapper
-
 
   after_denormalize do |input, output|
     output[:status] = STATUS_MAPPING_INV[input['financial_status']]

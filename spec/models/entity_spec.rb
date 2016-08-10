@@ -32,12 +32,12 @@ describe Maestrano::Connector::Rails::Entity do
 
       it 'calls find' do
         expect(client).to receive(:find).with(external_name)
-        subject.get_external_entities(nil)
+        subject.get_external_entities(external_name)
       end
 
       it 'returns the entities' do
         allow(client).to receive(:find).and_return([{'FirstName' => 'John'}])
-        expect(subject.get_external_entities(nil)).to eql([{'FirstName' => 'John'}])
+        expect(subject.get_external_entities(external_name)).to eql([{'FirstName' => 'John'}])
       end
     end
 

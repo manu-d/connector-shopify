@@ -1,5 +1,4 @@
 class Entities::SubEntities::Opportunity < Maestrano::Connector::Rails::SubEntityBase
-
   REFERENCES = %w(lead_id)
 
   def self.entity_name
@@ -17,6 +16,4 @@ class Entities::SubEntities::Opportunity < Maestrano::Connector::Rails::SubEntit
   def self.references
     {'Order' => REFERENCES}
   end
-
 end
-

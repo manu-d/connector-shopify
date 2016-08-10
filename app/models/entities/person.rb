@@ -37,7 +37,6 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       input
     end
 
-
     map from('first_name'), to('first_name')
     map from('last_name'), to('last_name'), default: 'Undefined'
 
@@ -47,7 +46,6 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     map from('address_work/billing/region'), to('addresses[0]/province')
     map from('address_work/billing/postal_code'), to('addresses[0]/zip')
     map from('address_work/billing/country'), to('addresses[0]/country')
-
 
     map from('email/address'), to('email')
 
@@ -62,11 +60,5 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       output[:notes] = [{id: SHOPIFY_NOTE_ID, description: input['note']}] if input['note']
       output
     end
-
-
   end
-
 end
-
-
-

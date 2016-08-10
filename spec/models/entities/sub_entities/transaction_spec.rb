@@ -9,7 +9,6 @@ describe Entities::SubEntities::Transaction do
     it { expect(subject.external?).to eql(true) }
     it { expect(subject.object_name_from_external_entity_hash({'id' => 'ABC'})).to eql('ABC') }
     it { expect(subject.last_update_date_from_external_entity_hash({'created_at' => Time.new(1985, 9, 17).iso8601})).to eql(Time.new(1985, 9, 17)) }
-
   end
 
   describe 'instance methods' do
@@ -65,21 +64,23 @@ describe Entities::SubEntities::Transaction do
 
         context 'connec version is >= 1.1.12' do
           before do
-            expect(subject).to receive(:connec_version).with(organization).and_return('1.1.12')
+            allow(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.12')
           end
-          xit { expect(subject.map_to('Payment', transaction)).to eql(connec_payment) }
+
+          it 'does nothing' do
+            expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
+          end
         end
 
         context 'connec version is < 1.1.12' do
           before do
-             # expect(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.11')
+             allow(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.11')
           end
 
-          it {
-            connec_payment['payment_lines'].each{|line| line.delete('linked_transactions')}
+          it 'removes the linked_transactions' do
+            connec_payment['payment_lines'].each { |line| line.delete('linked_transactions') }
             expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
-          }
-
+          end
         end
       end
 
