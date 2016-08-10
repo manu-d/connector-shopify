@@ -3,7 +3,7 @@ ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
 
 # we are depending on a method that only appears in activesupport 4.2.5.1
 # ActiveSupport::SecurityUtils.variable_size_secure_compare
-gem 'rails', '4.2.5.1'
+gem 'rails', '>= 4.2.5.1'
 gem 'turbolinks'
 gem 'jquery-rails'
 gem 'puma'
