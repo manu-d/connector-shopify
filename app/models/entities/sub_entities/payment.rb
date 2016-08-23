@@ -20,7 +20,4 @@ class Entities::SubEntities::Payment < Maestrano::Connector::Rails::SubEntityBas
   def self.object_name_from_connec_entity_hash(entity)
     entity['title']
   end
-
-
 end
-

@@ -30,9 +30,6 @@
           %form#authentify-shopify.form-inline{:action => "/auth/shopify/request", :method => "GET" }
             .col-md-6
               %p Your Shopify account is not linked
-              %p
-                To create your shopify store:
-                = link_to 'shopify.com', 'https://www.shopify.com/?ref=maestrano'
               %p Please enter the “myshopify” domain of your store
               .form-group
                 %label{:for => 'shop-name'}https://
@@ -41,46 +38,56 @@
                 %input{:type=>"hidden", :value=>@organization.uid, :name=>:org_uid}/
             .col-md-2.col-md-offset-3.text-center.link-step-action
               %button{:type => "submit", :class => 'btn btn-warning btn-lg', :disabled => !is_admin, :rel => 'tooltip', :title => "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"} Link to Shopify
+              %br
+              %small If you don’t have an account #{link_to 'create yours here', Maestrano::Connector::Rails::External.create_account_link(current_organization || nil)}
+
 
       .spacer1
 
       .row.link-step{class: "#{(@organization.sync_enabled && @organization.synchronized_entities.values.any?) ? 'done' : 'todo'}"}
         = form_tag home_update_path(id: @organization.id), method: :put do
           .col-md-1.text-center.link-step-number
-            %span.badge.link-step-badge
-              2
+            %span.badge.link-step-badge 2
           .col-md-9.link-step-description
-            %h
-              You can customize which entities are synchronized by the connector:
+            %h You can customize which entities are synchronized by the connector:
+            .spacer1
+            .row
+              .col-md-11.col-md-offset-1.center
+                .col-md-4.col-md-offset-1
+                  Shopify wording
+                .col-md-4
+                  Universal wording
             .spacer1
             .row
               .col-md-11.col-md-offset-1
-                - @organization.synchronized_entities.each do |k, v|
+                - @displayable_synchronized_entities.each do |k, v|
                   .row.sync-entity
                     .col-md-1.link-step-action
-                      %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
-                    .col-md-6{style: 'padding-top: 5px;'}
-                      %label{:for => "#{k}"} #{k.to_s.humanize.pluralize}
+                      %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v[:value]}
+                    %label.col-md-8{:for => "#{k}", style: 'padding-top: 5px;'}
+                      .col-md-6
+                        #{v[:external_name]}
+                      .col-md-6
+                        #{v[:connec_name]}
                     -if is_admin
-                      .col-md-5.text-right
+                      .col-md-3.text-right
                         - if v && @organization.oauth_uid && @organization.sync_enabled
-                          = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
-          .spacer1
-          .spacer1
+                          = link_to 'Force a synchronization', home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: 'btn btn-warning btn-sm', title: "Force a synchronization for #{v[:external_name]} only", 'data-toggle' => 'tooltip', 'data-placement' => 'right'
+
+            .spacer2
             .row
-              .col-md-1
-              .col-md-3
+              %h Chose whether to synchronize your historical data:
+            .spacer1
+            .row
+              .col-md-4.col-md-offset-1
                 %label{:for => 'historical-data'} Synchronize my historical data
-              .col-md-2
+              .col-md-1
                 %input{type: 'checkbox', id: 'historical-data', name: 'historical-data', checked: @organization.historical_data, onchange: 'historicalDataDisplay();', disabled: @organization.historical_data}
               .col-md-6
                 %small#historical-data-display-unchecked{style: "display: #{@organization.historical_data ? 'none' : 'block'}"} Only data created after #{(@organization.date_filtering_limit && @organization.date_filtering_limit.utc || Time.now.utc).to_formatted_s(:long_ordinal)} will be synchronized
                 %small#historical-data-display-checked{style: "display: #{!@organization.historical_data ? 'none' : 'block'}"}
-                  Synchronizing your historical data will share all data in Shopify.
-                  %br
-                  This action is not reversible. Want to know more? Check
-                  = link_to 'here', 'https://maestrano.atlassian.net/wiki/display/UKB/How+Connec%21+manages+Historical+Data+Sharing'
-
+                  Synchronizing your historical data will share all data in Shopify. This action is not reversible. Want to know more? Check #{link_to 'here', 'https://maestrano.atlassian.net/wiki/display/UKB/How+Connec%21+manages+Historical+Data+Sharing'}
+                
           .spacer1
           .row
             .col-md-2.col-md-offset-10.text-center.link-step-action

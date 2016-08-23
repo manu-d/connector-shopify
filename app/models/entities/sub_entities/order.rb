@@ -20,7 +20,7 @@ class Entities::SubEntities::Order < Maestrano::Connector::Rails::SubEntityBase
   end
 
 
-  def get_external_entities(last_synchronization = nil)
+  def get_external_entities(external_entity_name, last_synchronization = nil)
     orders = @external_client.find('Order')
     orders.each { |order|
       order['transactions'] = self.class.get_order_transactions(@external_client, order)
@@ -35,6 +35,4 @@ class Entities::SubEntities::Order < Maestrano::Connector::Rails::SubEntityBase
       transaction['customer'] = order['customer']
     } if transactions
   end
-
 end
-

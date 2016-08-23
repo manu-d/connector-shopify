@@ -83,7 +83,7 @@ describe Entities::Item do
 
         it 'does a call to shopify and handle idmaps' do
           expect(external_client).to receive(:update).and_return({'id' => 'id', 'variants' => [{'id' => 'variant_id'}]})
-          expect(subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')).to eql(idmap)
+          expect(subject.push_entity_to_external({idmap: idmap, entity: {}}, 'Variant')).to eql(idmap: idmap)
         end
 
         it 'does not store an error in the idmap' do

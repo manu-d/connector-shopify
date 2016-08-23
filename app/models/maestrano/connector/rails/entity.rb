@@ -2,10 +2,10 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
   include Maestrano::Connector::Rails::Concerns::Entity
 
   # Return an array of entities from the external app
-  def get_external_entities(last_synchronization = nil)
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize}")
-    entities = @external_client.find(self.class.external_entity_name)
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Received data: Source=#{Maestrano::Connector::Rails::External.external_name}, Entity=#{self.class.external_entity_name}, Response=#{entities}")
+  def get_external_entities(external_entity_name, last_synchronization = nil)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching #{Maestrano::Connector::Rails::External.external_name} #{external_entity_name.pluralize}")
+    entities = @external_client.find(external_entity_name)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Received data: Source=#{Maestrano::Connector::Rails::External.external_name}, Entity=#{external_entity_name}, Response=#{entities}")
     entities
   end
 
@@ -27,7 +27,6 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
   def self.creation_date_from_external_entity_hash(entity)
     entity['created_at'].to_time
   end
-
 
   def self.last_update_date_from_external_entity_hash(entity)
     entity['updated_at'].to_time

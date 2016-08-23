@@ -7,6 +7,10 @@ class Entities::Financial < Maestrano::Connector::Rails::ComplexEntity
     %w(Order Shopify\ Invoice Transaction)
   end
 
+  def self.public_external_entity_name
+    'Orders'
+  end
+
 #   # input :  {
 #   #             connec_entity_names[0]: [unmapped_connec_entitiy1, unmapped_connec_entitiy2],
 #   #             connec_entity_names[1]: [unmapped_connec_entitiy3, unmapped_connec_entitiy4]
@@ -39,17 +43,20 @@ class Entities::Financial < Maestrano::Connector::Rails::ComplexEntity
 #   #               connec_entity_names[0]: [unmapped_external_entity3, unmapped_external_entity4]
 #   #             }
 #   #           }
-
+  TRANSACTION_KINDS = %w(sale refund)
   def external_model_to_connec_model(external_hash_of_entities)
     orders = external_hash_of_entities['Order']
     invoices = orders.map { |order| order['transactions'].last if order['transactions'] }.compact
-    transactions = orders.map { |order| order['transactions'] }.compact.flatten
+
+    transactions = orders.map { |order| order['transactions'] }
+                       .compact.flatten
+                       .select { |t| t['status'] == 'success' && TRANSACTION_KINDS.include?(t['kind']) }
     {
         'Order' => {'Sales Order' => orders},
         'Shopify Invoice' => {'Invoice' => invoices},
         'Transaction' => {
             'Payment' => transactions,
-            'Opportunity' => transactions
+            'Opportunity' => transactions.select { |t| t['kind'] == 'sale'}
         }
     }
   end
