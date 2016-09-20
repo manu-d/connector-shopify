@@ -4,12 +4,15 @@ class WebhooksController < ApplicationController
   before_action :verify_request
 
   def receive
+    # to avoid too much traffic we are filtering webhoks that have been updated
+    # in the last 10 seconds
+    return head 200, content_type: 'application/json' if webhook_newly_updated?
     org_uid = params[:org_uid]
     organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
     if organization
       Rails.logger.debug("WebhooksController.receive with params: #{webhook_params}")
 
-      if (params[:entity] === 'products')
+      if (params[:entity] == 'products')
         entity_name = 'variants'
         entities = Entities::Item.get_product_variants webhook_params
       else
@@ -17,7 +20,7 @@ class WebhooksController < ApplicationController
         entities = [webhook_params]
       end
 
-      if (entity_name === 'orders')
+      if (entity_name == 'orders')
         # transactions are not sent via webhooks, we need to manually retrieve them
         # webhook_params is read-only, we need to make a copy to add 'transactions'
         order = webhook_params.to_hash
@@ -64,5 +67,9 @@ class WebhooksController < ApplicationController
 
     def shopify_hmac
       request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
+    end
+
+    def webhook_newly_updated?
+      Time.parse(params[:updated_at]).utc < Maestrano::Connector::Rails::IdMap.find_by(external_id: params[:id]).updated_at.utc + 10
     end
 end
