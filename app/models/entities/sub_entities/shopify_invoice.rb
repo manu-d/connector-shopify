@@ -12,7 +12,7 @@ class Entities::SubEntities::ShopifyInvoice < Maestrano::Connector::Rails::SubEn
   end
 
   def self.references
-    {'Invoice' => Entities::SubEntities::Invoice::REFERENCES}
+    {'Invoice' => Entities::SubEntities::InvoiceMapper.invoice_references}
   end
 
   def self.id_from_external_entity_hash(entity)

@@ -19,7 +19,7 @@ class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntit
 
   def self.references
     {
-        'Payment' => Entities::SubEntities::Payment::REFERENCES,
+        'Payment' => Entities::SubEntities::PaymentMapper.payment_references,
         'Opportunity' => Entities::SubEntities::Opportunity::REFERENCES
     }
   end
