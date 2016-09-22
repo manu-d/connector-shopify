@@ -1,5 +1,4 @@
 class Entities::SubEntities::SalesOrder < Maestrano::Connector::Rails::SubEntityBase
-  REFERENCES = %w(person_id lines/item_id lines/id)
 
   def self.entity_name
     'Sales Order'
@@ -18,7 +17,7 @@ class Entities::SubEntities::SalesOrder < Maestrano::Connector::Rails::SubEntity
   end
 
   def self.references
-    {'Order' => REFERENCES}
+    {'Order' => Entities::SubEntities::SalesOrderMapper.order_references}
   end
 
   def self.mapper_classes

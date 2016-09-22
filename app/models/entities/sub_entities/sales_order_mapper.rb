@@ -1,6 +1,13 @@
 class Entities::SubEntities::SalesOrderMapper
   extend HashMapper
 
+  def self.order_references
+    {
+      record_references: %w(person_id lines/item_id lines/tax_code_id),
+      id_references: %w(lines/id)
+    }
+  end
+
   STATUS_MAPPING = {
       'DRAFT' => 'pending',
       'SUBMITTED' => 'pending',

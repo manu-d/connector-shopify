@@ -1,5 +1,4 @@
 class Entities::SubEntities::Payment < Maestrano::Connector::Rails::SubEntityBase
-  REFERENCES = %w(person_id payment_lines/id payment_lines/linked_transactions/id)
 
   def self.entity_name
     'Payment'
@@ -14,7 +13,11 @@ class Entities::SubEntities::Payment < Maestrano::Connector::Rails::SubEntityBas
   end
 
   def self.references
-    {'Order' => REFERENCES}
+    {'Transaction' => Entities::SubEntities::PaymentMapper.payment_references}
+  end
+
+  def self.mapper_classes
+    {'Transaction' => Entities::SubEntities::PaymentMapper}
   end
 
   def self.object_name_from_connec_entity_hash(entity)

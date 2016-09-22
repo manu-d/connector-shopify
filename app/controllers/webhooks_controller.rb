@@ -70,6 +70,7 @@ class WebhooksController < ApplicationController
     end
 
     def webhook_newly_updated?
-      Time.parse(params[:updated_at]).utc < Maestrano::Connector::Rails::IdMap.find_by(external_id: params[:id]).updated_at.utc + 10
+      return unless entity_exists = Maestrano::Connector::Rails::IdMap.find_by(external_id: params[:id])
+      Time.parse(params[:updated_at]).utc < entity_exists.updated_at.utc + 10
     end
 end
