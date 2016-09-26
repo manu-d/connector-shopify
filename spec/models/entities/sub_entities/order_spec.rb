@@ -41,7 +41,7 @@ describe Entities::SubEntities::Order do
                 zip: 'shipping_address.postal_code',
                 country_code: 'shipping_address.country'
             },
-            closed_at: Date.new(1985, 9, 17).iso8601,
+            created_at: Date.new(1985, 9, 17).iso8601,
             line_items: [
                 {
                     id: 'line_id',
