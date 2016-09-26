@@ -31,7 +31,7 @@ class Entities::SubEntities::SalesOrderMapper
   # map from (connect_field) to (shopify_field)
   map from('/title'), to('/name')
   map from('/person_id'), to('/customer/id')
-  map from('/transaction_date'), to('/closed_at')
+  map from('/transaction_date'), to('/created_at')
   map from('/transaction_number'), to('/order_number')
 
   map from('/billing_address/line1'), to('/billing_address/address1')

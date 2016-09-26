@@ -35,10 +35,16 @@ describe Entities::Person do
                 address: 'robert.patinson@touilaight.com'
             },
             notes: [
-                {
-                    description: 'very important',
-                    tag: 'shopify'
-                }
+              {
+                id: [
+                  {
+                    id: "shopify001",
+                    provider: organization.oauth_provider,
+                    realm: organization.oauth_uid
+                  }
+                ],
+              description: "very important",
+              tag: "shopify"}
             ],
             opts: {
                 create_default_organization: true

@@ -23,7 +23,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
   def self.references
     {
       record_references: %w(),
-      id_references: %W(lines/id)
+      id_references: %W(lines/id notes/id)
     }
 
   end
@@ -31,6 +31,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
   class PersonMapper
     extend HashMapper
     SHOPIFY_NOTE_TAG = 'shopify'
+    SHOPIFY_NOTE_ID = 'shopify001'
     # normalize from Connec to Shopify
     # denormalize from Shopify to Connec
     # map from (connect_field) to (shopify_field)
@@ -66,7 +67,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     end
 
     after_denormalize do |input, output|
-      external_note = {description: input['note'], tag: SHOPIFY_NOTE_TAG} if input['note']
+      external_note = {id: SHOPIFY_NOTE_ID, description: input['note'], tag: SHOPIFY_NOTE_TAG} if input['note']
       output[:notes] = [external_note] if external_note
       output
     end
