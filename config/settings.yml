@@ -24,7 +24,7 @@ maestrano-uat:
   api_key: 'maestrano_uat_connec_api_key'
   sso_consume_path: '/maestrano/auth/saml/consume/maestrano-uat'
   sso_init_path: '/maestrano/auth/saml/init/maestrano-uat'
-  api_host: 'https://uat.maestrano.io'
+  api_host: 'https://api-hub-uat.maestrano.io'
   connec_host: 'https://api-connec-uat.maestrano.io'
   webhook:
     account:
