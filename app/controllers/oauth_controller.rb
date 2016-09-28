@@ -32,7 +32,6 @@ class OauthController < ApplicationController
     else
       redirect_to root_url
     end
-
   end
 
   # Link an Organization to Shopify OAuth account
