@@ -61,26 +61,8 @@ describe Entities::SubEntities::Transaction do
           }
         }
 
-
-        context 'connec version is >= 1.1.12' do
-          before do
-            allow(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.12')
-          end
-
-          it 'does nothing' do
-            expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
-          end
-        end
-
-        context 'connec version is < 1.1.12' do
-          before do
-             allow(Maestrano::Connector::Rails::ConnecHelper).to receive(:connec_version).with(organization).and_return('1.1.11')
-          end
-
-          it 'removes the linked_transactions' do
-            connec_payment['payment_lines'].each { |line| line.delete('linked_transactions') }
-            expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
-          end
+        it 'maps to Connec! payment' do
+          expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
         end
       end
 
@@ -102,4 +84,3 @@ describe Entities::SubEntities::Transaction do
     end
   end
 end
-
