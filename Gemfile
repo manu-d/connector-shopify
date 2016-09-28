@@ -13,8 +13,9 @@ gem 'httparty'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-# Shopify Api - Connec Gems
-gem 'maestrano-connector-rails'
+gem 'maestrano-connector-rails', '~> 1.4'
+gem 'maestrano-rails', '~> 0.15'
+
 gem 'omniauth-shopify-oauth2', '~> 1.1'
 gem 'shopify_api'
 
