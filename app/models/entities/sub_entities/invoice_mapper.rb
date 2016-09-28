@@ -1,6 +1,13 @@
 class Entities::SubEntities::InvoiceMapper
   extend HashMapper
 
+  def self.invoice_references
+    {
+      record_references: %w(sales_order_id person_id lines/item_id),
+      id_references: %w(lines/id)
+    }
+  end
+
   STATUS_MAPPING_INV = {
       'authorization' => 'SUBMITTED',
       'capture' => 'PAID',

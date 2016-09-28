@@ -8,11 +8,11 @@ class Entities::SubEntities::Order < Maestrano::Connector::Rails::SubEntityBase
   end
 
   def self.mapper_classes
-    { 'Sales Order' => Entities::SubEntities::SalesOrderMapper}
+    {'Sales Order' => Entities::SubEntities::SalesOrderMapper}
   end
 
   def self.references
-    {'Sales Order' => Entities::SubEntities::SalesOrder::REFERENCES}
+    {'Sales Order' => Entities::SubEntities::SalesOrderMapper.order_references}
   end
 
   def self.object_name_from_external_entity_hash(entity)
@@ -28,11 +28,12 @@ class Entities::SubEntities::Order < Maestrano::Connector::Rails::SubEntityBase
   end
 
   def self.get_order_transactions(client, order)
-    transactions = client.find('Transaction', {:order_id => order['id']})
+    transactions = client.find('Transaction', order_id: order['id'])
     transactions.each { |transaction|
       transaction['line_items'] = order['line_items']
       transaction['order_id'] = order['id']
       transaction['customer'] = order['customer']
+      transaction['transaction_number'] = order['order_number']
     } if transactions
   end
 end

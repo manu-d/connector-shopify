@@ -1,20 +1,21 @@
 source 'https://rubygems.org'
 ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
 
-# we are depending on a method that only appears in activesupport 4.2.5.1
-# ActiveSupport::SecurityUtils.variable_size_secure_compare
-gem 'rails', '>= 4.2.5.1'
+gem 'rails', '~> 4.2'
+
 gem 'turbolinks', '~> 2.5'
 gem 'jquery-rails'
-gem 'puma'
-gem 'sinatra'
 gem 'figaro'
 gem 'httparty'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-# Shopify Api - Connec Gems
-gem 'maestrano-connector-rails'
+gem 'puma', require: false
+gem 'sinatra', require: false
+
+gem 'maestrano-connector-rails', '~> 1.4'
+gem 'maestrano-rails', '~> 0.15'
+
 gem 'omniauth-shopify-oauth2', '~> 1.1'
 gem 'shopify_api'
 
