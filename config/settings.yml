@@ -1,0 +1,2 @@
+encryption_key1: <%= ENV['encryption_key1'] %>
+encryption_key2: <%= ENV['encryption_key2'] %>

@@ -4,9 +4,6 @@ encryption_key2:
 shopify_api_id: 'SHOPIFY_API_ID'
 shopify_api_key: 'SHOPIFY_API_KEY'
 
-salesforce_client_id: SALESFORCE_API_ID
-salesforce_client_secret: SALESFORCE_API_SECRET
-
 REDIS_URL: redis://localhost:6379/0/connector-shopify
 
 MNO_DEVPL_HOST: https://dev-platform.maestrano.io
