@@ -1,5 +1,4 @@
 class Entities::Person < Maestrano::Connector::Rails::Entity
-
   def self.connec_entity_name
     'Person'
   end
@@ -25,7 +24,6 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       record_references: %w(),
       id_references: %W(lines/id notes/id)
     }
-
   end
 
   class PersonMapper
