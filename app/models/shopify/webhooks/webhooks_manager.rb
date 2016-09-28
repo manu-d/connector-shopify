@@ -99,6 +99,4 @@ module Shopify
         end
       end
   end
-
 end
-
