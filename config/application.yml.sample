@@ -1,6 +1,0 @@
-connec_api_id: 'CONNEC_API_ID'
-connec_api_key: 'CONNEC_API_KEY'
-shopify_api_id: 'SHOPIFY_API_ID
-shopify_api_key: 'SHOPIFY_API_KEY'
-
-REDIS_URL: 'redis://localhost:6379/0/connector-shopify'
