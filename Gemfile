@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
+ruby '2.3.1', :engine => 'jruby', :engine_version => '9.1.5.0'
 
 gem 'rails', '~> 4.2'
 
@@ -13,7 +13,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'puma', require: false
 gem 'sinatra', require: false
 
-gem 'maestrano-connector-rails', '~> 1.4'
+gem 'maestrano-connector-rails', '~> 1.5'
 gem 'maestrano-rails', '~> 0.15'
 
 gem 'omniauth-shopify-oauth2', '~> 1.1'
