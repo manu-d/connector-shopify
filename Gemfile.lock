@@ -51,7 +51,7 @@ GEM
     arel (6.0.3)
     attr_encrypted (1.4.0)
       encryptor (~> 1.3.0)
-    autoprefixer-rails (6.5.0)
+    autoprefixer-rails (6.5.0.1)
       execjs
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
@@ -135,7 +135,7 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.8)
       uuid (~> 2.3)
-    maestrano-connector-rails (2.0.0.pre.RC6)
+    maestrano-connector-rails (2.0.0.pre.RC7)
       attr_encrypted (~> 1.4.0)
       autoprefixer-rails
       bootstrap-sass
@@ -325,7 +325,7 @@ GEM
       coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    tzinfo-data (1.2016.6)
+    tzinfo-data (1.2016.7)
       tzinfo (>= 1.0.0)
     uglifier (3.0.2)
       execjs (>= 0.3.0, < 3)
@@ -348,7 +348,7 @@ DEPENDENCIES
   figaro
   httparty
   jquery-rails
-  maestrano-connector-rails (= 2.0.0.pre.RC6)
+  maestrano-connector-rails (= 2.0.0.pre.RC7)
   mysql2
   omniauth-shopify-oauth2 (~> 1.1)
   puma
