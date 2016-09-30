@@ -28,7 +28,7 @@ class HomeController < ApplicationController
       organization.save
 
       if !old_sync_state
-        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization, {})
+        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization.id, {})
         flash[:info] = 'Congrats, you\'re all set up! Your data are now being synced'
       end
     end
@@ -38,7 +38,7 @@ class HomeController < ApplicationController
 
   def synchronize
     if is_admin
-      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, (params['opts'] || {}).merge(forced: true))
+      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization.id, (params['opts'] || {}).merge(forced: true))
       flash[:info] = 'Synchronization requested'
     end
 
