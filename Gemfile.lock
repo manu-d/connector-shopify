@@ -60,7 +60,6 @@ GEM
       jquery-rails (>= 3.0)
       railties (>= 3.0)
     bson (4.1.1)
-    bson (4.1.1-java)
     builder (3.2.2)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
@@ -331,7 +330,6 @@ GEM
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
-    unf (0.1.4-java)
     unf_ext (0.0.7.2)
     uuid (2.3.8)
       macaddr (~> 1.0)
