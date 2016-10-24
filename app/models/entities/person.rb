@@ -38,11 +38,11 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
 
     before_denormalize do |input, output|
       # If the customer'd company field is not blank we'll use that to name the company
-      if input['addresses'] &&  input['addresses'].first && !input['addresses'].first['company'].blank?
-        output[:opts] = {attach_to_organization: input['addresses'].first['company']}
+      if input['default_address'] && !input['default_address']['company'].blank?
+        output[:opts] = {attach_to_organization: input['default_address']['company']}
       else
         # Otherwise we create a company with the Customer First + Last name
-        organization_name = "#{input['first_name']} #{input['last_name']}'s organisation"
+        organization_name = "#{input['first_name']} #{input['last_name']}"
         output[:opts] = {attach_to_organization: organization_name.strip }
       end
 
