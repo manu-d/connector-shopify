@@ -47,7 +47,7 @@ describe Entities::Person do
               tag: "shopify"}
             ],
             opts: {
-                create_default_organization: true
+                attach_to_organization: "Robert Patinson"
             }
 
         }
@@ -78,7 +78,7 @@ describe Entities::Person do
             external_hash[:default_address].merge!(company: 'Pty Ltd')
         }
 
-        it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider: organization.oauth_provider, realm: organization.oauth_uid}], opts: {create_default_organization: true}}).with_indifferent_access) }
+        it { expect(subject.map_to_connec(external_hash.with_indifferent_access)).to eql(connec_hash.merge({id:[{id:'id', provider: organization.oauth_provider, realm: organization.oauth_uid}], opts: {attach_to_organization: "Pty Ltd"}}).with_indifferent_access) }
       end
     end
 
