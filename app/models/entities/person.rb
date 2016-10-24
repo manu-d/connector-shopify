@@ -37,10 +37,13 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     # map from (connect_field) to (shopify_field)
 
     before_denormalize do |input, output|
+      # If the customer'd company field is not blank we'll use that to name the company
       if input['addresses'] &&  input['addresses'].first && !input['addresses'].first['company'].blank?
         output[:opts] = {attach_to_organization: input['addresses'].first['company']}
       else
-        output[:opts] = {create_default_organization: true}
+        # Otherwise we create a company with the Customer First + Last name
+        organization_name = "#{input['first_name']} #{input['last_name']}'s organisation"
+        output[:opts] = {attach_to_organization: organization_name.strip }
       end
 
       input
