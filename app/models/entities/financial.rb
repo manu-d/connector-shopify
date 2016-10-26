@@ -4,7 +4,7 @@ class Entities::Financial < Maestrano::Connector::Rails::ComplexEntity
   end
 
   def self.external_entities_names
-    %w(Order Shopify\ Invoice Transaction)
+    %w(Order Transaction)
   end
 
   def self.public_external_entity_name
@@ -52,7 +52,7 @@ class Entities::Financial < Maestrano::Connector::Rails::ComplexEntity
                        .compact.flatten
                        .select { |t| t['status'] == 'success' && TRANSACTION_KINDS.include?(t['kind']) }
     {
-        'Shopify Invoice' => {'Invoice' => invoices},
+        'Order' => {'Invoice' => invoices},
         'Transaction' => {'Payment' => transactions}
     }
   end

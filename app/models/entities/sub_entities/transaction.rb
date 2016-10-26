@@ -28,6 +28,6 @@ class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntit
   end
 
   def self.last_update_date_from_external_entity_hash(entity)
-    entity['created_at'].to_time
+    entity['created_at']&.to_time || Time.now
   end
 end

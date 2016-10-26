@@ -6,7 +6,7 @@ describe Entities::Financial do
     subject { Entities::Financial }
 
     it { expect(subject.connec_entities_names).to eql(%w(Invoice Payment)) }
-    it { expect(subject.external_entities_names).to eql(%w(Order Shopify\ Invoice Transaction)) }
+    it { expect(subject.external_entities_names).to eql(%w(Order Transaction)) }
   end
 
   describe 'instance methods' do
@@ -21,7 +21,7 @@ describe Entities::Financial do
       context 'without transactions' do
         let(:expected) {
           {
-              'Shopify Invoice' => {'Invoice' => []},
+              'Order' => {'Invoice' => []},
               'Transaction' => {'Payment' => []}
           }
         }
@@ -33,7 +33,7 @@ describe Entities::Financial do
         let(:orders) { [{'id' => 'id', 'transactions' => transactions}] }
         let(:expected) {
           {
-              'Shopify Invoice' => {'Invoice' => [{'id' => 3, 'kind' => 'authorization', 'status' => 'pending'}]},
+              'Order' => {'Invoice' => [{'id' => 3, 'kind' => 'authorization', 'status' => 'pending'}]},
               'Transaction' => { 'Payment' => [{'id' => 1, 'kind' => 'sale', 'status' => 'success'}, {'id' => 2, 'kind' => 'refund', 'status' => 'success'}]}
           }
         }

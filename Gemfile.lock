@@ -59,6 +59,7 @@ GEM
     bootstrap-validator-rails (0.5.3)
       jquery-rails (>= 3.0)
       railties (>= 3.0)
+    bson (4.1.1)
     builder (3.2.2)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
@@ -126,14 +127,14 @@ GEM
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    maestrano (0.12.5)
-      httparty (~> 0.13)
+    maestrano (1.0.0.pre.RC7)
+      httparty (~> 0.14)
       json (~> 1.8)
       mime-types (~> 1.25)
       nokogiri (>= 1.5.0)
-      rest-client (~> 1.4)
+      rest-client (~> 1.8)
       uuid (~> 2.3)
-    maestrano-connector-rails (1.5.0)
+    maestrano-connector-rails (2.0.0.pre.RC11)
       attr_encrypted (~> 1.4.0)
       autoprefixer-rails
       bootstrap-sass
@@ -141,22 +142,31 @@ GEM
       figaro
       haml-rails
       hash_mapper (>= 0.2.2)
-      maestrano-rails
+      maestrano-rails (= 1.0.0.pre.RC7)
       rails (~> 4.2)
       sidekiq
       sidekiq-cron
       sidekiq-unique-jobs
       sinatra
       slim
-    maestrano-rails (0.15.4)
+    maestrano-rails (1.0.0.pre.RC7)
+      haml-rails
       jquery-rails
-      maestrano
-      rails
+      maestrano (= 1.0.0.pre.RC7)
+      mongoid
+      rails (~> 4.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mime-types (1.25.1)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
+    mongo (2.3.0)
+      bson (~> 4.1)
+    mongoid (5.1.5)
+      activemodel (~> 4.0)
+      mongo (~> 2.1)
+      origin (~> 2.2)
+      tzinfo (>= 0.3.37)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -180,6 +190,7 @@ GEM
       omniauth (~> 1.2)
     omniauth-shopify-oauth2 (1.1.14)
       omniauth-oauth2 (~> 1.2)
+    origin (2.2.2)
     pkg-config (1.1.7)
     puma (3.6.0)
     puma (3.6.0-java)
@@ -319,7 +330,6 @@ GEM
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
-    unf (0.1.4-java)
     unf_ext (0.0.7.2)
     uuid (2.3.8)
       macaddr (~> 1.0)
@@ -336,7 +346,7 @@ DEPENDENCIES
   figaro
   httparty
   jquery-rails
-  maestrano-connector-rails (~> 1.5)
+  maestrano-connector-rails (= 2.0.0.pre.RC11)
   mysql2
   omniauth-shopify-oauth2 (~> 1.1)
   puma
