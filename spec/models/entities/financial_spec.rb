@@ -26,14 +26,14 @@ describe Entities::Financial do
           }
         }
 
-        it { expect(subject.external_model_to_connec_model({'Order' => [{}]})).to eql(expected) }
+        it { expect(subject.external_model_to_connec_model({'Order' => []})).to eql(expected) }
       end
       context 'transactions' do
         let(:transactions) { [{'id' => 1, 'kind' => 'sale', 'status' => 'success'}, {'id' => 2, 'kind' => 'refund', 'status' => 'success'}, {'id' => 3, 'kind' => 'authorization', 'status' => 'pending'}] }
         let(:orders) { [{'id' => 'id', 'transactions' => transactions}] }
         let(:expected) {
           {
-              'Order' => {'Invoice' => [{'id' => 3, 'kind' => 'authorization', 'status' => 'pending'}]},
+              'Order' => { "Invoice"=> [{"id"=>"id", "transactions"=>[{"id"=>1, "kind"=>"sale", "status"=>"success"}, {"id"=>2, "kind"=>"refund", "status"=>"success"}, {"id"=>3, "kind"=>"authorization", "status"=>"pending"}]}]},
               'Transaction' => { 'Payment' => [{'id' => 1, 'kind' => 'sale', 'status' => 'success'}, {'id' => 2, 'kind' => 'refund', 'status' => 'success'}]}
           }
         }

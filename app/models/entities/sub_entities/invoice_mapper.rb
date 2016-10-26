@@ -21,7 +21,6 @@ class Entities::SubEntities::InvoiceMapper
   map from('/transaction_number'), to('/order_number')
   map from('/title'), to('/name')
   map from('/public_note'), to('/note')
-  map from('/due_date'), to('/note')
 
   map from('/shipping_address/line1'), to('shipping_address/address1')
   map from('/shipping_address/line2'), to('shipping_address/address2')
