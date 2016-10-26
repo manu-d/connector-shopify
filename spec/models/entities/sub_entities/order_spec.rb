@@ -63,6 +63,7 @@ describe Entities::SubEntities::Order do
               title: 'a sales order',
               transaction_number: '123456',
               status: 'DRAFT',
+              type: "CUSTOMER",
               person_id: [{id: 'person_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
               billing_address: {
                   line1: 'line1',
@@ -94,7 +95,7 @@ describe Entities::SubEntities::Order do
               ]
           }
         }
-        it { expect(subject.map_to('Sales Order', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+        it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
       end
 
     end
