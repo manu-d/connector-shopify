@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2'
 
-gem 'turbolinks'
+gem 'turbolinks', '~> 2.5'
 gem 'jquery-rails'
 gem 'figaro'
 gem 'httparty'
@@ -13,7 +13,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'puma', require: false
 gem 'sinatra', require: false
 
-gem 'maestrano-connector-rails', '2.0.0.pre.RC12'
+gem 'maestrano-connector-rails', '2.0.0.pre.RC11'
 gem 'omniauth-shopify-oauth2', '~> 1.1'
 gem 'shopify_api'
 
