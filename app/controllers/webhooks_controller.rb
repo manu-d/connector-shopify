@@ -9,7 +9,7 @@ class WebhooksController < ApplicationController
     return head 200, content_type: 'application/json' if webhook_newly_updated?
     org_uid = params[:org_uid]
     if current_organization
-      Rails.logger.debug("WebhooksController.receive with params: #{webhook_params}")
+      Maestrano::Connector::Rails::ConnectorLogger.log('debug', current_organization, "WebhooksController.receive with params: #{webhook_params}")
 
       if (params[:entity] == 'products')
         entity_name = 'variants'
@@ -32,7 +32,7 @@ class WebhooksController < ApplicationController
       end
       Maestrano::Connector::Rails::PushToConnecWorker.perform_async(current_organization.id, entities_hash)
     else
-      Rails.logger.debug('WebhooksController.receive: could not find organization: ' + org_uid)
+      Maestrano::Connector::Rails::ConnectorLogger.log('debug', nil, 'WebhooksController.receive: could not find organization: ' + org_uid)
     end
     head 200, content_type: 'application/json'
   end
