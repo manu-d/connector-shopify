@@ -8,8 +8,7 @@ class WebhooksController < ApplicationController
     # in the last 10 seconds
     return head 200, content_type: 'application/json' if webhook_newly_updated?
     org_uid = params[:org_uid]
-    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
-    if organization
+    if current_organization
       Rails.logger.debug("WebhooksController.receive with params: #{webhook_params}")
 
       if (params[:entity] == 'products')
@@ -24,14 +23,14 @@ class WebhooksController < ApplicationController
         # transactions are not sent via webhooks, we need to manually retrieve them
         # webhook_params is read-only, we need to make a copy to add 'transactions'
         order = webhook_params.to_hash
-        client = Maestrano::Connector::Rails::External.get_client organization
+        client = Maestrano::Connector::Rails::External.get_client current_organization
         transactions = Entities::SubEntities::Order.get_order_transactions client, order
         order['transactions'] = transactions
         entities_hash = {'Order' => [order]}
       else
         entities_hash = {entity_name.singularize.capitalize => entities}
       end
-      Maestrano::Connector::Rails::PushToConnecWorker.perform_async(organization.id, entities_hash)
+      Maestrano::Connector::Rails::PushToConnecWorker.perform_async(current_organization.id, entities_hash)
     else
       Rails.logger.debug('WebhooksController.receive: could not find organization: ' + org_uid)
     end
