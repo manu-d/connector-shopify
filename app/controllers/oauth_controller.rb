@@ -14,7 +14,6 @@ class OauthController < ApplicationController
   end
 
   def request_omniauth
-
     org_uid = params[:org_uid]
     shop_name = params[:shop]
     if shop_name.blank?
