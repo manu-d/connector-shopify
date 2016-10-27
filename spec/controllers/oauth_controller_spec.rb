@@ -6,39 +6,32 @@ describe OauthController, :type => :controller do
   let(:organization) { create(:organization, uid: uid) }
 
   describe 'request_omniauth' do
+    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
 
-    before {
-      allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization)
-    }
     subject { get :request_omniauth, provider: 'shopify', shop: shop }
-    context 'shop is blank' do
-      let(:shop) { '' }
-      it 'flash an error' do
-        subject
-        expect(flash[:error]).to eql('My shopify store url is required')
-      end
-    end
+
     context 'when not admin' do
-      before {
-        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(false)
-      }
+      before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(false) }
       it { expect(subject).to redirect_to(root_url) }
     end
 
     context 'when admin' do
-      before {
-        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
-      }
+      before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true) }
+
       it { expect(subject).to redirect_to("http://test.host/auth/shopify?state=#{uid}&shop=#{shop}.myshopify.com") }
+
+      context 'shop is blank' do
+        let(:shop) { '' }
+        it 'flash an error' do
+          subject
+          expect(flash[:error]).to eql('My shopify store url is required')
+        end
+      end
     end
   end
 
   describe 'create_omniauth' do
     let(:user) { Maestrano::Connector::Rails::User.new(email: 'lla@mail.com', tenant: 'default') }
-    before {
-      allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user)
-    }
-
 
     subject { get :create_omniauth, provider: 'shopify', state: uid }
 
@@ -88,6 +81,8 @@ describe OauthController, :type => :controller do
   describe 'destroy_omniauth' do
     let(:organization) { create(:organization, oauth_uid: 'oauth_uid') }
     subject { get :destroy_omniauth, organization_id: id }
+
+    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
 
     context 'when no organization is found' do
       let(:id) { 5 }

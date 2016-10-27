@@ -1,46 +1,27 @@
 class HomeController < ApplicationController
-  def index
-    @organization = current_organization
-    @displayable_synchronized_entities = @organization.displayable_synchronized_entities if @organization
-  end
-
   def update
-    organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:id])
+    return redirect_to(:back) unless is_admin
 
-    if organization && is_admin?(current_user, organization)
-      old_sync_state = organization.sync_enabled
-
-      organization.synchronized_entities.keys.each do |entity|
-        organization.synchronized_entities[entity] = !!params["#{entity}"]
-      end
-      organization.sync_enabled = organization.synchronized_entities.values.any?
-
-      unless organization.historical_data
-        historical_data = !!params['historical-data']
-        if historical_data
-          organization.date_filtering_limit = nil
-          organization.historical_data = true
-        else
-          organization.date_filtering_limit ||= Time.now
-        end
-      end
-
-      organization.save
-
-      if !old_sync_state
-        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization.id, {})
-        flash[:info] = 'Congrats, you\'re all set up! Your data are now being synced'
-      end
+    # Update list of entities to synchronize
+    current_organization.synchronized_entities.keys.each do |entity|
+      current_organization.synchronized_entities[entity] = params[entity.to_s].present?
     end
+    current_organization.sync_enabled = current_organization.synchronized_entities.values.any?
+    current_organization.enable_historical_data(params['historical-data'].present?)
+    trigger_sync = current_organization.sync_enabled && current_organization.sync_enabled_changed?
+    current_organization.save
+
+    # Trigger sync only if the sync has been enabled
+    start_synchronization if trigger_sync
 
     redirect_to(:back)
   end
 
   def synchronize
-    if is_admin
-      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization.id, (params['opts'] || {}).merge(forced: true))
-      flash[:info] = 'Synchronization requested'
-    end
+    return redirect_to(:back) unless is_admin
+
+    Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization.id, (params['opts'] || {}).merge(forced: true))
+    flash[:info] = 'Synchronization requested'
 
     redirect_to(:back)
   end
@@ -54,4 +35,10 @@ class HomeController < ApplicationController
     end
   end
 
+  private
+
+    def start_synchronization
+      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization.id, {})
+      flash[:info] = 'Congrats, you\'re all set up! Your data are now being synced'
+    end
 end

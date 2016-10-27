@@ -1,0 +1,16 @@
+encryption_key1:
+encryption_key2:
+
+shopify_api_id: 'SHOPIFY_API_ID'
+shopify_api_key: 'SHOPIFY_API_KEY'
+
+REDIS_URL: redis://localhost:6379/0/connector-shopify
+
+MNO_DEVPL_HOST: https://dev-platform.maestrano.io
+MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
+MNO_DEVPL_ENV_NAME: connector-shopify-uat
+MNO_DEVPL_ENV_KEY:
+MNO_DEVPL_ENV_SECRET:
+
+SIDEKIQ_USERNAME: admin
+SIDEKIQ_PASSWORD: password

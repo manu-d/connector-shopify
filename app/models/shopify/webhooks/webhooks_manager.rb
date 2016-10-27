@@ -21,8 +21,7 @@ module Shopify
 
       def initialize(org_uid, shop_name, token)
         @org_uid, @shop_name, @token = org_uid, shop_name, token
-        tenant = Maestrano::Connector::Rails::Organization.find_by_uid(@org_uid).tenant
-        @app_host = Maestrano[tenant].param('app_host')
+        Maestrano[current_organization.tenant].param('app_host')
       end
 
       def recreate_webhooks!
