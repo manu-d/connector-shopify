@@ -38,8 +38,7 @@ class OauthController < ApplicationController
   def create_omniauth
     omniauth_params = request.env['omniauth.params']
     if omniauth_params && org_uid = omniauth_params['state']
-      organization = Maestrano::Connector::Rails::Organization.find_by_uid_and_tenant(org_uid, current_user.tenant)
-      if organization && is_admin?(current_user, organization) && response = request.env['omniauth.auth']
+      if current_organization && is_admin?(current_user, organization) && response = request.env['omniauth.auth']
         shop_name = response.uid
         organization.from_omniauth(response)
         organization.instance_url = "https://#{shop_name}/admin"
@@ -55,18 +54,14 @@ class OauthController < ApplicationController
 
   # Unlink Organization from Shopify
   def destroy_omniauth
-    organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:organization_id])
-    if organization && is_admin?(current_user, organization)
-      shop_name = organization.oauth_uid
-      token = organization.oauth_token
-      organization.oauth_uid = nil
-      organization.oauth_token = nil
-      organization.refresh_token = nil
-      organization.sync_enabled = false
-      organization.save
-      Shopify::Webhooks::WebhooksManager.queue_destroy_webhooks(organization.uid, shop_name, token) unless shop_name.blank? || organization.uid.blank? || token.blank?
-    end
+    return redirect_to root_url unless is_admin
+
+    shop_name = current_organization.oauth_uid
+    token = current_organization.oauth_token
+    current_organization.clear_omniauth
+    Shopify::Webhooks::WebhooksManager.queue_destroy_webhooks(current_organization.uid, shop_name, token) unless shop_name.blank? || current_organization.uid.blank? || token.blank?
 
     redirect_to root_url
+
   end
 end
