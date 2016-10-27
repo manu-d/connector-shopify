@@ -135,7 +135,7 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.8)
       uuid (~> 2.3)
-    maestrano-connector-rails (2.0.0.pre.RC11)
+    maestrano-connector-rails (2.0.0.pre.RC12)
       attr_encrypted (~> 1.4.0)
       autoprefixer-rails
       bootstrap-sass
@@ -347,7 +347,7 @@ DEPENDENCIES
   figaro
   httparty
   jquery-rails
-  maestrano-connector-rails (= 2.0.0.pre.RC11)
+  maestrano-connector-rails (= 2.0.0.pre.RC12)
   mysql2
   omniauth-shopify-oauth2 (~> 1.1)
   puma

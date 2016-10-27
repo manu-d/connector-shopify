@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161024160020) do
+ActiveRecord::Schema.define(version: 20161018155513) do
 
   create_table "id_maps", force: :cascade do |t|
     t.string   "connec_id"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 20161024160020) do
     t.string   "org_uid"
   end
 
+  add_index "organizations", ["oauth_uid"], name: "index_organizations_on_oauth_uid", unique: true
   add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"
 
   create_table "synchronizations", force: :cascade do |t|
