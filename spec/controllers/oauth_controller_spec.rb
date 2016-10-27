@@ -89,6 +89,8 @@ describe OauthController, :type => :controller do
     let(:organization) { create(:organization, oauth_uid: 'oauth_uid') }
     subject { get :destroy_omniauth, organization_id: id }
 
+    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
+
     context 'when no organization is found' do
       let(:id) { 5 }
 
