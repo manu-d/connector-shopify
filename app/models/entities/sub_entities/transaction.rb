@@ -9,15 +9,13 @@ class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntit
 
   def self.mapper_classes
     {
-        'Payment' => Entities::SubEntities::PaymentMapper,
-        'Opportunity' => Entities::SubEntities::OpportunityMapper
+      'Payment' => Entities::SubEntities::PaymentMapper,
     }
   end
 
   def self.references
     {
-        'Payment' => Entities::SubEntities::PaymentMapper.payment_references,
-        'Opportunity' => Entities::SubEntities::Opportunity::REFERENCES
+      'Payment' => Entities::SubEntities::PaymentMapper.payment_references,
     }
   end
 
@@ -30,6 +28,6 @@ class Entities::SubEntities::Transaction < Maestrano::Connector::Rails::SubEntit
   end
 
   def self.last_update_date_from_external_entity_hash(entity)
-    entity['created_at'].to_time
+    entity['created_at']&.to_time || Time.now
   end
 end

@@ -1,9 +1,0 @@
-environment: 'local'
-app_host: 'http://localhost:3001/'
-
-encryption_key1: 'This is a key that is 256 bits!!'
-encryption_key2: 'This is a key that is 256 bits!!'
-
-default:
-  api_host: 'https://maestrano.com'
-  connec_host: 'https://api-connec.maestrano.com'

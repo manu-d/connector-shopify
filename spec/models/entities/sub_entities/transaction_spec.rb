@@ -66,21 +66,6 @@ describe Entities::SubEntities::Transaction do
         end
       end
 
-      describe 'opportunity' do
-        let(:connec_opportunity) {
-          {
-              'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-              'amount' => {'total_amount' => 155.0, 'currency' => 'AUD'},
-              'name' => 'N11003',
-              'probability' => 100,
-              'sales_stage' => 'Closed Won',
-              'sales_stage' => 'Closed Won',
-              'lead_id' => [{'id' => 'USER-ID', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}]
-          }
-        }
-
-        it { expect(subject.map_to('Opportunity', transaction)).to eql(connec_opportunity) }
-      end
     end
   end
 end
