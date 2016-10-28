@@ -32,13 +32,16 @@ class OauthController < ApplicationController
   end
 
   # Link an Organization to Shopify OAuth account
-  def create_omniauth
-    return redirect_to root_url unless is_admin
-
+  def create_omniauth 
     omniauth_params = request.env['omniauth.params']
+    org_uid = omniauth_params['state']
+    response = request.env['omniauth.auth']
+
+    return redirect_to root_url unless is_admin && org_uid && response
 
     shop_name = response.uid
     current_organization.from_omniauth(response)
+    
     current_organization.instance_url = "https://#{shop_name}/admin"
 
     unless current_organization.save
