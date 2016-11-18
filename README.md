@@ -12,84 +12,49 @@ The aim of this connector is to implement data sharing between Connec! and Shopi
 Configure your Shopify application. To create a new Shopify application:
 https://docs.shopify.com/api/guides/introduction/getting-started
 
-Create a configuration file `config/application.yml` with the following settings (complete with your Shopify / Connec! credentials)
+### Create an account in Maestrano's Developer Platform at:
+
 ```
-connec_api_id:
-connec_api_key:
-shopify_api_id:
-shopify_api_key:
+https://dev-platform.maestrano.io
 ```
+
+### Create an application on the Developer Platform:
+
+Documentation can be found here:
+
+:soon: :construction:
+
+
+Edit the configuration file `config/application-sample.yml` with the correct credentials (both Shopify's and Maestrano's Developer Platform ones) and rename it `config/application.yml`
+```
+encryption_key1: ''
+encryption_key2: ''
+
+shopify_client_id: 'your_shopify_id'
+shopify_client_secret: 'your_shopify_secret'
+
+REDIS_URL: redis://localhost:6379/0/connector-shopify
+
+MNO_DEVPL_HOST: https://dev-platform.maestrano.io
+MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
+MNO_DEVPL_ENV_NAME: shopify-uat
+MNO_DEVPL_ENV_KEY: 'your_local_env_key'
+MNO_DEVPL_ENV_SECRET: 'your_local_env_secret'
+
+```
+
+### Run the connector locally against the Maestrano UAT environment
+
 ### Run the connector
 #### First time setup
 ```
-
-# Install JRuby and gems the first time, install redis-server
-rvm install jruby-9.0.5.0
+# Install bundler and update your gemset
+gem install ruby-2.3.1
 gem install bundler
 bundle
-gem install foreman
-sudo apt-get install redis-server
 ```
 
 #### Start the application
 ```
-export PORT=5678
-export RACK_ENV=development
-foreman start
-```
-
-### Run the connector locally against the Maestrano production environment
-Add in the application.yml file the following properties:
-```
-api_host: 'http://localhost:3000'
-connec_host: 'http://localhost:8080'
-```
-
-### Test webhooks
-Install [ngrok](https://ngrok.com)
-Start in on your application port (for example 5678)
-```
-ngrok http 5678
-```
-this will open a console with an url that is tunnelling to your localhost (for example https://aee0c964.ngrok.io)
-update the `app_host` in the application.yml
-```
-app_host: 'https://aee0c964.ngrok.
-```
-then edit your app settings in Shopify https://app.shopify.com/services/partners/api_clients/[YOURAPPID]/edit
-add the redirection URL:
-<p align="center">
-  <img src="https://raw.github.com/maestrano/connector-shopify/master/edit-shopify-app-url.png" alt="edit-shopify-app-url.png">
-  <br/>
-  <br/>
-</p>
-
-### Destroy All Webhooks
-
-this command will destroy all the webhooks of the shopify shop linked to the application.
-```
-org_uid = 'cld-9p9y'
-o = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
-Shopify::Webhooks::WebhooksManager.new(org_uid, o.oauth_uid, o.oauth_token).destroy_all_webhooks
-```
-```
-shop = 'uat-test-store.myshopify.com'
-o = Maestrano::Connector::Rails::Organization.find_by_oauth_uid(shop)
-Shopify::Webhooks::WebhooksManager.new(o.uid, o.oauth_uid, o.oauth_token).destroy_all_webhooks
-```
-
-
-### Update application metadata
-
-How to update the application metadata in MnoHub console
-
-```
-url =  'https://aa386fdb.ngrok.io'
-metadata_url =  url + '/maestrano/metadata'
-app = App.where("name LIKE :prefix", prefix: "%shopify%").first
-if app
-  app.fetch_metadata!(metadata_url)
-else
-  p 'could not find shopify App'	
-end
+bin/rails s puma -p 3001
 ```
