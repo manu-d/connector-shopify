@@ -60,18 +60,22 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     map from('address_work/billing/country'), to('default_address/country')
 
     map from('email/address'), to('email')
+    map from('phone_work/landline'), to('default_address/phone')
 
     after_normalize do |input, output|
       notes = input['notes'].select { |note| note['tag'] == SHOPIFY_NOTE_TAG} if input['notes'].present?
       #Shopify only supports one note per customer, so we are selecting the last
       note = notes.last if notes
       output[:note] = note['description'] if note
+
       output
     end
 
     after_denormalize do |input, output|
+
       external_note = {id: SHOPIFY_NOTE_ID, description: input['note'], tag: SHOPIFY_NOTE_TAG} if input['note']
       output[:notes] = [external_note] if external_note
+
       output
     end
   end
