@@ -31,6 +31,9 @@ describe Entities::Person do
                     country: 'country'
                 }
             },
+            phone_work: {
+              landline: '0208 111 222 33'
+            },
             email: {
                 address: 'robert.patinson@touilaight.com'
             },
@@ -63,7 +66,8 @@ describe Entities::Person do
                             city: 'city',
                             province: 'region',
                             zip: 'postal_code',
-                            country: 'country'
+                            country: 'country',
+                            phone: '0208 111 222 33'
                         },
             email: 'robert.patinson@touilaight.com',
             note: 'very important'
