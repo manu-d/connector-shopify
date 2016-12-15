@@ -12,18 +12,15 @@ The aim of this connector is to implement data sharing between Connec! and Shopi
 Configure your Shopify application. To create a new Shopify application:
 https://docs.shopify.com/api/guides/introduction/getting-started
 
-### Create an account in Maestrano's Developer Platform at:
+### Create an account on Maestrano's Developer Platform at:
 
 ```
-https://dev-platform.maestrano.io
+https://developer-uat.maestrano.io
 ```
 
 ### Create an application on the Developer Platform:
 
-Documentation can be found here:
-
-:soon: :construction:
-
+Documentation can be found here: https://maestrano.atlassian.net/wiki/display/DEV/Integrate+your+app+on+partner%27s+marketplaces
 
 Edit the configuration file `config/application-sample.yml` with the correct credentials (both Shopify's and Maestrano's Developer Platform ones) and rename it `config/application.yml`
 ```
@@ -37,10 +34,9 @@ REDIS_URL: redis://localhost:6379/0/connector-shopify
 
 MNO_DEVPL_HOST: https://dev-platform.maestrano.io
 MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
-MNO_DEVPL_ENV_NAME: shopify-uat
+MNO_DEVPL_ENV_NAME: 'shopify-uat'
 MNO_DEVPL_ENV_KEY: 'your_local_env_key'
 MNO_DEVPL_ENV_SECRET: 'your_local_env_secret'
-
 ```
 
 ### Run the connector locally against the Maestrano UAT environment
