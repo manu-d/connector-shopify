@@ -6,7 +6,7 @@ shopify_api_key: 'SHOPIFY_API_KEY'
 
 REDIS_URL: redis://localhost:6379/0/connector-shopify
 
-MNO_DEVPL_HOST: https://dev-platform.maestrano.io
+MNO_DEVPL_HOST: https://developer-uat.maestrano.io
 MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
 MNO_DEVPL_ENV_NAME: connector-shopify-uat
 MNO_DEVPL_ENV_KEY:

@@ -32,7 +32,7 @@ shopify_client_secret: 'your_shopify_secret'
 
 REDIS_URL: redis://localhost:6379/0/connector-shopify
 
-MNO_DEVPL_HOST: https://dev-platform.maestrano.io
+MNO_DEVPL_HOST: https://developer-uat.maestrano.io
 MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
 MNO_DEVPL_ENV_NAME: 'shopify-uat'
 MNO_DEVPL_ENV_KEY: 'your_local_env_key'
@@ -46,11 +46,12 @@ MNO_DEVPL_ENV_SECRET: 'your_local_env_secret'
 ```
 # Install bundler and update your gemset
 gem install ruby-2.3.1
+gem install foreman
 gem install bundler
 bundle
 ```
 
 #### Start the application
 ```
-bin/rails s puma -p 3001
+foreman start
 ```
