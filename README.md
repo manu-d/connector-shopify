@@ -22,7 +22,7 @@ https://developer.maestrano.com
 
 Documentation can be found here:
 
-https://maestrano.atlassian.net/wiki/display/DEV/Testing+using+Maestrano+Sandbox+environment
+[Create a new app](https://maestrano.atlassian.net/wiki/display/DEV/Testing+using+Maestrano+Sandbox+environment)
 
 
 Edit the configuration file `config/application-sample.yml` with the correct credentials (both Shopify's and Maestrano's Developer Platform ones) and rename it `config/application.yml`
