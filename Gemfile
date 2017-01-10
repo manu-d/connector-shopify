@@ -14,6 +14,7 @@ gem 'puma', require: false
 gem 'sinatra', require: false
 
 gem 'maestrano-connector-rails', '2.0.0'
+
 gem 'omniauth-shopify-oauth2', '~> 1.1'
 gem 'shopify_api'
 
