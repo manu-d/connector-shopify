@@ -13,11 +13,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'puma', require: false
 gem 'sinatra', require: false
 
-gem 'maestrano-connector-rails', '2.0.0.pre.RC13'
+gem 'maestrano-connector-rails', '2.0.0'
 gem 'omniauth-shopify-oauth2', '~> 1.1'
 gem 'shopify_api'
-
-gem 'redis-rails'
 
 group :production, :uat do
   gem 'activerecord-jdbcmysql-adapter', platforms: :jruby

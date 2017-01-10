@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   root 'home#index'
   get 'home/index' => 'home#index'
   get 'home/redirect_to_external' => 'home#redirect_to_external'
-  get 'home/index' => 'home#index'
   put 'home/update' => 'home#update'
   post 'home/synchronize' => 'home#synchronize'
   get 'synchronizations/index' => 'synchronizations#index'
