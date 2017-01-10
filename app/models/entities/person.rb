@@ -68,6 +68,28 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       note = notes.last if notes
       output[:note] = note['description'] if note
 
+      address1 = {
+        address1: input['address_work']['billing']['line1'],
+        address2: input['address_work']['billing']['line2'],
+        city: input['address_work']['billing']['city'],
+        phone: input['phone_work']['landline'],
+        province: input['address_work']['billing']['region'],
+        zip: input['address_work']['billing']['postal_code'],
+        country: input['address_work']['billing']['country']&.downcase
+      } if input['address_work']['billing']
+
+      address2 = {
+        address1: input['address_work']['shipping']['line1'],
+        address2: input['address_work']['shipping']['line2'],
+        city: input['address_work']['shipping']['city'],
+        phone: input['phone_work']['landline2'],
+        province: input['address_work']['shipping']['region'],
+        zip: input['address_work']['shipping']['postal_code'],
+        country: input['address_work']['shipping']['country']&.downcase
+      } if input['address_work']['shipping']
+
+      output[:addresses] = [address1, address2].compact
+
       output
     end
 
@@ -78,5 +100,6 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
 
       output
     end
+
   end
 end

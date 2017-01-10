@@ -15,12 +15,15 @@ https://docs.shopify.com/api/guides/introduction/getting-started
 ### Create an account on Maestrano's Developer Platform at:
 
 ```
-https://developer-uat.maestrano.io
+https://developer.maestrano.com
 ```
 
 ### Create an application on the Developer Platform:
 
-Documentation can be found here: https://maestrano.atlassian.net/wiki/display/DEV/Integrate+your+app+on+partner%27s+marketplaces
+
+Documentation can be found here:
+
+[Create a new app](https://maestrano.atlassian.net/wiki/display/DEV/Integrate+your+app+on+partner%27s+marketplaces)
 
 Edit the configuration file `config/application-sample.yml` with the correct credentials (both Shopify's and Maestrano's Developer Platform ones) and rename it `config/application.yml`
 ```
@@ -32,9 +35,9 @@ shopify_client_secret: 'your_shopify_secret'
 
 REDIS_URL: redis://localhost:6379/0/connector-shopify
 
-MNO_DEVPL_HOST: https://developer-uat.maestrano.io
+MNO_DEVPL_HOST: https://developer.maestrano.com
 MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
-MNO_DEVPL_ENV_NAME: 'shopify-uat'
+MNO_DEVPL_ENV_NAME: 'shopify-local'
 MNO_DEVPL_ENV_KEY: 'your_local_env_key'
 MNO_DEVPL_ENV_SECRET: 'your_local_env_secret'
 ```
@@ -55,3 +58,5 @@ bundle
 ```
 foreman start
 ```
+
+#### Launch the Application from Maestrano Developer Sandbox environment
