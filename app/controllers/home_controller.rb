@@ -19,10 +19,8 @@ class HomeController < ApplicationController
 
   def synchronize
     return redirect_to(:back) unless is_admin
-
     Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization.id, (params['opts'] || {}).merge(forced: true))
     flash[:info] = 'Synchronization requested'
-
     redirect_to(:back)
   end
 

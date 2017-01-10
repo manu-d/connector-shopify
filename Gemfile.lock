@@ -115,14 +115,14 @@ GEM
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    maestrano (1.0.2)
+    maestrano (1.0.0)
       httparty (~> 0.14)
       json (~> 1.8)
       mime-types (~> 1.25)
       nokogiri (>= 1.5.0)
       rest-client (~> 1.8)
       uuid (~> 2.3)
-    maestrano-connector-rails (2.0.1)
+    maestrano-connector-rails (2.0.0)
       attr_encrypted (~> 1.4.0)
       autoprefixer-rails
       bootstrap-sass
@@ -130,17 +130,17 @@ GEM
       figaro
       haml-rails
       hash_mapper (>= 0.2.2)
-      maestrano-rails (~> 1.0.0)
+      maestrano-rails (= 1.0.0)
       rails (~> 4.2)
       sidekiq
       sidekiq-cron
       sidekiq-unique-jobs
       sinatra
       slim
-    maestrano-rails (1.0.2)
+    maestrano-rails (1.0.0)
       haml-rails
       jquery-rails
-      maestrano (~> 1.0.0)
+      maestrano (= 1.0.0)
       mongoid
       rails (~> 4.2)
     mail (2.6.4)
@@ -267,7 +267,7 @@ GEM
       rack
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
-    sidekiq (4.2.7)
+    sidekiq (4.2.8)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
@@ -313,6 +313,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
+    unf (0.1.4-java)
     unf_ext (0.0.7.2)
     uuid (2.3.8)
       macaddr (~> 1.0)
@@ -328,13 +329,12 @@ DEPENDENCIES
   figaro
   httparty
   jquery-rails
-  maestrano-connector-rails
+  maestrano-connector-rails (= 2.0.0)
   mysql2
   omniauth-shopify-oauth2 (~> 1.1)
   puma
   rails (~> 4.2)
   rails_12factor
-  redis-rails
   rspec-rails
   shopify_api
   shoulda-matchers
