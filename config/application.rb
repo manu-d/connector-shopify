@@ -14,10 +14,9 @@ module ConnectorShopify
     g.helper_specs false
   end
 
-    # ----------------------------------------------------------------
-    # config.action_dispatch.default_headers['P3P'] = 'CP="Not used"'
-    # config.action_dispatch.default_headers.delete('X-Frame-Options')
-    # ----------------------------------------------------------------
+
+    config.action_dispatch.default_headers['P3P'] = 'CP="Not used"'
+    config.action_dispatch.default_headers.delete('X-Frame-Options')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -33,12 +32,5 @@ module ConnectorShopify
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
-
-
-    # # ActiveJob config
-    # config.active_job.queue_adapter = :sidekiq
-
-    # Redis caching
-    # config.cache_store = :redis_store if ENV['REDIS_URL']
   end
 end
