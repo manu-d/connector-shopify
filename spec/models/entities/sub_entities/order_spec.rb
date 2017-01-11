@@ -20,37 +20,65 @@ describe Entities::SubEntities::Order do
 
       let(:order) {
         {
-            id: 'id',
-            name: 'a sales order',
-            order_number: '123456',
-            financial_status: 'pending',
-            customer: {id: 'person_id'},
-            billing_address: {
-                address1: 'line1',
-                province: 'region',
-                zip: 'postal_code',
-                address2: 'line2',
-                city: 'city',
-                country_code: 'country'
-            },
-            shipping_address: {
-                address1: 'shipping_address.line1',
-                address2: 'shipping_address.line2',
-                city: 'shipping_address.city',
-                province: 'shipping_address.region',
-                zip: 'shipping_address.postal_code',
-                country_code: 'shipping_address.country'
-            },
-            created_at: Date.new(1985, 9, 17).iso8601,
-            line_items: [
+          id: 'id',
+          name: 'a sales order',
+          order_number: '123456',
+          financial_status: 'pending',
+          customer: {id: 'person_id'},
+          taxes_included: false,
+          billing_address: {
+            address1: 'line1',
+            province: 'region',
+            zip: 'postal_code',
+            address2: 'line2',
+            city: 'city',
+            country_code: 'country'
+          },
+          shipping_address: {
+            address1: 'shipping_address.line1',
+            address2: 'shipping_address.line2',
+            city: 'shipping_address.city',
+            province: 'shipping_address.region',
+            zip: 'shipping_address.postal_code',
+            country_code: 'shipping_address.country'
+          },
+          shipping_lines: [
+            {
+              id: "369256396",
+              title: "Shipping",
+              price: 10,
+              code: "Free Shipping",
+              source: "shopify",
+              phone: nil,
+              requested_fulfillment_service_id: nil,
+              delivery_category: nil,
+              carrier_identifier: nil,
+              tax_lines: [
+              ]
+            }
+          ],
+          created_at: Date.new(1985, 9, 17).iso8601,
+          line_items: [
+            {
+              id: 'line_id',
+              price: 55,
+              quantity: '48',
+              title: 'description',
+              variant_id: 'item_id',
+              tax_lines: [
                 {
-                    id: 'line_id',
-                    price: 55,
-                    quantity: '48',
-                    title: 'description',
-                    variant_id: 'item_id'
-                }
-            ]
+                  title: "State Tax",
+                  price: "3.98",
+                  rate: 0.06
+                },
+                {
+                  title: "Custom Tax",
+                  price: "3.98",
+                  rate: 0.06
+                },
+              ]
+            }
+          ]
         }
       }
 
@@ -59,43 +87,67 @@ describe Entities::SubEntities::Order do
 
         let(:connec_hash) {
           {
-              id: [{id: 'id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
-              title: 'a sales order',
-              transaction_number: '123456',
-              status: 'DRAFT',
-              type: "CUSTOMER",
-              person_id: [{id: 'person_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
-              billing_address: {
-                  line1: 'line1',
-                  line2: 'line2',
-                  city: 'city',
-                  region: 'region',
-                  postal_code: 'postal_code',
-                  country: 'country'
+            id: [{id: 'id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
+            title: 'a sales order',
+            transaction_number: '123456',
+            status: 'DRAFT',
+            type: "CUSTOMER",
+            person_id: [{id: 'person_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
+            billing_address: {
+                line1: 'line1',
+                line2: 'line2',
+                city: 'city',
+                region: 'region',
+                postal_code: 'postal_code',
+                country: 'country'
+            },
+            shipping_address: {
+                line1: 'shipping_address.line1',
+                line2: 'shipping_address.line2',
+                city: 'shipping_address.city',
+                region: 'shipping_address.region',
+                postal_code: 'shipping_address.postal_code',
+                country: 'shipping_address.country'
+            },
+            transaction_date: Date.new(1985, 9, 17).iso8601,
+            lines: [
+              {
+                id: [{id: 'line_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
+                unit_price: {
+                    net_amount: 55.0,
+                    tax_amount: 7.96
+                },
+                quantity: '48',
+                description: 'description',
+                item_id: [{id: 'item_id', provider: organization.oauth_provider, realm: organization.oauth_uid}]
               },
-              shipping_address: {
-                  line1: 'shipping_address.line1',
-                  line2: 'shipping_address.line2',
-                  city: 'shipping_address.city',
-                  region: 'shipping_address.region',
-                  postal_code: 'shipping_address.postal_code',
-                  country: 'shipping_address.country'
-              },
-              transaction_date: Date.new(1985, 9, 17).iso8601,
-              lines: [
-                  {
-                      id: [{id: 'line_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
-                      unit_price: {
-                          net_amount: 55
-                      },
-                      quantity: '48',
-                      description: 'description',
-                      item_id: [{id: 'item_id', provider: organization.oauth_provider, realm: organization.oauth_uid}]
-                  }
-              ]
+              {
+                id: [{id: '369256396', provider: organization.oauth_provider, realm: organization.oauth_uid}],
+                unit_price: {
+                    net_amount: 10.0,
+                    tax_amount: 0.0
+                },
+                description: 'Shipping',
+                quantity: 1
+              }
+            ]
           }
         }
-        it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+
+        context 'with taxes excluded' do
+          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+        end
+
+        context 'with taxes included' do
+
+          before do
+            order[:taxes_included] = true
+            connec_hash[:lines][0][:unit_price][:net_amount] = 55 - 7.96
+          end
+
+          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+        end
+
       end
 
     end

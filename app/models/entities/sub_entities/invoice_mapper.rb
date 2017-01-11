@@ -37,10 +37,20 @@ class Entities::SubEntities::InvoiceMapper
   map from('/billing_address/country'), to('billing_address/country_code')
 
   map from('/lines'), to('/line_items'), using: Entities::SubEntities::LineMapper
+  map from('/lines_shipping'), to('/shipping_lines'), using: Entities::SubEntities::LineMapper
+
+  before_denormalize do |input, output|
+    input['line_items']&.each do |line|
+      line['taxes_included'] = input['taxes_included']
+    end
+    input
+  end
 
   after_denormalize do |input, output|
     output[:status] = STATUS_MAPPING_INV[input['financial_status']] if input['financial_status']
     output[:type] = input['kind'] != 'refund' ? 'CUSTOMER' : 'SUPPLIER'
+    output[:lines].concat(output.delete(:lines_shipping))
+
     output
   end
 end
