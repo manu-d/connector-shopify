@@ -54,7 +54,8 @@ class OauthController < ApplicationController
 
     redirect_to root_url
   rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
-    Maestrano::Connector::Rails::ConnectorLogger.log('debug', current_organization, "Webhooks could not be created: #{e}")
+    Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
+    return redirect_to root_url
   end
 
   # Unlink Organization from Shopify
