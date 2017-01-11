@@ -43,6 +43,7 @@ class Entities::SubEntities::InvoiceMapper
     input['line_items']&.each do |line|
       line['taxes_included'] = input['taxes_included']
     end
+
     input
   end
 
@@ -53,4 +54,5 @@ class Entities::SubEntities::InvoiceMapper
 
     output
   end
+
 end

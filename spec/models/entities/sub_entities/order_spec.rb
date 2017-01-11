@@ -45,7 +45,7 @@ describe Entities::SubEntities::Order do
           shipping_lines: [
             {
               id: "369256396",
-              title: "Shipping",
+              title: "Standard",
               price: 10,
               code: "Free Shipping",
               source: "shopify",
@@ -127,7 +127,7 @@ describe Entities::SubEntities::Order do
                     net_amount: 10.0,
                     tax_amount: 0.0
                 },
-                description: 'Shipping',
+                description: 'Shipping: Standard',
                 quantity: 1
               }
             ]
@@ -142,7 +142,6 @@ describe Entities::SubEntities::Order do
 
           before do
             order[:taxes_included] = true
-            connec_hash[:lines][0][:unit_price][:net_amount] = 55 - 7.96
           end
 
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }

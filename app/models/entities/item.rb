@@ -111,7 +111,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     map from('description'), to('body_html')
 
     after_normalize do |input, output|
-      output[:product_title] = input['name']
+      output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
 
