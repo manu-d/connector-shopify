@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe HomeController, :type => :controller do
   let(:back_path) { home_index_path }
-  before(:each) do
-    request.env["HTTP_REFERER"] = back_path
-  end
+
+  before(:each) { request.env["HTTP_REFERER"] = back_path}
 
   describe 'index' do
     subject { get :index }
@@ -16,8 +15,10 @@ describe HomeController, :type => :controller do
     let(:user) { create(:user) }
     let(:organization) { create(:organization, synchronized_entities: {'people' => false, 'item' => true}) }
 
-    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user) }
-    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
+    before do
+      allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user)
+      allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization)
+    end
 
     subject { put :update, id: organization.id, 'people' => true, 'item' => false, 'lala' => true }
 
@@ -61,8 +62,10 @@ describe HomeController, :type => :controller do
     let(:user) { create(:user) }
     let(:organization) { create(:organization, synchronized_entities: {'people' => false, 'item' => true}) }
 
-    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user) }
-    before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
+    before do
+      allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user)
+      allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization)
+    end
 
     subject { post :synchronize }
 
@@ -105,13 +108,13 @@ describe HomeController, :type => :controller do
   describe 'redirect_to_external' do
     subject { get :redirect_to_external }
 
-    context 'when organization has a redirect url' do   
-      let(:organization) {  create(:organization, instance_url: 'url') }    
-      before {    
-        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization)    
-      }   
-     
-      it {expect(subject).to redirect_to('url')}    
+    context 'when organization has a redirect url' do
+      let(:organization) {  create(:organization, instance_url: 'url') }
+      before do
+        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization)
+      end
+
+      it {expect(subject).to redirect_to('url')}
     end
 
     context 'otherwise' do

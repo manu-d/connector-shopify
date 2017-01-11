@@ -55,9 +55,7 @@ describe OauthController, :type => :controller do
       let!(:organization) { create(:organization, tenant: 'default', uid: uid) }
 
       context 'when not admin' do
-        before {
-          allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(false)
-        }
+        before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(false)}
 
         it 'does nothing' do
           expect(Maestrano::Connector::Rails::External).to_not receive(:fetch_user)
@@ -66,14 +64,36 @@ describe OauthController, :type => :controller do
       end
 
       context 'when admin' do
-        before {
-          allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(true)
-          allow_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
+
+        let(:stub_response)     { OpenStruct.new(uid: 'test', credentials: {'token' => '123'})}
+
+        before do
+          allow(request).to receive(:env).and_return( {'omniauth.params' => {'state' => 'org-123'}, 'omniauth.auth' => stub_response})
+          allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
+          allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization)
           allow(Maestrano::Connector::Rails::External).to receive(:fetch_user).and_return({'locale' => 'a', 'timezone' => 'b'})
           allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
-        }
+        end
 
-        xit { 'TODO' }
+        it 'Updates the orgnization with the OAuth credentials' do
+          expect(organization).to receive(:from_omniauth)
+
+          allow(Shopify::Webhooks::WebhooksManager).to receive(:queue_create_webhooks).and_return('Created')
+          subject
+        end
+
+        context 'When webhooks cannot be created' do
+
+          it 'Recues the error and logs the failure to the console' do
+            expect(organization).to receive(:from_omniauth)
+
+            allow(Shopify::Webhooks::WebhooksManager).to receive(:queue_create_webhooks).and_raise(Shopify::Webhooks::WebhooksManager::CreationFailed.new 'TEST')
+
+            expect(Rails.logger).to receive(:warn).with("uid=\"uid-123\", org_uid=\"\", tenant=\"default\", message=\"Webhooks could not be created: TEST\"")
+
+            subject
+          end
+        end
       end
     end
   end
@@ -93,28 +113,22 @@ describe OauthController, :type => :controller do
     context 'when organization is found' do
       let(:id) { organization.id }
       let(:user) { Maestrano::Connector::Rails::User.new(email: 'lla@mail.com', tenant: 'default') }
-      before {
-        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user)
-      }
+      before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user)}
 
       context 'when not admin' do
-        before {
-          allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(false)
-        }
+        before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(false)}
 
         it { expect { subject }.to_not change { organization.oauth_uid } }
       end
 
       context 'when admin' do
-        before {
-          allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(true)
-        }
+        before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(true)}
 
-        it {
+        it do
           subject
           organization.reload
           expect(organization.oauth_uid).to be_nil
-        }
+        end
       end
     end
   end

@@ -32,7 +32,7 @@ class OauthController < ApplicationController
   end
 
   # Link an Organization to Shopify OAuth account
-  def create_omniauth 
+  def create_omniauth
     omniauth_params = request.env['omniauth.params']
     org_uid = omniauth_params['state'] if omniauth_params
     response = request.env['omniauth.auth']
@@ -41,7 +41,7 @@ class OauthController < ApplicationController
 
     shop_name = response.uid
     current_organization.from_omniauth(response)
-    
+
     current_organization.instance_url = "https://#{shop_name}/admin"
 
     unless current_organization.save
@@ -53,6 +53,9 @@ class OauthController < ApplicationController
     Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
 
     redirect_to root_url
+  rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
+    Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
+    return redirect_to root_url
   end
 
   # Unlink Organization from Shopify
