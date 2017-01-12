@@ -10,7 +10,7 @@ class Entities::SubEntities::LineMapper
   after_denormalize do |input, output|
 	  output[:quantity] ||= 1
 
-    total_line_tax = input['tax_lines']&.map { |line| line['price']&.to_f }.compact.sum
+    total_line_tax = input['tax_lines']&.map { |line| (line['price']&.to_f / output[:quantity].to_f) }.compact.sum
 
 	  output[:unit_price][:tax_amount] = total_line_tax&.to_f
 
