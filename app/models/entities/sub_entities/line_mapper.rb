@@ -9,13 +9,10 @@ class Entities::SubEntities::LineMapper
 
   after_denormalize do |input, output|
 	  output[:quantity] ||= 1
-    total_line_tax = 0.0
 
-    input['tax_lines']&.each do |line|
-      total_line_tax += line['price'].to_f if line['price']
-    end
+    total_line_tax = input['tax_lines']&.map { |line| line['price']&.to_f }.compact.sum
 
-	  output[:unit_price][:tax_amount] = total_line_tax
+	  output[:unit_price][:tax_amount] = total_line_tax&.to_f
 
     output[:description] = "Shipping: #{input['title']}" unless input['variant_id']
 
