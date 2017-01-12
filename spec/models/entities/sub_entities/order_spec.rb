@@ -26,6 +26,7 @@ describe Entities::SubEntities::Order do
           financial_status: 'pending',
           customer: {id: 'person_id'},
           taxes_included: false,
+          quantity: '1',
           billing_address: {
             address1: 'line1',
             province: 'region',
@@ -62,7 +63,7 @@ describe Entities::SubEntities::Order do
             {
               id: 'line_id',
               price: 55,
-              quantity: '48',
+              quantity: '1',
               title: 'description',
               variant_id: 'item_id',
               tax_lines: [
@@ -117,7 +118,7 @@ describe Entities::SubEntities::Order do
                     net_amount: 55.0,
                     tax_amount: 7.96
                 },
-                quantity: '48',
+                quantity: '1',
                 description: 'description',
                 item_id: [{id: 'item_id', provider: organization.oauth_provider, realm: organization.oauth_uid}]
               },
