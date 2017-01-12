@@ -155,6 +155,7 @@ describe Entities::SubEntities::Order do
           {
               'id' => 'order_id_1',
               'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}],
+              'shipping_lines' => [{'id' => 'shipping_line_item_1'}, {'id' => 'shipping_line_item_2'}],
               'customer' => {'id' => 'c1'},
               'order_number' => '1001'
           }, {
@@ -174,11 +175,14 @@ describe Entities::SubEntities::Order do
             {
                 'id' => 'order_id_1',
                 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}],
+                "shipping_lines"=> [{"id"=>"shipping_line_item_1"}, {"id"=>"shipping_line_item_2"}],
                 'customer' => {'id' => 'c1'},
                 'order_number'=>'1001',
                 'transactions' => [
-                    {'id' => 'transactions_1', 'order_id' => 'order_id_1', 'transaction_number' => '1001', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}], 'customer' => {'id' => 'c1'}},
-                    {'id' => 'transactions_2', 'order_id' => 'order_id_1', 'transaction_number' => '1001','line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}], 'customer' => {'id' => 'c1'}}
+                    {'id' => 'transactions_1', 'order_id' => 'order_id_1', 'transaction_number' => '1001', 'line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}], 'shipping_lines' => [{"id"=>"shipping_line_item_1"}, {"id"=>"shipping_line_item_2"}],
+                     'customer' => {'id' => 'c1'}},
+                    {'id' => 'transactions_2', 'order_id' => 'order_id_1', 'transaction_number' => '1001','line_items' => [{'id' => 'line_item_1'}, {'id' => 'line_item_2'}], 'shipping_lines' => [{"id"=>"shipping_line_item_1"}, {"id"=>"shipping_line_item_2"}],
+                     'customer' => {'id' => 'c1'}}
                 ]
             }, {
                 'id' => 'order_id_2',
@@ -186,8 +190,8 @@ describe Entities::SubEntities::Order do
                 'customer' => {'id' => 'c2'},
                 'order_number'=>'1002',
                 'transactions' => [
-                    {'id' => 'transactions_3', 'order_id' => 'order_id_2', 'transaction_number' => '1002', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}], 'customer' => {'id' => 'c2'}},
-                    {'id' => 'transactions_4', 'order_id' => 'order_id_2', 'transaction_number' => '1002', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}], 'customer' => {'id' => 'c2'}}
+                    {'id' => 'transactions_3', 'order_id' => 'order_id_2', 'transaction_number' => '1002', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}], "shipping_lines"=> [], 'customer' => {'id' => 'c2'}},
+                    {'id' => 'transactions_4', 'order_id' => 'order_id_2', 'transaction_number' => '1002', 'line_items' => [{'id' => 'line_item_3'}, {'id' => 'line_item_4'}], "shipping_lines"=> [], 'customer' => {'id' => 'c2'}}
                 ]
             }
         ]

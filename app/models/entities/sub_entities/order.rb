@@ -31,6 +31,7 @@ class Entities::SubEntities::Order < Maestrano::Connector::Rails::SubEntityBase
     transactions = client.find('Transaction', order_id: order['id'])
     transactions.each do |transaction|
       transaction['line_items'] = order['line_items']
+      transaction['shipping_lines'] = order['shipping_lines'] || []
       transaction['order_id'] = order['id']
       transaction['customer'] = order['customer']
       transaction['transaction_number'] = order['order_number']
