@@ -6,13 +6,11 @@ Maestrano::Connector::Rails::Organization.all.each do |organization|
   p "#{organization.uid}  #{shop_name} #{organization.name}"
   token = organization.oauth_token
   ShopifyAPI::Session.temp(shop_name, token) do
-    begin
-      ShopifyAPI::Webhook.all.each do |webhook|
-        p webhook.address
-      end
-    rescue Exception => e
-      puts e.message
-    end
+  ShopifyAPI::Webhook.all.each do |webhook|
+    p webhook.address
+  end
+  rescue Exception => e
+    puts e.message
   end
 end
 

@@ -28,7 +28,31 @@ describe Entities::SubEntities::Transaction do
             'amount' => 155.00,
             'customer' => {
                 'id' => 'USER-ID'
-            }
+            },
+            "line_items"=>
+              [{"id"=>7946635337,
+                "variant_id"=>26168316425,
+                "title"=>"SHOPIFY Product 0001",
+                "quantity"=>1,
+                "price"=>"200.00",
+                "grams"=>0,
+                "sku"=>"",
+                "variant_title"=>"S",
+                "vendor"=>"maesrano-integration",
+                "fulfillment_service"=>"manual",
+                "product_id"=>nil,
+                "requires_shipping"=>true,
+                "taxable"=>true,
+                "gift_card"=>false,
+                "name"=>"SHOPIFY Product 0001 - S",
+                "variant_inventory_management"=>nil,
+                "properties"=>[],
+                "product_exists"=>false,
+                "fulfillable_quantity"=>1,
+                "total_discount"=>"0.00",
+                "fulfillment_status"=>nil,
+                "tax_lines"=>[{"title"=>"VAT", "price"=>"33.33", "rate"=>0.2}]}],
+             "shipping_lines"=>[]
         }
       }
 
@@ -36,29 +60,27 @@ describe Entities::SubEntities::Transaction do
         let(:connec_payment) {
           {
               'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-              'payment_lines' => [
-                  {
-                      'id' => [{'id' => 'shopify-payment', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                      'amount' => 155.0,
-                      'linked_transactions' => [
-                          {
-                              'id' => [{'id' => 'N11003', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                              'class' => 'Invoice'
-                          },
-                          {
-                              'id' => [{'id' => 'N11003', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                              'class' => 'SalesOrder'
-                          }
-                      ]
-                  }
-              ],
-              'amount' => {'currency' => 'AUD', 'total_amount' => 155.0},
+               'payment_lines'=> [
+                   {
+                     "id"=>[{"id"=>7946635337, 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+                     "unit_price"=>{"net_amount"=>200.0, "tax_amount"=>33.33},
+                     "quantity"=>1,
+                     "description"=>"SHOPIFY Product 0001",
+                     "item_id"=> [{"id"=>26168316425, 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+                     'linked_transactions' => [
+                       'id' => [{'id' => 'N11003', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
+                       'class' => 'Invoice'
+                     ]
+                   }
+                 ],
+              # The amount field is read only in Connec! and calculated based on lines
+              'amount' => {'currency' => 'AUD'},
               'title' => 'N11003',
               'person_id' => [{'id' => 'USER-ID', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
               'transaction_date' => '2016-06-12 23:26:26',
               'type' => 'CUSTOMER',
               'status' => 'ACTIVE'
-          }
+           }
         }
 
         it 'maps to Connec! payment' do

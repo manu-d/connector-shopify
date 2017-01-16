@@ -2,12 +2,10 @@
   .banners
     .row
       .col-md-10.col-md-offset-2
-        %h2 Shopify Connector
+        %h2 Shopify Add-on
         %p
           -if current_organization
             Link your company <strong>#{current_organization.name} (#{current_organization.uid})</strong> to Shopify to get your business in synch. Check the status of your connection on this screen.
-          -else
-            Link your account to Shopify to get your business in synch. Check the status of your connection on this screen.
 
   .container
     - if current_user
@@ -87,7 +85,7 @@
                 %small#historical-data-display-unchecked{style: "display: #{current_organization.historical_data ? 'none' : 'block'}"} Only data created after #{(current_organization.date_filtering_limit && current_organization.date_filtering_limit.utc || Time.now.utc).to_formatted_s(:long_ordinal)} will be synchronized
                 %small#historical-data-display-checked{style: "display: #{!current_organization.historical_data ? 'none' : 'block'}"}
                   Synchronizing your historical data will share all data in Shopify. This action is not reversible. Want to know more? Check #{link_to 'here', 'https://maestrano.atlassian.net/wiki/display/UKB/How+Connec%21+manages+Historical+Data+Sharing'}
-                
+
           .spacer1
           .row
             .col-md-2.col-md-offset-10.text-center.link-step-action
@@ -98,9 +96,3 @@
         .row
           .col-md-4.col-md-offset-4.text-center
             = link_to 'Go to Shopify', home_redirect_to_external_path, class: 'btn btn-lg btn-primary'
-
-    - else
-      .row
-        .col-md-4.col-md-offset-4.center
-          = link_to "Link your Maestrano account", Maestrano::Connector::Rails::Engine.routes.url_helpers.default_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
-

@@ -60,19 +60,46 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     map from('address_work/billing/country'), to('default_address/country')
 
     map from('email/address'), to('email')
+    map from('phone_work/landline'), to('default_address/phone')
 
     after_normalize do |input, output|
       notes = input['notes'].select { |note| note['tag'] == SHOPIFY_NOTE_TAG} if input['notes'].present?
       #Shopify only supports one note per customer, so we are selecting the last
       note = notes.last if notes
       output[:note] = note['description'] if note
+
+      address1 = {
+        address1: input['address_work']['billing']['line1'],
+        address2: input['address_work']['billing']['line2'],
+        city: input['address_work']['billing']['city'],
+        phone: input['phone_work']['landline'],
+        province: input['address_work']['billing']['region'],
+        zip: input['address_work']['billing']['postal_code'],
+        country: input['address_work']['billing']['country']&.downcase
+      } if input['address_work']['billing']
+
+      address2 = {
+        address1: input['address_work']['shipping']['line1'],
+        address2: input['address_work']['shipping']['line2'],
+        city: input['address_work']['shipping']['city'],
+        phone: input['phone_work']['landline2'],
+        province: input['address_work']['shipping']['region'],
+        zip: input['address_work']['shipping']['postal_code'],
+        country: input['address_work']['shipping']['country']&.downcase
+      } if input['address_work']['shipping']
+
+      output[:addresses] = [address1, address2].compact
+
       output
     end
 
     after_denormalize do |input, output|
+
       external_note = {id: SHOPIFY_NOTE_ID, description: input['note'], tag: SHOPIFY_NOTE_TAG} if input['note']
       output[:notes] = [external_note] if external_note
+
       output
     end
+
   end
 end

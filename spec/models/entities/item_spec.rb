@@ -189,7 +189,7 @@ describe Entities::Item do
         }
         let(:connec_hash) {
           {
-              id: nil,
+              id: "",
               name: 'red',
               product_name: '',
               is_inventoried: false

@@ -76,9 +76,11 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
         product_id_map = Maestrano::Connector::Rails::IdMap.find_by(connec_id: idmap.connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: @organization.id)
         product = {
             id: product_id_map.external_id,
-            body_html: variant[:body_html]
+            title: variant[:product_title],
+            variants: [variant],
+            body_html: variant[:body_html],
         }
-        variant[:product] = product
+        variant[:product_id] = product[:id]
         @external_client.update('Product', product)
         @external_client.update('Variant', variant)
         idmap.update_attributes(last_push_to_external: Time.now, message: nil)
@@ -109,7 +111,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     map from('description'), to('body_html')
 
     after_normalize do |input, output|
-      output[:product_title] = input['name']
+      output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
 

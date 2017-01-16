@@ -21,7 +21,7 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
   end
 
   def self.id_from_external_entity_hash(entity)
-    entity['id']
+    entity['id'].to_s
   end
 
   def self.creation_date_from_external_entity_hash(entity)

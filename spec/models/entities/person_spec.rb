@@ -28,8 +28,11 @@ describe Entities::Person do
                     city: 'city',
                     region: 'region',
                     postal_code: 'postal_code',
-                    country: 'country'
+                    country: 'Country Name'
                 }
+            },
+            phone_work: {
+              landline: '0208 111 222 33'
             },
             email: {
                 address: 'robert.patinson@touilaight.com'
@@ -58,13 +61,25 @@ describe Entities::Person do
             first_name: 'Robert',
             last_name: 'Patinson',
             default_address: {
-                            address1: 'line1',
-                            address2: 'line2',
-                            city: 'city',
-                            province: 'region',
-                            zip: 'postal_code',
-                            country: 'country'
-                        },
+              address1: "line1",
+              address2: "line2",
+              city: "city",
+              province: "region",
+              zip: "postal_code",
+              country: "Country Name",
+              phone: "0208 111 222 33"
+            },
+            addresses: [
+              {
+                address1: 'line1',
+                address2: 'line2',
+                city: 'city',
+                province: 'region',
+                zip: 'postal_code',
+                country: 'country name',
+                phone: '0208 111 222 33'
+              }
+            ],
             email: 'robert.patinson@touilaight.com',
             note: 'very important'
         }

@@ -4,7 +4,7 @@ class WebhooksController < ApplicationController
   before_action :verify_request
 
   def receive
-    # to avoid too much traffic we are filtering webhoks that have been updated
+    # to avoid too much traffic we are filtering webhooks that have been updated
     # in the last 10 seconds
     return head 200, content_type: 'application/json' if webhook_newly_updated?
     org_uid = params[:org_uid]
