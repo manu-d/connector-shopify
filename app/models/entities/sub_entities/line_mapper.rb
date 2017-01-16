@@ -11,9 +11,9 @@ class Entities::SubEntities::LineMapper
 	output[:quantity] ||= 1
 	output[:unit_price][:tax_amount] = 0.0
 	input[:tax_lines]&.each do |tax|
-	  output[:unit_price][:tax_amount] += tax['price'].to_f
+	  output[:unit_price][:tax_amount] += tax['price'].to_f / output[:quantity]
 	end
-	output[:unit_price][:net_amount] -= output[:unit_price][:tax_amount] if input['taxes_included']
+	output[:unit_price][:net_amount] -= (output[:unit_price][:tax_amount] / output[:quantity]) if input['taxes_included']
 	output
   end
 end
