@@ -23,7 +23,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
   def self.references
     {
       record_references: %w(),
-      id_references: %W(lines/id notes/id)
+      id_references: %W(notes/id)
     }
 
   end
