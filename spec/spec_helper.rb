@@ -8,6 +8,7 @@ require 'rspec/rails'
 require 'factory_girl_rails'
 require 'shoulda/matchers'
 require 'maestrano_connector_rails/factories.rb'
+require 'webmock/rspec'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -20,4 +21,7 @@ RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
   config.order = "random"
   config.include FactoryGirl::Syntax::Methods
+  config.before(:each) do
+    stub_request(:get, "http://localhost:3001/api/v1/account/groups/").to_return({status: 200, body: "{}", headers: {}})
+  end
 end
