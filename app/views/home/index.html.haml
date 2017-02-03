@@ -47,30 +47,38 @@
           .col-md-1.text-center.link-step-number
             %span.badge.link-step-badge 2
           .col-md-9.link-step-description
-            %h You can customize which entities are synchronized by the connector:
+            %p You can customize which entities are synchronized by the connector:
+            %p (#{image_tag "logos/to_connec.png", class: "small-image"} : from Shopify to Connec! and #{image_tag "logos/to_external.png", class: "small-image"} : from Connec! to Shopify)
             .spacer1
             .row
               .col-md-11.col-md-offset-1.center
-                .col-md-4.col-md-offset-1
-                  Shopify wording
-                .col-md-4
-                  Universal wording
+                .row
+                  .col-md-1
+                    =image_tag "logos/to_connec.png", class: "image"
+                  .col-md-1
+                    =image_tag "logos/to_external.png", class: "image"
+                  .col-md-4
+                    Shopify wording
+                  .col-md-3
+                    Universal wording
             .spacer1
             .row
               .col-md-11.col-md-offset-1
                 - current_organization.displayable_synchronized_entities.each do |k, v|
                   .row.sync-entity
                     .col-md-1.link-step-action
-                      %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v[:value]}
+                      #{check_box("#{k}", "to_connec", {checked: (v[:can_push_to_connec] || v[:can_push_to_external]) && !current_organization.pull_disabled, onclick: "return !#{k}_to_external.checked;", disabled: current_organization.pull_disabled})}
+                    .col-md-1.link-step-action
+                      #{check_box("#{k}", "to_external", {checked: v[:can_push_to_external] && !current_organization.push_disabled, onchange: "#{k}_to_connec.checked = #{!current_organization.pull_disabled};", disabled: current_organization.push_disabled})}
                     %label.col-md-8{:for => "#{k}", style: 'padding-top: 5px;'}
                       .col-md-6
                         #{v[:external_name]}
                       .col-md-6
                         #{v[:connec_name]}
                     -if is_admin
-                      .col-md-3.text-right
-                        - if v && current_organization.oauth_uid && current_organization.sync_enabled
-                          = link_to 'Force a synchronization', home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: 'btn btn-warning btn-sm', title: "Force a synchronization for #{v[:external_name]} only", 'data-toggle' => 'tooltip', 'data-placement' => 'right'
+                      .col-md-2.text-right
+                        - if v && current_organization.oauth_uid && current_organization.sync_enabled && (current_organization.synchronized_entities[k][:can_push_to_connec] || current_organization.synchronized_entities[k][:can_push_to_external])
+                          = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: 'btn btn-warning btn-sm', 'data-toggle' => 'tooltip', 'data-placement' => 'right'
 
             / .spacer2
             / .row
