@@ -13,7 +13,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'puma', require: false
 gem 'sinatra', require: false
 
-gem 'maestrano-connector-rails', '2.0.2.pre.RC4'
+gem 'maestrano-connector-rails', '2.0.2.pre.RC5'
 
 gem 'redis-rails'
 
