@@ -82,13 +82,16 @@
 
             .spacer2
             .row
-              %h Chose whether to synchronize your historical data:
+            - if current_organization.push_disabled
+              %p Chose whether to synchronize your historical data:
+            - else
+              %label Historical data is disabled. We can enable this option for you. Please contact #{mail_to 'support@maestrano.com', 'Customer Support'}
             .spacer1
             .row
               .col-md-4.col-md-offset-1
                 Synchronize my historical data
               .col-md-1
-                %input{type: 'checkbox', id: 'historical-data', name: 'historical-data', checked: current_organization.historical_data, onchange: 'historicalDataDisplay();', disabled: current_organization.historical_data}
+                %input{type: 'checkbox', id: 'historical-data', name: 'historical-data', checked: current_organization.historical_data, onchange: 'historicalDataDisplay();', disabled: true}
               .col-md-6
                 %small#historical-data-display-unchecked{style: "display: #{current_organization.historical_data ? 'none' : 'block'}"} Only data created or updated after #{(current_organization.date_filtering_limit && current_organization.date_filtering_limit.utc || Time.now.utc).to_formatted_s(:long_ordinal)} will be synchronized
                 %small#historical-data-display-checked{style: "display: #{!current_organization.historical_data ? 'none' : 'block'}"}
