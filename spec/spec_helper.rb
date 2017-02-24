@@ -22,6 +22,8 @@ RSpec.configure do |config|
   config.order = "random"
   config.include FactoryGirl::Syntax::Methods
   config.before(:each) do
-    stub_request(:get, "http://localhost:3001/api/v1/account/groups/").to_return({status: 200, body: "{}", headers: {}})
+    stub_request(:get, %r|https://maestrano.com/api/v1/account/groups/[\w+{36}]|).
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic Og==', 'User-Agent'=>'Ruby'}).
+      to_return({status: 200, body: "{}", headers: {}})
   end
 end
