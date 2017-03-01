@@ -78,6 +78,6 @@ class WebhooksController < ApplicationController
 
     def org_not_found(org_uid)
       Maestrano::Connector::Rails::ConnectorLogger.log('debug', nil, "WebhooksController.receive: could not find organization: #{org_uid}")
-      head :not_found, content_type: 'application/json'
+      head 200, content_type: 'application/json'
     end
 end
