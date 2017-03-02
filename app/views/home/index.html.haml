@@ -14,16 +14,16 @@
           .col-md-12.alert.alert-warning
             Only administrators can modify the application settings
 
-      .row.link-step{class: "#{current_organization.oauth_uid ? 'done' : 'todo'}"}
+      .row.link-step{class: "#{current_organization&.oauth_uid ? 'done' : 'todo'}"}
         .col-md-1.text-center.link-step-number
           %span.badge.link-step-badge
             1
-        - if current_organization.oauth_uid
+        - if current_organization&.oauth_uid
           .col-md-6.link-step-description
             %h
-              Your Shopify account <strong>#{current_organization.oauth_name} (#{current_organization.oauth_uid})</strong> is currently linked
+              Your Shopify account <strong>#{current_organization&.oauth_name} (#{current_organization&.oauth_uid})</strong> is currently linked
           .col-md-2.col-md-offset-3.text-center.link-step-action
-            = link_to "Disconnect",(is_admin ?  signout_omniauth_path(organization_id: current_organization.id) : '#'), :disabled => !is_admin, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+            = link_to "Disconnect",(is_admin ?  signout_omniauth_path(organization_id: current_organization&.id) : '#'), :disabled => !is_admin, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
         - else
           %form#authentify-shopify.form-inline{:action => "/auth/shopify/request", :method => "GET" }
             .col-md-6
@@ -33,7 +33,7 @@
                 %label{:for => 'shop-name'}https://
                 %input#shop-name{:name => "shop", :placeholder => 'your-store-1234', :type => 'text', :class => 'form-control', :disabled => !is_admin}
                 %label .myshopify.com
-                %input{:type=>"hidden", :value=>current_organization.uid, :name=>:org_uid}/
+                %input{:type=>"hidden", :value=>current_organization&.uid, :name=>:org_uid}/
             .col-md-2.col-md-offset-3.text-center.link-step-action
               %button{:type => "submit", :class => 'btn btn-warning btn-lg', :disabled => !is_admin, :rel => 'tooltip', :title => "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"} Link to Shopify
               %br
@@ -42,8 +42,8 @@
 
       .spacer1
 
-      .row.link-step{class: "#{(current_organization.sync_enabled && current_organization.synchronized_entities.values.any?) ? 'done' : 'todo'}"}
-        = form_tag home_update_path(id: current_organization.id), method: :put do
+      .row.link-step{class: "#{(current_organization&.sync_enabled && current_organization&.synchronized_entities.values.any?) ? 'done' : 'todo'}"}
+        = form_tag home_update_path(id: current_organization&.id), method: :put do
           .col-md-1.text-center.link-step-number
             %span.badge.link-step-badge 2
           .col-md-9.link-step-description
@@ -64,12 +64,12 @@
             .spacer1
             .row
               .col-md-11.col-md-offset-1
-                - current_organization.displayable_synchronized_entities.each do |k, v|
+                - current_organization&.displayable_synchronized_entities.each do |k, v|
                   .row.sync-entity
                     .col-md-1.link-step-action
-                      #{check_box("#{k}", "to_connec", {checked: (v[:can_push_to_connec] || v[:can_push_to_external]) && !current_organization.pull_disabled, onclick: "return !#{k}_to_external.checked;", disabled: current_organization.pull_disabled})}
+                      #{check_box("#{k}", "to_connec", {checked: (v[:can_push_to_connec] || v[:can_push_to_external]) && !current_organization&.pull_disabled, onclick: "return !#{k}_to_external.checked;", disabled: current_organization&.pull_disabled})}
                     .col-md-1.link-step-action
-                      #{check_box("#{k}", "to_external", {checked: v[:can_push_to_external] && !current_organization.push_disabled, onchange: "#{k}_to_connec.checked = #{!current_organization.pull_disabled};", disabled: current_organization.push_disabled})}
+                      #{check_box("#{k}", "to_external", {checked: v[:can_push_to_external] && !current_organization&.push_disabled, onchange: "#{k}_to_connec.checked = #{!current_organization&.pull_disabled};", disabled: current_organization&.push_disabled})}
                     %label.col-md-8{:for => "#{k}", style: 'padding-top: 5px;'}
                       .col-md-6
                         #{v[:external_name]}
@@ -77,7 +77,7 @@
                         #{v[:connec_name]}
                     -if is_admin
                       .col-md-2.text-right
-                        - if v && current_organization.oauth_uid && current_organization.sync_enabled && (current_organization.synchronized_entities[k][:can_push_to_connec] || current_organization.synchronized_entities[k][:can_push_to_external])
+                        - if v && current_organization&.oauth_uid && current_organization&.sync_enabled && (current_organization&.synchronized_entities[k][:can_push_to_connec] || current_organization&.synchronized_entities[k][:can_push_to_external])
                           = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: 'btn btn-warning btn-sm', 'data-toggle' => 'tooltip', 'data-placement' => 'right'
 
             / .spacer2
@@ -85,7 +85,7 @@
             /   %h Chose whether to synchronize your historical data:
             .spacer2
             .row
-            - if current_organization.push_disabled
+            - if current_organization&.push_disabled
               %p Chose whether to synchronize your historical data:
             - else
               %label Historical data is disabled. We can enable this option for you. Please contact #{mail_to 'support@maestrano.com', 'Customer Support'}
@@ -94,18 +94,18 @@
               .col-md-4.col-md-offset-1
                 Synchronize my historical data
               .col-md-1
-                %input{type: 'checkbox', id: 'historical-data', name: 'historical-data', checked: current_organization.historical_data, onchange: 'historicalDataDisplay();', disabled: true}
+                %input{type: 'checkbox', id: 'historical-data', name: 'historical-data', checked: current_organization&.historical_data, onchange: 'historicalDataDisplay();', disabled: true}
               .col-md-6
-                %small#historical-data-display-unchecked{style: "display: #{current_organization.historical_data ? 'none' : 'block'}"} Only data created or updated after #{(current_organization.date_filtering_limit && current_organization.date_filtering_limit.utc || Time.now.utc).to_formatted_s(:long_ordinal)} will be synchronized
-                %small#historical-data-display-checked{style: "display: #{!current_organization.historical_data ? 'none' : 'block'}"}
+                %small#historical-data-display-unchecked{style: "display: #{current_organization&.historical_data ? 'none' : 'block'}"} Only data created or updated after #{(current_organization&.date_filtering_limit && current_organization&.date_filtering_limit.utc || Time.now.utc).to_formatted_s(:long_ordinal)} will be synchronized
+                %small#historical-data-display-checked{style: "display: #{!current_organization&.historical_data ? 'none' : 'block'}"}
                   Synchronizing your historical data will share all data in Shopify. This action is not reversible. Want to know more? Check #{link_to 'here', 'https://maestrano.atlassian.net/wiki/display/UKB/How+Connec%21+manages+Historical+Data+Sharing'}
 
           .spacer1
           .row
             .col-md-2.col-md-offset-10.text-center.link-step-action
-              =submit_tag "#{current_organization.sync_enabled ? 'Update' : 'Start synchronizing!'}", class: "btn btn-lg btn-warning #{current_organization.oauth_uid ? '' : 'disabled'} text-sm"
+              =submit_tag "#{current_organization&.sync_enabled ? 'Update' : 'Start synchronizing!'}", class: "btn btn-lg btn-warning #{current_organization&.oauth_uid ? '' : 'disabled'} text-sm"
 
-      -if current_organization.oauth_uid && current_organization.sync_enabled
+      -if current_organization&.oauth_uid && current_organization&.sync_enabled
         .spacer2
         .row
           .col-md-4.col-md-offset-4.text-center
