@@ -52,10 +52,13 @@ class OauthController < ApplicationController
     token = response['credentials']['token']
     Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
 
-    redirect_to root_url
   rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
     Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
-    return redirect_to root_url
+  ensure
+    if msg = compare_store_company_currency
+      return render html: "<script>alert('#{msg}'); window.location.assign('/home/index');</script>".html_safe
+    end
+    redirect_to root_url
   end
 
   # Unlink Organization from Shopify
@@ -69,4 +72,25 @@ class OauthController < ApplicationController
 
     redirect_to root_url
   end
+
+  private
+
+    def compare_store_company_currency
+      connec_client = Maestrano::Connector::Rails::ConnecHelper.get_client(current_organization)
+      connec_response_hash = JSON.parse(connec_client.get('company').body)
+      connec_currency = connec_response_hash.dig('company', 'currency')
+
+      shopify_client = Maestrano::Connector::Rails::External.get_client(current_organization)
+      shopify_response_hash = shopify_client.find('Shop').first
+      shopify_currency = shopify_response_hash['currency']
+
+      unless shopify_currency == connec_currency
+        "Warning: Your shop has a different currency than your company (#{shopify_currency} vs #{connec_currency}).\\n" +
+        "As a result, the price of your products in #{connec_currency} will be set to 0 in Shopify, and you will have to modify them manually.\\n" +
+        "Moreover, any price update in Shopify will not be reflected in other apps."
+      end
+    rescue => e
+      Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error when comparing currencies: #{e}")
+      nil
+    end
 end
