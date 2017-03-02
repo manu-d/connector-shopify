@@ -64,7 +64,7 @@
             .spacer1
             .row
               .col-md-11.col-md-offset-1
-                - current_organization&.displayable_synchronized_entities.each do |k, v|
+                - current_organization&.displayable_synchronized_entities&.each do |k, v|
                   .row.sync-entity
                     .col-md-1.link-step-action
                       #{check_box("#{k}", "to_connec", {checked: (v[:can_push_to_connec] || v[:can_push_to_external]) && !current_organization&.pull_disabled, onclick: "return !#{k}_to_external.checked;", disabled: current_organization&.pull_disabled})}
