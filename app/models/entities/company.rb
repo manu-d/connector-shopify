@@ -32,6 +32,10 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
     false
   end
 
+  def self.can_read_connec?
+    true
+  end
+
   def self.id_from_external_entity_hash(entity)
     'SHOP_ID'
   end
