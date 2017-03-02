@@ -80,9 +80,13 @@ class OauthController < ApplicationController
       connec_response_hash = JSON.parse(connec_client.get('company').body)
       connec_currency = connec_response_hash.dig('company', 'currency')
 
+      return if connec_currency.blank?
+
       shopify_client = Maestrano::Connector::Rails::External.get_client(current_organization)
       shopify_response_hash = shopify_client.find('Shop').first
       shopify_currency = shopify_response_hash['currency']
+
+      return if shopify_currency.blank?
 
       unless shopify_currency == connec_currency
         "Warning: Your shop has a different currency than your company (#{shopify_currency} vs #{connec_currency}).\\n" +
