@@ -20,7 +20,7 @@ describe WebhooksController, :type => :controller do
       it 'logs a message and returns' do
         expect(Maestrano::Connector::Rails::ConnectorLogger).to receive(:log)
 
-        subject
+        expect(subject).to have_http_status(200)
       end
     end
 
