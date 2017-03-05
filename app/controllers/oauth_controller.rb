@@ -51,12 +51,11 @@ class OauthController < ApplicationController
 
     token = response['credentials']['token']
     Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
+    render_create_omniauth
 
   rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
     Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
-  ensure
-    return render html: "<script>alert('#{currency_alert}'); window.location.assign('/home/index');</script>".html_safe unless is_same_currency
-    redirect_to root_url
+    render_create_omniauth
   end
 
   # Unlink Organization from Shopify
@@ -88,7 +87,12 @@ class OauthController < ApplicationController
       true
     end
 
-    def currency_alert
+    def render_create_omniauth
+      return render html: "<script>alert('#{alert_msg}'); window.location.assign('/home/index');</script>".html_safe unless is_same_currency
+      redirect_to root_url
+    end
+
+    def alert_msg
       "Warning: Your shop has a different currency than your company (#{@shopify_currency} vs #{@connec_currency}).\\n" +
       "As a result, the price of your products in #{@connec_currency} will be set to 0 in Shopify, and you will have to modify them manually.\\n" +
       "Moreover, any price update in Shopify will not be reflected in other apps."

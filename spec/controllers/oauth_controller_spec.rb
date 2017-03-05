@@ -33,6 +33,8 @@ describe OauthController, :type => :controller do
   describe 'create_omniauth' do
     let(:user) { Maestrano::Connector::Rails::User.new(email: 'lla@mail.com', tenant: 'default') }
 
+    before { allow_any_instance_of(OauthController).to receive(:is_same_currency).and_return(true) }
+
     subject { get :create_omniauth, provider: 'shopify', state: uid }
 
     context 'when no organization does not exist' do
