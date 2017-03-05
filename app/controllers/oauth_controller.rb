@@ -55,9 +55,7 @@ class OauthController < ApplicationController
   rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
     Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
   ensure
-    if msg = compare_store_company_currency
-      return render html: "<script>alert('#{msg}'); window.location.assign('/home/index');</script>".html_safe
-    end
+    return render html: "<script>alert('#{currency_alert}'); window.location.assign('/home/index');</script>".html_safe unless is_same_currency
     redirect_to root_url
   end
 
@@ -75,26 +73,24 @@ class OauthController < ApplicationController
 
   private
 
-    def compare_store_company_currency
+    def is_same_currency
       connec_client = Maestrano::Connector::Rails::ConnecHelper.get_client(current_organization)
       connec_response_hash = JSON.parse(connec_client.get('company').body)
-      connec_currency = connec_response_hash.dig('company', 'currency')
-
-      return if connec_currency.blank?
+      @connec_currency = connec_response_hash.dig('company', 'currency')
 
       shopify_client = Maestrano::Connector::Rails::External.get_client(current_organization)
       shopify_response_hash = shopify_client.find('Shop').first
-      shopify_currency = shopify_response_hash['currency']
+      @shopify_currency = shopify_response_hash['currency']
 
-      return if shopify_currency.blank?
-
-      unless shopify_currency == connec_currency
-        "Warning: Your shop has a different currency than your company (#{shopify_currency} vs #{connec_currency}).\\n" +
-        "As a result, the price of your products in #{connec_currency} will be set to 0 in Shopify, and you will have to modify them manually.\\n" +
-        "Moreover, any price update in Shopify will not be reflected in other apps."
-      end
+      return @connec_currency.blank? || @shopify_currency.blank? || @shopify_currency == @connec_currency
     rescue => e
       Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error when comparing currencies: #{e}")
-      nil
+      true
+    end
+
+    def currency_alert
+      "Warning: Your shop has a different currency than your company (#{@shopify_currency} vs #{@connec_currency}).\\n" +
+      "As a result, the price of your products in #{@connec_currency} will be set to 0 in Shopify, and you will have to modify them manually.\\n" +
+      "Moreover, any price update in Shopify will not be reflected in other apps."
     end
 end
