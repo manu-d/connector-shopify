@@ -50,12 +50,14 @@ class OauthController < ApplicationController
     end
 
     token = response['credentials']['token']
+    session[:show_popup] = !is_same_currency
+
     Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
-    render_create_omniauth
+    redirect_to root_url
 
   rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
     Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
-    render_create_omniauth
+    redirect_to root_url
   end
 
   # Unlink Organization from Shopify
@@ -69,32 +71,4 @@ class OauthController < ApplicationController
 
     redirect_to root_url
   end
-
-  private
-
-    def is_same_currency
-      connec_client = Maestrano::Connector::Rails::ConnecHelper.get_client(current_organization)
-      connec_response_hash = JSON.parse(connec_client.get('company').body)
-      @connec_currency = connec_response_hash.dig('company', 'currency')
-
-      shopify_client = Maestrano::Connector::Rails::External.get_client(current_organization)
-      shopify_response_hash = shopify_client.find('Shop').first
-      @shopify_currency = shopify_response_hash['currency']
-
-      return @connec_currency.blank? || @shopify_currency.blank? || @shopify_currency == @connec_currency
-    rescue => e
-      Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error when comparing currencies: #{e}")
-      true
-    end
-
-    def render_create_omniauth
-      return render html: "<script>alert('#{alert_msg}'); window.location.assign('/home/index');</script>".html_safe unless is_same_currency
-      redirect_to root_url
-    end
-
-    def alert_msg
-      "Warning: Your shop has a different currency than your company (#{@shopify_currency} vs #{@connec_currency}).\\n" +
-      "As a result, the price of your products in #{@connec_currency} will be set to 0 in Shopify, and you will have to modify them manually.\\n" +
-      "Moreover, any price update in Shopify will not be reflected in other apps."
-    end
 end

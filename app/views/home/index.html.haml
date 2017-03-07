@@ -8,6 +8,10 @@
             Link your company <strong>#{current_organization.name} (#{current_organization.uid})</strong> to Shopify to get your business in synch. Check the status of your connection on this screen.
 
   .container
+    - if session[:show_popup]
+      - session[:show_popup] = false
+      :javascript
+        alert('#{alert_msg}'); window.location.assign('/home/index');
     - if current_user
       - unless is_admin
         .row
