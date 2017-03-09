@@ -50,12 +50,14 @@ class OauthController < ApplicationController
     end
 
     token = response['credentials']['token']
-    Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
+    session[:show_popup] = !is_same_currency
 
+    Shopify::Webhooks::WebhooksManager.queue_create_webhooks(org_uid, shop_name, token)
     redirect_to root_url
+
   rescue Shopify::Webhooks::WebhooksManager::CreationFailed => e
     Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Webhooks could not be created: #{e}")
-    return redirect_to root_url
+    redirect_to root_url
   end
 
   # Unlink Organization from Shopify
