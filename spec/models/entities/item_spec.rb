@@ -202,6 +202,8 @@ describe Entities::Item do
 
     describe 'mapping to external' do
 
+      before { allow(ShopifyClient).to receive(:currency).and_return("AUD") }
+
       let(:connec_hashes) {
         [
             {
@@ -209,7 +211,8 @@ describe Entities::Item do
                 description: 'product description',
                 code: 'code',
                 sale_price: {
-                    net_amount: 450
+                    net_amount: 450,
+                    currency: "AUD"
                 },
                 quantity_available: 12,
                 weight: 8,
@@ -221,7 +224,8 @@ describe Entities::Item do
                 description: 'product description 2',
                 reference: 'code2',
                 sale_price: {
-                    net_amount: 555
+                    net_amount: 555,
+                    currency: "AUD"
                 },
                 quantity_available: 20,
                 weight: 1,

@@ -10,11 +10,18 @@ class ShopifyClient
   def find(external_entity_name, params = {})
     with_shopify_session do
       if (external_entity_name == 'Shop')
-        [convert_to_hash(ShopifyAPI::Shop.current)]
+        res = convert_to_hash(ShopifyAPI::Shop.current)
+        # We store the currency to compare with the products
+        @@currency = res['currency']
+        [res]
       else
         find_all(get_shopify_entity_constant(external_entity_name), params).map {|x| convert_to_hash x }
       end
     end
+  end
+
+  def self.currency
+    @@currency
   end
 
   def create(external_entity_name, mapped_connec_entity)
