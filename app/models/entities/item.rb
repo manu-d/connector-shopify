@@ -174,7 +174,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
-      output[:price] = 0 unless ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
+      output.delete(:price) unless ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
 
       output
     end
