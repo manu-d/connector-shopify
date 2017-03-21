@@ -27,23 +27,6 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     }
   end
 
-  # Pushes the external entities to Connec!, and updates the idmaps with either
-  # * connec_id and push timestamp
-  # * error message
-  def push_entities_to_connec_to(mapped_external_entities_with_idmaps, connec_entity_name)
-    return unless @organization.push_to_connec_enabled?(self)
-
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
-
-    # As we're doing only POST, we use the idmaps to filter out updates
-    unless self.class.can_update_connec?
-      mapped_external_entities_with_idmaps.select! { |mapped_external_entity_with_idmap| !mapped_external_entity_with_idmap[:idmap].connec_id }
-    end
-
-    proc = ->(mapped_external_entity_with_idmap) { batch_op('post', mapped_external_entity_with_idmap[:entity], nil, self.class.normalize_connec_entity_name(connec_entity_name)) }
-    batch_calls(mapped_external_entities_with_idmaps, proc, connec_entity_name)
-  end
-
   class PersonMapper
     extend HashMapper
     SHOPIFY_NOTE_TAG = 'shopify'
