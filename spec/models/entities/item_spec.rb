@@ -16,36 +16,6 @@ describe Entities::Item do
     let!(:organization) { create(:organization) }
     subject { Entities::Item.new(organization, nil, external_client, nil) }
 
-    describe '#currency_matches?' do
-
-      before do
-        allow(ShopifyClient).to receive(:currency).and_return("GBP")
-      end
-
-      let(:existing_connec_entities) {
-        [{"id"=>
-         [{"realm"=>"maesrano-integration.myshopify.com", "provider"=>"shopify", "id"=>"31891619730"},
-          {"realm"=>"org-fn11", "provider"=>"connec", "id"=>"add20d81-f06d-0134-a542-75d6c9925a52"}],
-        "code"=>"PRO4",
-        "sale_price"=>{"total_amount"=>50.0, "net_amount"=>50.0, "tax_amount"=>0.0, "tax_rate"=>0.0, "currency"=>"GBP"},
-        "purchase_price"=>{"currency"=>"GBP"},
-        "channel_id"=>"org-fn11",
-        "resource_type"=>"items"},
-       {"id"=>
-         [{"realm"=>"maesrano-integration.myshopify.com", "provider"=>"shopify", "id"=>"31891619858"},
-          {"realm"=>"org-fn11", "provider"=>"connec", "id"=>"f47da2d1-f06d-0134-a57e-75d6c9925a52"}],
-        "sale_price"=>{"total_amount"=>200.0, "net_amount"=>200.0, "tax_amount"=>0.0, "tax_rate"=>0.0, "currency"=>"AUD"},
-        "purchase_price"=>{"total_amount"=>50.0, "net_amount"=>50.0, "tax_amount"=>0.0, "tax_rate"=>0.0, "currency"=>"AUD"},
-        "channel_id"=>"org-fn11",
-        "resource_type"=>"items"}]
-      }
-
-      it 'checks that the currency is present and matches the one of the entity updated' do
-
-        expect(subject.currency_matches?(existing_connec_entities, "add20d81-f06d-0134-a542-75d6c9925a52")).to eq true
-      end
-    end
-
     describe 'get_external_entities' do
       before { allow(external_client).to receive(:find).and_return(entities) }
 
