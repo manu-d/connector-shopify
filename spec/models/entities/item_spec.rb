@@ -258,10 +258,34 @@ describe Entities::Item do
             }
         ]
       }
-      it {
+      it 'maps correctly' do
         expect(subject.map_to_external(connec_hashes[0].with_indifferent_access)).to eql(external_hashes[0].with_indifferent_access)
         expect(subject.map_to_external(connec_hashes[1].with_indifferent_access)).to eql(external_hashes[1].with_indifferent_access)
-      }
+      end
+
+      context 'when currency is not matching' do
+
+        let(:external_no_price) {
+          {
+              product_title: 'product name',
+              body_html: 'product description',
+              sku: 'code',
+              inventory_quantity: 12,
+              weight: 8,
+              weight_unit: 'lb',
+              inventory_management: 'shopify'
+          }
+        }
+
+        before do
+          allow(ShopifyClient).to receive(:currency).and_return("GBP")
+        end
+
+        it 'does not send the price' do
+
+          expect(subject.map_to_external(connec_hashes[0].with_indifferent_access)).to eql(external_no_price.with_indifferent_access)
+        end
+      end
 
     end
   end
