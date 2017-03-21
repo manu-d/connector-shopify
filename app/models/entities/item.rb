@@ -63,11 +63,12 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     proc = ->(connec_existing_id) { batch_get(connec_existing_id) }
     existing_connec_entities = batch_get_call(connec_existing_ids, proc)
 
+
     mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
       id = mapped_external_entity_with_idmap[:idmap].connec_id
       next unless id
       # For updates, we remove the price as we don't want to update it if the currencies don't match
-      mapped_external_entity_with_idmap[:entity].delete('sale_price') unless ShopifyClient.currency.blank? || ShopifyClient.currency == get_currency(existing_connec_entities, id)
+      mapped_external_entity_with_idmap[:entity].delete('sale_price') unless ShopifyClient.currency == get_currency(existing_connec_entities, id)
     end
 
     proc = ->(mapped_external_entity_with_idmap) { batch_op('post', mapped_external_entity_with_idmap[:entity], nil, self.class.normalize_connec_entity_name(connec_entity_name)) }
@@ -110,7 +111,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     connec_hashes.each do |connec_hash|
       return connec_hash.dig('sale_price', 'currency') if connec_hash['id'].select { |id| id['provider'] == 'connec' }.first['id'] == id
     end
-    nil
+    :not_found
   end
 
   def push_entity_to_external(mapped_connec_entity_with_idmap, external_entity_name)
@@ -174,7 +175,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
-      output.delete(:price) unless ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
+      output.delete(:price) unless input.dig('sale_price', 'currency') == ShopifyClient.currency
 
       output
     end
