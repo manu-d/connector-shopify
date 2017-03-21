@@ -67,7 +67,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       id = mapped_external_entity_with_idmap[:idmap].connec_id
       next unless id
       # For updates, we remove the price as we don't want to update it if the currencies don't match
-      mapped_external_entity_with_idmap[:entity].delete('sale_price') unless ShopifyClient.currency.blank? || ShopifyClient.currency == get_currency(existing_connec_entities, id)
+      mapped_external_entity_with_idmap[:entity].delete('sale_price') unless ShopifyClient.currency.present? && ShopifyClient.currency == get_currency(existing_connec_entities, id)
     end
 
     proc = ->(mapped_external_entity_with_idmap) { batch_op('post', mapped_external_entity_with_idmap[:entity], nil, self.class.normalize_connec_entity_name(connec_entity_name)) }
@@ -174,7 +174,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
-      output.delete(:price) unless ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
+      output.delete(:price) unless input.dig('sale_price', 'currency') == ShopifyClient.currency
 
       output
     end

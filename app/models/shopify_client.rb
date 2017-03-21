@@ -2,6 +2,8 @@ class ShopifyClient
   attr_reader :oauth_uid
   attr_reader :oauth_token
 
+  @@currency ||= ''
+
   def initialize(oauth_uid, oauth_token)
     @oauth_uid = oauth_uid
     @oauth_token = oauth_token
@@ -62,7 +64,7 @@ class ShopifyClient
       result
     end
 
-    # ugly hack, did not find a better way to convert an entity to a  seriable hash (serializable_hash was not recursive)
+    # ugly hack, did not find a better way to convert an entity to a seriable hash (serializable_hash was not recursive)
     def convert_to_hash(x)
       JSON.parse(x.to_json)
     end
