@@ -23,7 +23,7 @@ class ShopifyClient
   end
 
   def self.currency
-    @@currency || ''
+    @@currency
   end
 
   def create(external_entity_name, mapped_connec_entity)
