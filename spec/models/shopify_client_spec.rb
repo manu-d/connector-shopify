@@ -13,5 +13,10 @@ describe ShopifyClient do
     expect(client.oauth_token).to be(oauth_token)
   end
 
-  xit { 'TO SPEC' }
+  describe '#find' do
+
+    it 'fetches the entities' do
+      
+    end
+  end
 end
