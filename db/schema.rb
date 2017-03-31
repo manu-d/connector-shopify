@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 20170324160254) do
     t.boolean  "pull_disabled"
   end
 
-  add_index "organizations", ["oauth_uid"], name: "index_organizations_on_oauth_uid", unique: true
+  add_index "organizations", ["oauth_uid"], name: "index_organizations_on_oauth_uid"
   add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"
 
   create_table "synchronizations", force: :cascade do |t|

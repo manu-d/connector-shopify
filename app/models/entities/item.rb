@@ -156,6 +156,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
       keep_price = currency_matches?(input.dig('sale_price', 'currency'), opts[:opts][:base_currency])
+
       unless keep_price
         output.delete(:price)
         idmap = input['idmap']
