@@ -25,7 +25,6 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       record_references: %w(),
       id_references: %W(notes/id)
     }
-
   end
 
   class PersonMapper
