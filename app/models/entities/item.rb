@@ -24,6 +24,10 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     entity['title']
   end
 
+  def self.currency_check_fields
+    %w(sale_price purchase_price)
+  end
+
   def self.get_product_variants(product)
     product['variants'].each do |variant|
       variant['product_id'] = product['id']
@@ -51,66 +55,6 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: entity[:product_id], connec_id: connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: @organization.id)
       product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: entity[:product_name])
     end
-  end
-
-  def push_entities_to_connec_to(mapped_external_entities_with_idmaps, connec_entity_name)
-    return unless @organization.push_to_connec_enabled?(self)
-
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
-
-    # Existing connec entities will contain all the hashes from Connec that need to be updated
-    connec_existing_ids = mapped_external_entities_with_idmaps.map { |mapped_external_entity_with_idmap| mapped_external_entity_with_idmap[:idmap].connec_id }.compact
-    proc = ->(connec_existing_id) { batch_get(connec_existing_id) }
-    existing_connec_entities = batch_get_call(connec_existing_ids, proc)
-
-    mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
-      id = mapped_external_entity_with_idmap[:idmap].connec_id
-      next unless id
-      # For updates, we remove the price as we don't want to update it if the currencies don't match
-      mapped_external_entity_with_idmap[:entity].delete('sale_price') unless ShopifyClient.currency.blank? || ShopifyClient.currency == get_currency(existing_connec_entities, id)
-    end
-
-    proc = ->(mapped_external_entity_with_idmap) { batch_op('post', mapped_external_entity_with_idmap[:entity], nil, self.class.normalize_connec_entity_name(connec_entity_name)) }
-    batch_calls(mapped_external_entities_with_idmaps, proc, connec_entity_name)
-  end
-
-  def batch_get(id)
-    {
-      method: 'get',
-      url: "/api/v2/#{@organization.uid}/item/#{id}",
-    }
-  end
-
-  def batch_get_call(ids, proc)
-    request_per_call = @opts[:request_per_batch_call] || 100
-    start = 0
-    results = []
-    while start < ids.size
-      # Prepare batch request
-      batch_entities = ids.slice(start, request_per_call)
-      batch_request = {sequential: true, ops: []}
-      batch_entities.each do |id|
-        batch_request[:ops] << proc.call(id)
-      end
-
-      # Batch call
-      response = @connec_client.batch(batch_request)
-      response = JSON.parse(response.body)
-      # Parse batch response
-      response['results'].each do |result|
-        results << result.dig('body', 'items')
-      end
-
-      start += request_per_call
-    end
-    results.compact
-  end
-
-  def get_currency(connec_hashes, id)
-    connec_hashes.each do |connec_hash|
-      return connec_hash.dig('sale_price', 'currency') if connec_hash['id'].select { |id| id['provider'] == 'connec' }.first['id'] == id
-    end
-    nil
   end
 
   def push_entity_to_external(mapped_connec_entity_with_idmap, external_entity_name)
@@ -174,7 +118,13 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
-      output.delete(:price) unless ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
+
+      keep_price = ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
+      unless keep_price
+        output.delete(:price)
+        idmap = input['idmap']
+        idmap.update_attributes(metadata: idmap.metadata.merge(ignore_currency_update: true)) if idmap
+      end
 
       output
     end
@@ -189,6 +139,9 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:name] = name_join.reject(&:blank?).join(' ')
       output[:is_inventoried] = input['inventory_management'] == 'shopify'
       output[:reference] = input['sku'] if input['sku']
+
+      output[:sale_price].merge!(currency: ShopifyClient.currency) unless output[:sale_price].blank? ||  ShopifyClient.currency.blank?
+
       output
     end
   end
