@@ -46,7 +46,6 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     variants
   end
 
-
   def push_entities_to_connec(mapped_external_entities_with_idmaps)
     super
     mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
@@ -55,6 +54,44 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       product_id_map = Maestrano::Connector::Rails::IdMap.find_or_create_by(external_id: entity[:product_id], connec_id: connec_id, connec_entity: self.class.connec_entity_name, external_entity: 'product', organization_id: @organization.id)
       product_id_map.update_attributes(last_push_to_external: Time.now, message: nil, name: entity[:product_name])
     end
+  end
+
+  # We override this method to avoid pushing currency updates for items
+  # As currency might have changed company wide but an item might be historical
+  def push_entities_to_connec_to(mapped_external_entities_with_idmaps, connec_entity_name)
+    return unless @organization.push_to_connec_enabled?(self)
+
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
+
+    entity_updates = []
+
+    mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
+      # We separate the updates in order to remove the currency field
+      id = mapped_external_entity_with_idmap[:idmap].connec_id
+      entity_updates << mapped_external_entity_with_idmap if id
+
+      id_map = mapped_external_entity_with_idmap[:idmap]
+      # If the currency matches we send the whole hash
+      next unless id_map&.metadata&.dig(:ignore_currency_update)
+      # Otherwise we delete the fields listed
+      self.class.currency_check_fields.each do |field|
+        mapped_external_entity_with_idmap[:entity].delete(field)
+      end
+    end
+    # For updates we delete the currency
+    entity_updates.each do |mapped_external_entity_with_idmap|
+      mapped_external_entity_with_idmap[:entity][:sale_price]&.delete('currency')
+    end
+
+    mapped_external_entities_with_idmaps.concat(entity_updates)
+
+    proc = ->(mapped_external_entity_with_idmap) { batch_op('post', mapped_external_entity_with_idmap[:entity], nil, self.class.normalize_connec_entity_name(connec_entity_name)) }
+    batch_calls(mapped_external_entities_with_idmaps, proc, connec_entity_name)
+  end
+
+
+  def before_sync(last_synchronization_date)
+    @opts[:base_currency] ||= @external_client.currency
   end
 
   def push_entity_to_external(mapped_connec_entity_with_idmap, external_entity_name)
@@ -114,12 +151,12 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
     map from('weight_unit'), to('weight_unit')
     map from('description'), to('body_html')
 
-    after_normalize do |input, output|
+    after_normalize do |input, output, opts|
       output[:product_title] = input['name'] || 'Title not available'
       output[:inventory_management] = input['is_inventoried'] ? 'shopify' : nil
       output[:sku] =  input['reference'] || input['code']
+      keep_price = currency_matches?(input.dig('sale_price', 'currency'), opts[:opts][:base_currency])
 
-      keep_price = ShopifyClient.currency.blank? || input.dig('sale_price', 'currency') == ShopifyClient.currency
       unless keep_price
         output.delete(:price)
         idmap = input['idmap']
@@ -129,7 +166,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output
     end
 
-    after_denormalize do |input, output|
+    after_denormalize do |input, output, opts|
       output[:product_name] = input['product_title'] || ''
       name_join = [output[:product_name]]
       if input['title'] && input['title'] != 'Default Title'
@@ -139,10 +176,16 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       output[:name] = name_join.reject(&:blank?).join(' ')
       output[:is_inventoried] = input['inventory_management'] == 'shopify'
       output[:reference] = input['sku'] if input['sku']
-
-      output[:sale_price].merge!(currency: ShopifyClient.currency) unless output[:sale_price].blank? ||  ShopifyClient.currency.blank?
+      base_currency = opts[:opts][:base_currency]
+      output[:sale_price].merge!(currency: base_currency) unless output[:sale_price].blank?
+      output[:purchase_price] ||= {}
+      output[:purchase_price][:currency] = base_currency
 
       output
+    end
+
+    def self.currency_matches?(currency, base_currency)
+      base_currency.present? && currency == base_currency
     end
   end
 end

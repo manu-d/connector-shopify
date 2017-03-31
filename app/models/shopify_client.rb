@@ -2,8 +2,6 @@ class ShopifyClient
   attr_reader :oauth_uid
   attr_reader :oauth_token
 
-  @@currency ||= ''
-
   def initialize(oauth_uid, oauth_token)
     @oauth_uid = oauth_uid
     @oauth_token = oauth_token
@@ -12,18 +10,16 @@ class ShopifyClient
   def find(external_entity_name, params = {})
     with_shopify_session do
       if (external_entity_name == 'Shop')
-        res = convert_to_hash(ShopifyAPI::Shop.current)
-        # We store the currency to compare with the products
-        @@currency = res['currency']
-        [res]
+        response = convert_to_hash(ShopifyAPI::Shop.current)
+        [response]
       else
         find_all(get_shopify_entity_constant(external_entity_name), params).map {|x| convert_to_hash x }
       end
     end
   end
 
-  def self.currency
-    @@currency
+  def currency
+    find('Shop').first['currency']
   end
 
   def create(external_entity_name, mapped_connec_entity)
