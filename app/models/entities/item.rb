@@ -175,6 +175,7 @@ class Entities::Item < Maestrano::Connector::Rails::Entity
       # input['product_title'] or  input['title'] can be blank, this is to not have empty space
       output[:name] = name_join.reject(&:blank?).join(' ')
       output[:is_inventoried] = input['inventory_management'] == 'shopify'
+      output[:quantity_on_hand] = output[:quantity_available]
       output[:reference] = input['sku'] if input['sku']
       base_currency = opts[:opts][:base_currency]
       output[:sale_price].merge!(currency: base_currency) unless output[:sale_price].blank?
