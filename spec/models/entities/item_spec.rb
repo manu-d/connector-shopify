@@ -160,6 +160,7 @@ describe Entities::Item do
                     currency: "AUD"
                   },
                   quantity_available: 12,
+                  quantity_on_hand: 12,
                   weight: 8,
                   weight_unit: 'lb',
                   is_inventoried: true
@@ -178,6 +179,7 @@ describe Entities::Item do
                     currency: "AUD"
                   },
                   quantity_available: 20,
+                  quantity_on_hand: 20,
                   weight: 1,
                   weight_unit: 'kg',
                   is_inventoried: false
@@ -204,7 +206,8 @@ describe Entities::Item do
               purchase_price: {
                 currency: "AUD"
               },
-              is_inventoried: false
+              is_inventoried: false,
+              quantity_on_hand: nil
           }
         }
 
