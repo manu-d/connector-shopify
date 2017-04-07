@@ -1,5 +1,6 @@
 class Entities::SubEntities::InvoiceMapper
   extend HashMapper
+  extend MapperHelper
 
   def self.invoice_references
     {
@@ -51,8 +52,13 @@ class Entities::SubEntities::InvoiceMapper
     output[:status] = STATUS_MAPPING_INV[input['financial_status']] if input['financial_status']
     output[:type] = input['kind'] != 'refund' ? 'CUSTOMER' : 'SUPPLIER'
     output[:lines].concat(output.delete(:lines_shipping))
+    output = set_lines_currency(output, input['currency'])
+
+    if input['financial_status'] == 'paid'
+      output[:balance] = 0.0
+      output[:deposit] = input.dig('total_price').to_f
+    end
 
     output
   end
-
 end
