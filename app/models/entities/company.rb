@@ -43,9 +43,8 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
   class CompanyMapper
     extend HashMapper
 
-
     map from('name'), to('name')
-    map from('timezone'), to('timezone')
+    map from('timezone'), to('iana_timezone')
     map from('email/address'), to('email')
 
     map from('website/url'), to('domain')
