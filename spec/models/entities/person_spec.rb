@@ -13,7 +13,7 @@ describe Entities::Person do
 
   describe 'instance methods' do
     let!(:organization) { create(:organization) }
-    subject { Entities::Person.new(organization,nil,nil) }
+    subject { Entities::Person.new(organization,Maestrano::Connector::Rails::ConnecHelper.get_client(organization),nil) }
 
     describe 'connec_model_to_external_model' do
 
@@ -28,7 +28,7 @@ describe Entities::Person do
                     city: 'city',
                     region: 'region',
                     postal_code: 'postal_code',
-                    country: 'Country Name'
+                    country: 'Country Code'
                 }
             },
             phone_work: {
@@ -66,7 +66,7 @@ describe Entities::Person do
               city: "city",
               province: "region",
               zip: "postal_code",
-              country: "Country Name",
+              country_code: "Country Code",
               phone: "0208 111 222 33"
             },
             addresses: [
@@ -76,7 +76,7 @@ describe Entities::Person do
                 city: 'city',
                 province: 'region',
                 zip: 'postal_code',
-                country: 'country name',
+                country_code: 'Country Code',
                 phone: '0208 111 222 33'
               }
             ],

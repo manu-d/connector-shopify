@@ -43,14 +43,8 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
   class CompanyMapper
     extend HashMapper
 
-    after_denormalize do |input, output|
-      timezone = convert_timezone(input['timezone'])
-      output[:timezone] = timezone.tzinfo.name if timezone
-
-      output
-    end
-
     map from('name'), to('name')
+    map from('timezone'), to('iana_timezone')
     map from('email/address'), to('email')
 
     map from('website/url'), to('domain')
