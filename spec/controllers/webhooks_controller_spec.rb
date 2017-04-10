@@ -24,6 +24,19 @@ describe WebhooksController, :type => :controller do
       end
     end
 
+    context 'when organization is found but not linked' do
+
+      let!(:organization) { create(:organization, oauth_uid: nil) }
+
+      before { allow(Maestrano::Connector::Rails::Organization).to receive(:find_by_uid).and_return(organization) }
+
+      it 'logs a message and returns' do
+        expect(Maestrano::Connector::Rails::ConnectorLogger).to receive(:log)
+
+        expect(subject).to have_http_status(200)
+      end
+    end
+
     context 'when organization is found' do
 
       before { allow(Maestrano::Connector::Rails::Organization).to receive(:find_by_uid).and_return(organization) }
