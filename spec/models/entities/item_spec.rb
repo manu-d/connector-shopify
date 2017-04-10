@@ -14,7 +14,8 @@ describe Entities::Item do
   describe 'instance methods' do
     let(:external_client) { Object.new }
     let!(:organization) { create(:organization) }
-    subject { Entities::Item.new(organization, nil, external_client, nil) }
+    let(:opts)          { {base_currency: 'AUD'}}
+    subject { Entities::Item.new(organization, nil, external_client, opts) }
 
     describe 'get_external_entities' do
       before { allow(external_client).to receive(:find).and_return(entities) }
@@ -152,9 +153,14 @@ describe Entities::Item do
                   description: 'product description',
                   reference: 'code',
                   sale_price: {
-                      net_amount: 450
+                      net_amount: 450,
+                      currency: "AUD"
+                  },
+                  purchase_price: {
+                    currency: "AUD"
                   },
                   quantity_available: 12,
+                  quantity_on_hand: 12,
                   weight: 8,
                   weight_unit: 'lb',
                   is_inventoried: true
@@ -166,9 +172,14 @@ describe Entities::Item do
                   description: 'product description 2',
                   reference: 'code2',
                   sale_price: {
-                      net_amount: 555
+                      net_amount: 555,
+                      currency: "AUD"
+                  },
+                  purchase_price: {
+                    currency: "AUD"
                   },
                   quantity_available: 20,
+                  quantity_on_hand: 20,
                   weight: 1,
                   weight_unit: 'kg',
                   is_inventoried: false
@@ -192,7 +203,11 @@ describe Entities::Item do
               id: "",
               name: 'red',
               product_name: '',
-              is_inventoried: false
+              purchase_price: {
+                currency: "AUD"
+              },
+              is_inventoried: false,
+              quantity_on_hand: nil
           }
         }
 
@@ -201,8 +216,6 @@ describe Entities::Item do
     end
 
     describe 'mapping to external' do
-
-      before { allow(ShopifyClient).to receive(:currency).and_return("AUD") }
 
       let(:connec_hashes) {
         [
@@ -265,6 +278,22 @@ describe Entities::Item do
 
       context 'when currency is not matching' do
 
+        let(:connec_currency_no_match) {
+          {
+              name: 'product name',
+              description: 'product description',
+              code: 'code',
+              sale_price: {
+                  net_amount: 450,
+                  currency: "GBP"
+              },
+              quantity_available: 12,
+              weight: 8,
+              weight_unit: 'lb',
+              is_inventoried: true
+          }
+        }
+
         let(:external_no_price) {
           {
               product_title: 'product name',
@@ -277,13 +306,9 @@ describe Entities::Item do
           }
         }
 
-        before do
-          allow(ShopifyClient).to receive(:currency).and_return("GBP")
-        end
-
         it 'does not send the price' do
 
-          expect(subject.map_to_external(connec_hashes[0].with_indifferent_access)).to eql(external_no_price.with_indifferent_access)
+          expect(subject.map_to_external(connec_currency_no_match.with_indifferent_access)).to eql(external_no_price.with_indifferent_access)
         end
       end
 

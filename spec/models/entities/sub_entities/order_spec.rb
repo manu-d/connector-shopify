@@ -14,7 +14,7 @@ describe Entities::SubEntities::Order do
     let(:organization) { create(:organization) }
     let(:connec_client) { Maestrano::Connec::Client[organization.tenant].new(organization.uid) }
     let(:external_client) { Maestrano::Connector::Rails::External.get_client(organization) }
-    let(:opts) { {} }
+    let(:opts) { }
     subject { Entities::SubEntities::Order.new(organization, connec_client, external_client, opts) }
     describe 'map_to_connec' do
 
@@ -23,9 +23,11 @@ describe Entities::SubEntities::Order do
           id: 'id',
           name: 'a sales order',
           order_number: '123456',
+          currency: 'EUR',
           financial_status: 'pending',
           customer: {id: 'person_id'},
           taxes_included: false,
+          total_price: 82.96,
           quantity: '1',
           billing_address: {
             address1: 'line1',
@@ -116,7 +118,8 @@ describe Entities::SubEntities::Order do
                 id: [{id: 'line_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
                     net_amount: 55.0,
-                    tax_amount: 7.96
+                    tax_amount: 7.96,
+                    currency: 'EUR'
                 },
                 quantity: '1',
                 description: 'description',
@@ -126,7 +129,8 @@ describe Entities::SubEntities::Order do
                 id: [{id: '369256396', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
                     net_amount: 10.0,
-                    tax_amount: 0.0
+                    tax_amount: 0.0,
+                    currency: 'EUR'
                 },
                 description: 'Shipping: Standard',
                 quantity: 1
@@ -146,6 +150,14 @@ describe Entities::SubEntities::Order do
           end
 
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+        end
+
+        context 'when the order has been paid' do
+          before do
+            order[:financial_status] = 'paid'
+          end
+
+          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.merge({balance: 0.0, deposit: 82.96, status: 'PAID'}).with_indifferent_access) }
         end
 
       end
