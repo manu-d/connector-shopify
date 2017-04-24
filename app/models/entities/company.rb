@@ -43,9 +43,8 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
   class CompanyMapper
     extend HashMapper
 
-
     map from('name'), to('name')
-    map from('timezone'), to('timezone')
+    map from('timezone'), to('iana_timezone')
     map from('email/address'), to('email')
 
     map from('website/url'), to('domain')
@@ -57,6 +56,9 @@ class Entities::Company < Maestrano::Connector::Rails::Entity
     map from('address/billing/postal_code'), to('zip')
     map from('address/billing/country'), to('country_code')
 
-    map from('currency'), to('currency')
+    def self.convert_timezone(timezone)
+      return nil if timezone.blank?
+      ActiveSupport::TimeZone[timezone] || (timezone.to_i != 0 && ActiveSupport::TimeZone[timezone.to_i])
+    end
   end
 end

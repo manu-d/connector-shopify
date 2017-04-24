@@ -1,5 +1,10 @@
 class Entities::Person < Maestrano::Connector::Rails::Entity
 
+  def initialize(organization, connec_client, external_client, opts = {})
+    super
+    @connec_client.class.headers.merge!('CONNEC-COUNTRY-FORMAT' => 'alpha2')
+  end
+
   def self.connec_entity_name
     'Person'
   end
@@ -56,7 +61,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     map from('address_work/billing/city'), to('default_address/city')
     map from('address_work/billing/region'), to('default_address/province')
     map from('address_work/billing/postal_code'), to('default_address/zip')
-    map from('address_work/billing/country'), to('default_address/country')
+    map from('address_work/billing/country'), to('default_address/country_code')
 
     map from('email/address'), to('email')
     map from('phone_work/landline'), to('default_address/phone')
@@ -74,7 +79,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
         phone: input['phone_work']['landline'],
         province: input['address_work']['billing']['region'],
         zip: input['address_work']['billing']['postal_code'],
-        country: input['address_work']['billing']['country']&.downcase
+        country_code: input['address_work']['billing']['country']
       } if input['address_work']['billing']
 
       address2 = {
@@ -84,7 +89,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
         phone: input['phone_work']['landline2'],
         province: input['address_work']['shipping']['region'],
         zip: input['address_work']['shipping']['postal_code'],
-        country: input['address_work']['shipping']['country']&.downcase
+        country_code: input['address_work']['shipping']['country']
       } if input['address_work']['shipping']
 
       output[:addresses] = [address1, address2].compact

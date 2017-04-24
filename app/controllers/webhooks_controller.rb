@@ -11,7 +11,8 @@ class WebhooksController < ApplicationController
     org_uid = params[:org_uid]
     organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
 
-    return org_not_found(org_uid) unless organization
+    return render_org_not_found(org_uid) unless organization
+    return render_org_not_linked(organization) unless organization.oauth_uid
 
     Maestrano::Connector::Rails::ConnectorLogger.log('debug', organization, "WebhooksController.receive with params:#{webhook_params}")
 
@@ -76,8 +77,13 @@ class WebhooksController < ApplicationController
       Time.parse(params[:updated_at]).utc < entity_exists.updated_at.utc + 10
     end
 
-    def org_not_found(org_uid)
-      Maestrano::Connector::Rails::ConnectorLogger.log('debug', nil, "WebhooksController.receive: could not find organization: #{org_uid}")
+    def render_org_not_found(org_uid)
+      Maestrano::Connector::Rails::ConnectorLogger.log('debug', nil, "WebhooksController.receive: organization not found: #{org_uid}")
+      head 200, content_type: 'application/json'
+    end
+
+    def render_org_not_linked(organization)
+      Maestrano::Connector::Rails::ConnectorLogger.log('debug', organization, "WebhooksController.receive: account not linked: #{organization.org_uid}")
       head 200, content_type: 'application/json'
     end
 end
