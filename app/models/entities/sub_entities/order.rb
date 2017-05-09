@@ -21,10 +21,13 @@ class Entities::SubEntities::Order < Maestrano::Connector::Rails::SubEntityBase
 
 
   def get_external_entities(external_entity_name, last_synchronization = nil)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching #{Maestrano::Connector::Rails::External.external_name} #{external_entity_name.pluralize}")
     orders = @external_client.find('Order')
     orders.each do |order|
       order['transactions'] = self.class.get_order_transactions(@external_client, order)
     end
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Received data: Source=#{Maestrano::Connector::Rails::External.external_name}, Entity=#{external_entity_name}, Response=#{orders}")
+    orders
   end
 
   def self.get_order_transactions(client, order)

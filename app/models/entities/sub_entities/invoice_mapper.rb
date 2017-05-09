@@ -52,6 +52,18 @@ class Entities::SubEntities::InvoiceMapper
     output[:status] = STATUS_MAPPING_INV[input['financial_status']] if input['financial_status']
     output[:type] = input['kind'] != 'refund' ? 'CUSTOMER' : 'SUPPLIER'
     output[:lines].concat(output.delete(:lines_shipping))
+
+    output[:lines] << {
+      id: 'shopify-discount',
+      quantity: 1,
+      description: 'Discount',
+      unit_price: {
+        total_amount: input['total_discounts'],
+        tax_amount: 0.0,
+        currency: input['currency']
+      }
+    } if input['total_discounts'].to_f > 0
+
     output = set_lines_currency(output, input['currency'])
 
     if input['financial_status'] == 'paid'
