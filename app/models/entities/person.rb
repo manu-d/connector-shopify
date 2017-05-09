@@ -101,6 +101,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
 
       external_note = {id: SHOPIFY_NOTE_ID, description: input['note'], tag: SHOPIFY_NOTE_TAG} if input['note']
       output[:notes] = [external_note] if external_note
+      output[:full_name] = "#{output[:first_name]} #{output[:last_name]}"
 
       output
     end
