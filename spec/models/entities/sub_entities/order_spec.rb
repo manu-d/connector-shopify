@@ -158,6 +158,9 @@ describe Entities::SubEntities::Order do
 
           before do
             order[:taxes_included] = true
+            connec_hash[:lines][0][:unit_price][:total_amount] = 55.0
+            connec_hash[:lines][0][:unit_price].delete(:net_amount)
+            connec_hash[:lines][0][:unit_price][:tax_amount] = 0.0
           end
 
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
