@@ -28,6 +28,7 @@ describe Entities::SubEntities::Order do
           customer: {id: 'person_id'},
           taxes_included: false,
           total_price: 82.96,
+          total_discounts: 12.06,
           quantity: '1',
           billing_address: {
             address1: 'line1',
@@ -134,6 +135,16 @@ describe Entities::SubEntities::Order do
                 },
                 description: 'Shipping: Standard',
                 quantity: 1
+              },
+              {
+                id: [{id: 'shopify-discount', provider: organization.oauth_provider, realm: organization.oauth_uid}],
+                unit_price: {
+                    total_amount: 12.06,
+                    tax_amount: 0.0,
+                    currency: 'EUR'
+                },
+                description: 'Discount',
+                quantity: 1
               }
             ]
           }
@@ -147,6 +158,9 @@ describe Entities::SubEntities::Order do
 
           before do
             order[:taxes_included] = true
+            connec_hash[:lines][0][:unit_price][:total_amount] = 55.0
+            connec_hash[:lines][0][:unit_price].delete(:net_amount)
+            connec_hash[:lines][0][:unit_price][:tax_amount] = 0.0
           end
 
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
@@ -215,7 +229,7 @@ describe Entities::SubEntities::Order do
         allow(external_client).to receive(:find).with('Order').and_return(orders)
         allow(external_client).to receive(:find).with('Transaction', {:order_id => 'order_id_1'}).and_return(transactions['order_id_1'])
         allow(external_client).to receive(:find).with('Transaction', {:order_id => 'order_id_2'}).and_return(transactions['order_id_2'])
-        expect(subject.get_external_entities(nil)).to eql(expected_orders)
+        expect(subject.get_external_entities('Orders')).to eql(expected_orders)
       end
     end
 

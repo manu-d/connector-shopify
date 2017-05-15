@@ -21,6 +21,7 @@ describe Entities::Person do
         {
             first_name: 'Robert',
             last_name: 'Patinson',
+            full_name: 'Robert Patinson',
             address_work: {
                 billing: {
                     line1: 'line1',
