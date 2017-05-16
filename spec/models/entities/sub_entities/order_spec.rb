@@ -139,7 +139,7 @@ describe Entities::SubEntities::Order do
               {
                 id: [{id: 'shopify-discount', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
-                    total_amount: 12.06,
+                    net_amount: -12.06,
                     tax_amount: 0.0,
                     currency: 'EUR'
                 },
