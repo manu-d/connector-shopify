@@ -58,7 +58,7 @@ class Entities::SubEntities::InvoiceMapper
       quantity: 1,
       description: 'Discount',
       unit_price: {
-        total_amount: input['total_discounts'],
+        net_amount: - input['total_discounts'],
         tax_amount: 0.0,
         currency: input['currency']
       }
