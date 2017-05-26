@@ -60,7 +60,7 @@ describe Entities::SubEntities::Transaction do
         let(:connec_payment) {
           {
               'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-               'payment_lines'=> [{"linked_transactions"=>[{"id"=>[{"id"=>"N11003", "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>155.0}]}],
+              'payment_lines'=> [{"amount"=>155.0, "linked_transactions"=>[{"id"=>[{"id"=>"N11003", "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>155.0}]}],
               # The amount field is read only in Connec! and calculated based on lines
               'amount' => {'currency' => 'AUD'},
               'title' => 'N11003',
@@ -212,7 +212,7 @@ describe Entities::SubEntities::Transaction do
               "person_id"=>[{"id"=>5241025160, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
               "amount"=>{"currency"=>"AUD"},
               "payment_lines" => [
-                {"linked_transactions"=>[{"id"=>[{"id"=>4863088456, "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>41.7}]}
+                {"amount"=>41.7, "linked_transactions"=>[{"id"=>[{"id"=>4863088456, "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>41.7}]}
               ],
               "type"=>"CUSTOMER",
               "status"=>"ACTIVE",
