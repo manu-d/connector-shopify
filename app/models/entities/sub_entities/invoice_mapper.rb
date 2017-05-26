@@ -51,7 +51,7 @@ class Entities::SubEntities::InvoiceMapper
   after_denormalize do |input, output|
     output[:status] = STATUS_MAPPING_INV[input['financial_status']] if input['financial_status']
     output[:type] = input['kind'] != 'refund' ? 'CUSTOMER' : 'SUPPLIER'
-    output[:lines].concat(output.delete(:lines_shipping))
+    output[:lines].concat(output.delete(:lines_shipping)) if output[:lines_shipping]
 
     output[:lines] << {
       id: 'shopify-discount',

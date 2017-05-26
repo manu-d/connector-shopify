@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Entities::SubEntities::Order do
-
   describe 'class methods' do
     subject { Entities::SubEntities::Order }
 
@@ -16,8 +15,8 @@ describe Entities::SubEntities::Order do
     let(:external_client) { Maestrano::Connector::Rails::External.get_client(organization) }
     let(:opts) { }
     subject { Entities::SubEntities::Order.new(organization, connec_client, external_client, opts) }
-    describe 'map_to_connec' do
 
+    describe 'map_to_connec' do
       let(:order) {
         {
           id: 'id',
@@ -87,8 +86,6 @@ describe Entities::SubEntities::Order do
       }
 
       describe 'external to connec' do
-
-
         let(:connec_hash) {
           {
             id: [{id: 'id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
@@ -155,7 +152,6 @@ describe Entities::SubEntities::Order do
         end
 
         context 'with taxes included' do
-
           before do
             order[:taxes_included] = true
             connec_hash[:lines][0][:unit_price][:total_amount] = 55.0
@@ -174,9 +170,590 @@ describe Entities::SubEntities::Order do
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.merge({balance: 0.0, deposit: 82.96, status: 'PAID'}).with_indifferent_access) }
         end
 
-      end
+        context 'without shipiing' do
+          let(:order) {
+            {
+              "id" => 4862975304,
+              "email" => "bob@example.com",
+              "closed_at" => "2017-05-26T15:02:15+10:00",
+              "created_at" => "2017-05-26T15:02:05+10:00",
+              "updated_at" => "2017-05-26T15:02:15+10:00",
+              "number" => 2,
+              "note" => nil,
+              "token" => "e4df38175d275cf7e6c9bc1ccdf5c949",
+              "gateway" => "manual",
+              "test" => false,
+              "total_price" => "29.80",
+              "subtotal_price" => "29.80",
+              "total_weight" => 0,
+              "total_tax" => "2.71",
+              "taxes_included" => true,
+              "currency" => "AUD",
+              "financial_status" => "paid",
+              "confirmed" => true,
+              "total_discounts" => "0.00",
+              "total_line_items_price" => "29.80",
+              "cart_token" => nil,
+              "buyer_accepts_marketing" => false,
+              "name" => "#1002",
+              "referring_site" => nil,
+              "landing_site" => nil,
+              "cancelled_at" => nil,
+              "cancel_reason" => nil,
+              "total_price_usd" => "22.34",
+              "checkout_token" => nil,
+              "reference" => nil,
+              "user_id" => 118786952,
+              "location_id" => nil,
+              "source_identifier" => nil,
+              "source_url" => nil,
+              "processed_at" => "2017-05-26T15:02:05+10:00",
+              "device_id" => nil,
+              "phone" => nil,
+              "browser_ip" => nil,
+              "landing_site_ref" => nil,
+              "order_number" => 1002,
+              "discount_codes" => nil,
+              "note_attributes" => nil,
+              "payment_gateway_names" => [
+                "manual"
+              ],
+              "processing_method" => "manual",
+              "checkout_id" => nil,
+              "source_name" => "shopify_draft_order",
+              "fulfillment_status" => "fulfilled",
+              "tax_lines" => [
+                {
+                  "title" => "GST",
+                  "price" => "2.71",
+                  "rate" => 0.1
+                }
+              ],
+              "tags" => "",
+              "contact_email" => "bob@example.com",
+              "order_status_url" => nil,
+              "line_items" => [
+                {
+                  "id" => 9322852104,
+                  "variant_id" => 36814965192,
+                  "title" => "Double Beef Burger",
+                  "quantity" => 2,
+                  "price" => "14.90",
+                  "grams" => 0,
+                  "sku" => "BG1031",
+                  "variant_title" => nil,
+                  "vendor" => "contacts-revamp",
+                  "fulfillment_service" => "manual",
+                  "product_id" => 9715954184,
+                  "requires_shipping" => false,
+                  "taxable" => true,
+                  "gift_card" => false,
+                  "name" => "Double Beef Burger",
+                  "variant_inventory_management" => nil,
+                  "properties" => nil,
+                  "product_exists" => true,
+                  "fulfillable_quantity" => 0,
+                  "total_discount" => "0.00",
+                  "fulfillment_status" => "fulfilled",
+                  "tax_lines" => [
+                    {
+                      "title" => "GST",
+                      "price" => "2.71",
+                      "rate" => 0.1
+                    }
+                  ]
+                }
+              ],
+              "shipping_lines" => nil,
+              "billing_address" => {
+                "first_name" => "Bob",
+                "address1" => nil,
+                "phone" => nil,
+                "city" => nil,
+                "zip" => nil,
+                "province" => "Australian Capital Territory",
+                "country" => "Australia",
+                "last_name" => "Builder",
+                "address2" => nil,
+                "company" => nil,
+                "latitude" => nil,
+                "longitude" => nil,
+                "name" => "Bob Builder",
+                "country_code" => "AU",
+                "province_code" => "ACT"
+              },
+              "shipping_address" => {
+                "first_name" => "Bob",
+                "address1" => nil,
+                "phone" => nil,
+                "city" => nil,
+                "zip" => nil,
+                "province" => "Australian Capital Territory",
+                "country" => "Australia",
+                "last_name" => "Builder",
+                "address2" => nil,
+                "company" => nil,
+                "latitude" => nil,
+                "longitude" => nil,
+                "name" => "Bob Builder",
+                "country_code" => "AU",
+                "province_code" => "ACT"
+              },
+              "fulfillments" => [
+                {
+                  "id" => 4386057096,
+                  "order_id" => 4862975304,
+                  "status" => "success",
+                  "created_at" => "2017-05-26T15:02:15+10:00",
+                  "service" => "manual",
+                  "updated_at" => "2017-05-26T15:02:15+10:00",
+                  "tracking_company" => nil,
+                  "shipment_status" => nil,
+                  "tracking_number" => nil,
+                  "tracking_numbers" => nil,
+                  "tracking_url" => nil,
+                  "tracking_urls" => nil,
+                  "receipt" => {
 
+                  },
+                  "line_items" => [
+                    {
+                      "id" => 9322852104,
+                      "variant_id" => 36814965192,
+                      "title" => "Double Beef Burger",
+                      "quantity" => 2,
+                      "price" => "14.90",
+                      "grams" => 0,
+                      "sku" => "BG1031",
+                      "variant_title" => nil,
+                      "vendor" => "contacts-revamp",
+                      "fulfillment_service" => "manual",
+                      "product_id" => 9715954184,
+                      "requires_shipping" => false,
+                      "taxable" => true,
+                      "gift_card" => false,
+                      "name" => "Double Beef Burger",
+                      "variant_inventory_management" => nil,
+                      "properties" => nil,
+                      "product_exists" => true,
+                      "fulfillable_quantity" => 0,
+                      "total_discount" => "0.00",
+                      "fulfillment_status" => "fulfilled",
+                      "tax_lines" => [
+                        {
+                          "title" => "GST",
+                          "price" => "2.71",
+                          "rate" => 0.1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "refunds" => nil,
+              "customer" => {
+                "id" => 5240854216,
+                "email" => "bob@example.com",
+                "accepts_marketing" => false,
+                "created_at" => "2017-05-26T14:30:57+10:00",
+                "updated_at" => "2017-05-26T15:02:06+10:00",
+                "first_name" => "Bob",
+                "last_name" => "Builder",
+                "orders_count" => 1,
+                "state" => "disabled",
+                "total_spent" => "29.80",
+                "last_order_id" => 4862975304,
+                "note" => "",
+                "verified_email" => true,
+                "multipass_identifier" => nil,
+                "tax_exempt" => false,
+                "phone" => nil,
+                "tags" => "",
+                "last_order_name" => "#1002",
+                "default_address" => {
+                  "id" => 5537088264,
+                  "first_name" => "Bob",
+                  "last_name" => "Builder",
+                  "company" => "",
+                  "address1" => "",
+                  "address2" => "",
+                  "city" => "",
+                  "province" => "Australian Capital Territory",
+                  "country" => "Australia",
+                  "zip" => "",
+                  "phone" => "",
+                  "name" => "Bob Builder",
+                  "province_code" => "ACT",
+                  "country_code" => "AU",
+                  "country_name" => "Australia",
+                  "default" => true
+                }
+              },
+              "entity" => "orders",
+              "org_uid" => "cld-94oc",
+              "webhook" => {
+                "id" => 4862975304,
+                "email" => "bob@example.com",
+                "closed_at" => "2017-05-26T15:02:15+10:00",
+                "created_at" => "2017-05-26T15:02:05+10:00",
+                "updated_at" => "2017-05-26T15:02:15+10:00",
+                "number" => 2,
+                "note" => nil,
+                "token" => "e4df38175d275cf7e6c9bc1ccdf5c949",
+                "gateway" => "manual",
+                "test" => false,
+                "total_price" => "29.80",
+                "subtotal_price" => "29.80",
+                "total_weight" => 0,
+                "total_tax" => "2.71",
+                "taxes_included" => true,
+                "currency" => "AUD",
+                "financial_status" => "paid",
+                "confirmed" => true,
+                "total_discounts" => "0.00",
+                "total_line_items_price" => "29.80",
+                "cart_token" => nil,
+                "buyer_accepts_marketing" => false,
+                "name" => "#1002",
+                "referring_site" => nil,
+                "landing_site" => nil,
+                "cancelled_at" => nil,
+                "cancel_reason" => nil,
+                "total_price_usd" => "22.34",
+                "checkout_token" => nil,
+                "reference" => nil,
+                "user_id" => 118786952,
+                "location_id" => nil,
+                "source_identifier" => nil,
+                "source_url" => nil,
+                "processed_at" => "2017-05-26T15:02:05+10:00",
+                "device_id" => nil,
+                "phone" => nil,
+                "browser_ip" => nil,
+                "landing_site_ref" => nil,
+                "order_number" => 1002,
+                "discount_codes" => nil,
+                "note_attributes" => nil,
+                "payment_gateway_names" => [
+                  "manual"
+                ],
+                "processing_method" => "manual",
+                "checkout_id" => nil,
+                "source_name" => "shopify_draft_order",
+                "fulfillment_status" => "fulfilled",
+                "tax_lines" => [
+                  {
+                    "title" => "GST",
+                    "price" => "2.71",
+                    "rate" => 0.1
+                  }
+                ],
+                "tags" => "",
+                "contact_email" => "bob@example.com",
+                "order_status_url" => nil,
+                "line_items" => [
+                  {
+                    "id" => 9322852104,
+                    "variant_id" => 36814965192,
+                    "title" => "Double Beef Burger",
+                    "quantity" => 2,
+                    "price" => "14.90",
+                    "grams" => 0,
+                    "sku" => "BG1031",
+                    "variant_title" => nil,
+                    "vendor" => "contacts-revamp",
+                    "fulfillment_service" => "manual",
+                    "product_id" => 9715954184,
+                    "requires_shipping" => false,
+                    "taxable" => true,
+                    "gift_card" => false,
+                    "name" => "Double Beef Burger",
+                    "variant_inventory_management" => nil,
+                    "properties" => nil,
+                    "product_exists" => true,
+                    "fulfillable_quantity" => 0,
+                    "total_discount" => "0.00",
+                    "fulfillment_status" => "fulfilled",
+                    "tax_lines" => [
+                      {
+                        "title" => "GST",
+                        "price" => "2.71",
+                        "rate" => 0.1
+                      }
+                    ]
+                  }
+                ],
+                "shipping_lines" => nil,
+                "billing_address" => {
+                  "first_name" => "Bob",
+                  "address1" => nil,
+                  "phone" => nil,
+                  "city" => nil,
+                  "zip" => nil,
+                  "province" => "Australian Capital Territory",
+                  "country" => "Australia",
+                  "last_name" => "Builder",
+                  "address2" => nil,
+                  "company" => nil,
+                  "latitude" => nil,
+                  "longitude" => nil,
+                  "name" => "Bob Builder",
+                  "country_code" => "AU",
+                  "province_code" => "ACT"
+                },
+                "shipping_address" => {
+                  "first_name" => "Bob",
+                  "address1" => nil,
+                  "phone" => nil,
+                  "city" => nil,
+                  "zip" => nil,
+                  "province" => "Australian Capital Territory",
+                  "country" => "Australia",
+                  "last_name" => "Builder",
+                  "address2" => nil,
+                  "company" => nil,
+                  "latitude" => nil,
+                  "longitude" => nil,
+                  "name" => "Bob Builder",
+                  "country_code" => "AU",
+                  "province_code" => "ACT"
+                },
+                "fulfillments" => [
+                  {
+                    "id" => 4386057096,
+                    "order_id" => 4862975304,
+                    "status" => "success",
+                    "created_at" => "2017-05-26T15:02:15+10:00",
+                    "service" => "manual",
+                    "updated_at" => "2017-05-26T15:02:15+10:00",
+                    "tracking_company" => nil,
+                    "shipment_status" => nil,
+                    "tracking_number" => nil,
+                    "tracking_numbers" => nil,
+                    "tracking_url" => nil,
+                    "tracking_urls" => nil,
+                    "receipt" => {
+
+                    },
+                    "line_items" => [
+                      {
+                        "id" => 9322852104,
+                        "variant_id" => 36814965192,
+                        "title" => "Double Beef Burger",
+                        "quantity" => 2,
+                        "price" => "14.90",
+                        "grams" => 0,
+                        "sku" => "BG1031",
+                        "variant_title" => nil,
+                        "vendor" => "contacts-revamp",
+                        "fulfillment_service" => "manual",
+                        "product_id" => 9715954184,
+                        "requires_shipping" => false,
+                        "taxable" => true,
+                        "gift_card" => false,
+                        "name" => "Double Beef Burger",
+                        "variant_inventory_management" => nil,
+                        "properties" => nil,
+                        "product_exists" => true,
+                        "fulfillable_quantity" => 0,
+                        "total_discount" => "0.00",
+                        "fulfillment_status" => "fulfilled",
+                        "tax_lines" => [
+                          {
+                            "title" => "GST",
+                            "price" => "2.71",
+                            "rate" => 0.1
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "refunds" => nil,
+                "customer" => {
+                  "id" => 5240854216,
+                  "email" => "bob@example.com",
+                  "accepts_marketing" => false,
+                  "created_at" => "2017-05-26T14:30:57+10:00",
+                  "updated_at" => "2017-05-26T15:02:06+10:00",
+                  "first_name" => "Bob",
+                  "last_name" => "Builder",
+                  "orders_count" => 1,
+                  "state" => "disabled",
+                  "total_spent" => "29.80",
+                  "last_order_id" => 4862975304,
+                  "note" => "",
+                  "verified_email" => true,
+                  "multipass_identifier" => nil,
+                  "tax_exempt" => false,
+                  "phone" => nil,
+                  "tags" => "",
+                  "last_order_name" => "#1002",
+                  "default_address" => {
+                    "id" => 5537088264,
+                    "first_name" => "Bob",
+                    "last_name" => "Builder",
+                    "company" => "",
+                    "address1" => "",
+                    "address2" => "",
+                    "city" => "",
+                    "province" => "Australian Capital Territory",
+                    "country" => "Australia",
+                    "zip" => "",
+                    "phone" => "",
+                    "name" => "Bob Builder",
+                    "province_code" => "ACT",
+                    "country_code" => "AU",
+                    "country_name" => "Australia",
+                    "default" => true
+                  }
+                }
+              },
+              "transactions" => [
+                {
+                  "id" => 5659367432,
+                  "amount" => "29.80",
+                  "kind" => "sale",
+                  "gateway" => "manual",
+                  "status" => "success",
+                  "message" => "Marked the manual payment as received",
+                  "created_at" => "2017-05-26T15:02:05+10:00",
+                  "test" => false,
+                  "authorization" => nil,
+                  "currency" => "AUD",
+                  "location_id" => nil,
+                  "user_id" => nil,
+                  "parent_id" => nil,
+                  "device_id" => nil,
+                  "receipt" => {
+
+                  },
+                  "error_code" => nil,
+                  "source_name" => "shopify_draft_order",
+                  "line_items" => [
+                    {
+                      "id" => 9322852104,
+                      "variant_id" => 36814965192,
+                      "title" => "Double Beef Burger",
+                      "quantity" => 2,
+                      "price" => "14.90",
+                      "grams" => 0,
+                      "sku" => "BG1031",
+                      "variant_title" => nil,
+                      "vendor" => "contacts-revamp",
+                      "fulfillment_service" => "manual",
+                      "product_id" => 9715954184,
+                      "requires_shipping" => false,
+                      "taxable" => true,
+                      "gift_card" => false,
+                      "name" => "Double Beef Burger",
+                      "variant_inventory_management" => nil,
+                      "properties" => nil,
+                      "product_exists" => true,
+                      "fulfillable_quantity" => 0,
+                      "total_discount" => "0.00",
+                      "fulfillment_status" => "fulfilled",
+                      "tax_lines" => [
+                        {
+                          "title" => "GST",
+                          "price" => "2.71",
+                          "rate" => 0.1
+                        }
+                      ]
+                    }
+                  ],
+                  "shipping_lines" => [
+
+                  ],
+                  "order_id" => 4862975304,
+                  "customer" => {
+                    "id" => 5240854216,
+                    "email" => "bob@example.com",
+                    "accepts_marketing" => false,
+                    "created_at" => "2017-05-26T14:30:57+10:00",
+                    "updated_at" => "2017-05-26T15:02:06+10:00",
+                    "first_name" => "Bob",
+                    "last_name" => "Builder",
+                    "orders_count" => 1,
+                    "state" => "disabled",
+                    "total_spent" => "29.80",
+                    "last_order_id" => 4862975304,
+                    "note" => "",
+                    "verified_email" => true,
+                    "multipass_identifier" => nil,
+                    "tax_exempt" => false,
+                    "phone" => nil,
+                    "tags" => "",
+                    "last_order_name" => "#1002",
+                    "default_address" => {
+                      "id" => 5537088264,
+                      "first_name" => "Bob",
+                      "last_name" => "Builder",
+                      "company" => "",
+                      "address1" => "",
+                      "address2" => "",
+                      "city" => "",
+                      "province" => "Australian Capital Territory",
+                      "country" => "Australia",
+                      "zip" => "",
+                      "phone" => "",
+                      "name" => "Bob Builder",
+                      "province_code" => "ACT",
+                      "country_code" => "AU",
+                      "country_name" => "Australia",
+                      "default" => true
+                    }
+                  },
+                  "transaction_number" => 1002
+                }
+              ]
+            }
+          }
+
+          let(:connec_hash) {
+            {
+              "person_id"=>[{"id"=>5240854216, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
+              "transaction_date"=>"2017-05-26T15:02:05+10:00",
+              "transaction_number"=>1002,
+              "title"=>"#1002",
+              "shipping_address"=>{
+                "region"=>"Australian Capital Territory",
+                "country"=>"AU"
+              },
+              "billing_address"=>{
+                "region"=>"Australian Capital Territory",
+                "country"=>"AU"
+              },
+              "lines"=>[
+                {
+                  "id"=>[{"id"=>9322852104, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
+                  "unit_price"=>{
+                    "total_amount"=>14.9,
+                    "tax_amount"=>0.0,
+                    "currency"=>"AUD"
+                  },
+                  "quantity"=>2,
+                  "description"=>"Double Beef Burger",
+                  "item_id"=>[{"id"=>36814965192, "provider"=>"this_app", "realm"=>organization.oauth_uid}
+                  ]
+                }
+              ],
+              "status"=>"PAID",
+              "type"=>"CUSTOMER",
+              "balance"=>0.0,
+              "deposit"=>29.8,
+              "id"=>[{"id"=>"4862975304", "provider"=>"this_app", "realm"=>organization.oauth_uid}
+              ]
+            }
+          }
+
+          it 'maps into a connec invoice' do
+            expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash)
+          end
+        end
+      end
     end
+
     describe 'get_external_entities' do
       let(:orders) { [
           {
@@ -232,6 +809,5 @@ describe Entities::SubEntities::Order do
         expect(subject.get_external_entities('Orders')).to eql(expected_orders)
       end
     end
-
   end
 end
