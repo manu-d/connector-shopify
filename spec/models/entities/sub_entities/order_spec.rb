@@ -171,7 +171,7 @@ describe Entities::SubEntities::Order do
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.merge({balance: 0.0, deposit: 82.96, status: 'PAID'}).with_indifferent_access) }
         end
 
-        context 'without shipiing' do
+        context 'without shipping' do
           let(:order) {
             {
               "id" => 4862975304,
