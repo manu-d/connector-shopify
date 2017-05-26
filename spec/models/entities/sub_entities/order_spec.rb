@@ -116,6 +116,7 @@ describe Entities::SubEntities::Order do
                 id: [{id: 'line_id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
                     net_amount: 55.0,
+                    tax_rate: 12.0,
                     tax_amount: 7.96,
                     currency: 'EUR'
                 },
@@ -127,6 +128,7 @@ describe Entities::SubEntities::Order do
                 id: [{id: '369256396', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
                     net_amount: 10.0,
+                    tax_rate: 0.0,
                     tax_amount: 0.0,
                     currency: 'EUR'
                 },
@@ -156,7 +158,6 @@ describe Entities::SubEntities::Order do
             order[:taxes_included] = true
             connec_hash[:lines][0][:unit_price][:total_amount] = 55.0
             connec_hash[:lines][0][:unit_price].delete(:net_amount)
-            connec_hash[:lines][0][:unit_price][:tax_amount] = 0.0
           end
 
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
@@ -729,7 +730,8 @@ describe Entities::SubEntities::Order do
                   "id"=>[{"id"=>9322852104, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
                   "unit_price"=>{
                     "total_amount"=>14.9,
-                    "tax_amount"=>0.0,
+                    "tax_rate"=>10.0,
+                    "tax_amount"=>1.355,
                     "currency"=>"AUD"
                   },
                   "quantity"=>2,

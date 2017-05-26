@@ -63,7 +63,7 @@ describe Entities::SubEntities::Transaction do
                'payment_lines'=> [
                    {
                      "id"=>[{"id"=>7946635337, 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                     "unit_price"=>{"net_amount"=>200.0, "tax_amount"=>33.33},
+                     "unit_price"=>{"net_amount"=>200.0, "tax_rate"=>20.0, "tax_amount"=>33.33},
                      "quantity"=>1,
                      "description"=>"SHOPIFY Product 0001",
                      "item_id"=> [{"id"=>26168316425, 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
