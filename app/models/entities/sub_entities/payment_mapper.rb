@@ -18,6 +18,8 @@ class Entities::SubEntities::PaymentMapper
   end
 
   after_denormalize do |input, output|
+    output[:opts] = {sparse: false}
+
     output[:type] = input['kind'] == 'refund' ? 'SUPPLIER' : 'CUSTOMER'
     output[:status] = 'ACTIVE'
     output[:payment_lines] = [{amount: input['amount'].to_f, linked_transactions: [{id: input['order_id'], class: 'Invoice', applied_amount: input['amount'].to_f}]}]

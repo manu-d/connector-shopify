@@ -87,6 +87,7 @@ describe Entities::SubEntities::Order do
       describe 'external to connec' do
         let(:connec_hash) {
           {
+            opts: {sparse: false},
             id: [{id: 'id', provider: organization.oauth_provider, realm: organization.oauth_uid}],
             title: 'a sales order',
             transaction_number: '123456',
@@ -543,6 +544,7 @@ describe Entities::SubEntities::Order do
 
           let(:connec_hash) {
             {
+              'opts' => {'sparse' => false},
               "person_id"=>[{"id"=>5240853704, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
               "transaction_date"=>"2017-05-29T09:44:56+10:00",
               "transaction_number"=>1009,
@@ -1080,6 +1082,7 @@ describe Entities::SubEntities::Order do
 
         let(:connec_hash) {
           {
+            'opts' => {'sparse' => false},
             "person_id"=>[{"id"=>5241025160, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
             "transaction_date"=>"2017-05-29T10:19:19+10:00",
             "transaction_number"=>1011,

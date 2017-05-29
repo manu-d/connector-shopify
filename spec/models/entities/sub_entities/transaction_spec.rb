@@ -59,6 +59,7 @@ describe Entities::SubEntities::Transaction do
       describe 'payment' do
         let(:connec_payment) {
           {
+              'opts' => {'sparse' => false},
               'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
               'payment_lines'=> [{"amount"=>155.0, "linked_transactions"=>[{"id"=>[{"id"=>"N11003", "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>155.0}]}],
               # The amount field is read only in Connec! and calculated based on lines
@@ -207,6 +208,7 @@ describe Entities::SubEntities::Transaction do
 
           let(:connec_payment) {
             {
+              'opts' => {'sparse' => false},
               "title"=>4863088456,
               "transaction_date"=>"2017-05-26T16:48:43+10:00",
               "person_id"=>[{"id"=>5241025160, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
