@@ -53,16 +53,9 @@ class Entities::SubEntities::InvoiceMapper
     output[:type] = input['kind'] != 'refund' ? 'CUSTOMER' : 'SUPPLIER'
     output[:lines].concat(output.delete(:lines_shipping)) if output[:lines_shipping]
 
-    output[:lines] << {
-      id: 'shopify-discount',
-      quantity: 1,
-      description: 'Discount',
-      unit_price: {
-        net_amount: - input['total_discounts'].to_f,
-        tax_amount: 0.0,
-        currency: input['currency']
-      }
-    } if input['total_discounts'].to_f > 0
+    if input['discount_codes']
+      output[:discount_amount] = input['discount_codes'].map { |l| l['amount'].to_f }.sum
+    end
 
     output = set_lines_currency(output, input['currency'])
 

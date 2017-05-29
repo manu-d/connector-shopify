@@ -25,6 +25,10 @@ class Entities::SubEntities::LineMapper
     output[:unit_price][:tax_rate] = total_tax_rate
     output[:unit_price][:tax_amount] = unit_price_tax_amount
 
+    if input['total_discount'].to_f > 0.0
+      output[:reduction_percent] = input['price'].to_f / input['total_discount'].to_f
+    end
+
     output[:description] = "Shipping: #{input['title']}" unless input['variant_id']
 
 	  output
