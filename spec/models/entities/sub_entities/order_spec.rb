@@ -117,7 +117,6 @@ describe Entities::SubEntities::Order do
                 unit_price: {
                     net_amount: 55.0,
                     tax_rate: 12.0,
-                    tax_amount: 7.96,
                     currency: 'EUR'
                 },
                 quantity: '1',
@@ -129,7 +128,6 @@ describe Entities::SubEntities::Order do
                 unit_price: {
                     net_amount: 10.0,
                     tax_rate: 0.0,
-                    tax_amount: 0.0,
                     currency: 'EUR'
                 },
                 description: 'Shipping: Standard',
@@ -567,7 +565,6 @@ describe Entities::SubEntities::Order do
                   "unit_price"=>{
                     "total_amount"=>11.9,
                     "tax_rate"=>10.0,
-                    "tax_amount"=>0.975,
                     "currency"=>"AUD"
                   },
                   "quantity"=>2,
@@ -580,7 +577,6 @@ describe Entities::SubEntities::Order do
                   "unit_price"=>{
                     "net_amount"=>5.0,
                     "tax_rate"=>0.0,
-                    "tax_amount"=>0.0,
                     "currency"=>"AUD"
                   },
                   "description"=>"Shipping: Deliveroo",
@@ -1101,7 +1097,6 @@ describe Entities::SubEntities::Order do
                 "unit_price"=>{
                   "total_amount"=>14.9,
                   "tax_rate"=>10.0,
-                  "tax_amount"=>1.22,
                   "currency"=>"AUD"
                 },
                 "quantity"=>1,
@@ -1115,7 +1110,6 @@ describe Entities::SubEntities::Order do
                 "unit_price"=>{
                   "net_amount"=>5.0,
                   "tax_rate"=>0.0,
-                  "tax_amount"=>0.0,
                   "currency"=>"AUD"
                 },
                 "description"=>"Shipping: Delivery",
