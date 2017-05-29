@@ -10,12 +10,12 @@ class Entities::SubEntities::InvoiceMapper
   end
 
   STATUS_MAPPING_INV = {
-      'authorized' => 'AUTHORISED',
-      'pending' => 'DRAFT',
-      'paid' => 'PAID',
-      'partially_paid' => 'AUTHORISED',
-      'voided' => 'VOIDED'
-      }
+    'authorized' => 'AUTHORISED',
+    'pending' => 'DRAFT',
+    'paid' => 'PAID',
+    'partially_paid' => 'AUTHORISED',
+    'voided' => 'VOIDED'
+  }
 
   map from('/person_id'), to('/customer/id')
   map from('/transaction_date'), to('/created_at')

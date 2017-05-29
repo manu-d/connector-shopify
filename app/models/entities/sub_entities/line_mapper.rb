@@ -14,8 +14,14 @@ class Entities::SubEntities::LineMapper
       output[:unit_price][:total_amount] = output[:unit_price].delete(:net_amount)
     end
 
-    total_tax_rate = input['tax_lines']&.map { |line| (line['rate']&.to_f) }.compact.sum&.to_f * 100.0
-    unit_price_tax_amount = input['tax_lines']&.map { |line| (line['price']&.to_f / output[:quantity].to_f) }.compact.sum&.to_f
+    if input['tax_lines']
+      total_tax_rate = input['tax_lines'].map { |line| (line['rate']&.to_f) }&.compact&.sum&.to_f * 100.0
+      unit_price_tax_amount = input['tax_lines'].map { |line| (line['price']&.to_f / output[:quantity].to_f) }&.compact&.sum&.to_f
+    else
+      total_tax_rate = 0.0
+      unit_price_tax_amount = 0.0
+    end
+
     output[:unit_price][:tax_rate] = total_tax_rate
     output[:unit_price][:tax_amount] = unit_price_tax_amount
 
