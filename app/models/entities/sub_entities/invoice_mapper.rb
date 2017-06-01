@@ -10,12 +10,12 @@ class Entities::SubEntities::InvoiceMapper
   end
 
   STATUS_MAPPING_INV = {
-      'authorized' => 'AUTHORISED',
-      'pending' => 'DRAFT',
-      'paid' => 'PAID',
-      'partially_paid' => 'AUTHORISED',
-      'voided' => 'VOIDED'
-      }
+    'authorized' => 'AUTHORISED',
+    'pending' => 'DRAFT',
+    'paid' => 'PAID',
+    'partially_paid' => 'AUTHORISED',
+    'voided' => 'VOIDED'
+  }
 
   map from('/person_id'), to('/customer/id')
   map from('/transaction_date'), to('/created_at')
@@ -49,20 +49,17 @@ class Entities::SubEntities::InvoiceMapper
   end
 
   after_denormalize do |input, output|
+    output[:opts] = {sparse: false}
+
     output[:status] = STATUS_MAPPING_INV[input['financial_status']] if input['financial_status']
     output[:type] = input['kind'] != 'refund' ? 'CUSTOMER' : 'SUPPLIER'
-    output[:lines].concat(output.delete(:lines_shipping))
+    output[:lines].concat(output.delete(:lines_shipping)) if output[:lines_shipping]
 
-    output[:lines] << {
-      id: 'shopify-discount',
-      quantity: 1,
-      description: 'Discount',
-      unit_price: {
-        total_amount: input['total_discounts'],
-        tax_amount: 0.0,
-        currency: input['currency']
-      }
-    } if input['total_discounts'].to_f > 0
+    if input['discount_codes']
+      output[:discount_amount] = input['discount_codes'].map { |l| l['amount'].to_f }.sum
+    end
+
+    output[:apply_tax_after_discount] = false
 
     output = set_lines_currency(output, input['currency'])
 

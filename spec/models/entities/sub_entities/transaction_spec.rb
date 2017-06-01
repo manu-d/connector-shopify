@@ -59,20 +59,9 @@ describe Entities::SubEntities::Transaction do
       describe 'payment' do
         let(:connec_payment) {
           {
+              'opts' => {'sparse' => false},
               'id' => [{'id' => '1', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-               'payment_lines'=> [
-                   {
-                     "id"=>[{"id"=>7946635337, 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                     "unit_price"=>{"net_amount"=>200.0, "tax_amount"=>33.33},
-                     "quantity"=>1,
-                     "description"=>"SHOPIFY Product 0001",
-                     "item_id"=> [{"id"=>26168316425, 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                     'linked_transactions' => [
-                       'id' => [{'id' => 'N11003', 'provider' => organization.oauth_provider, 'realm' => organization.oauth_uid}],
-                       'class' => 'Invoice'
-                     ]
-                   }
-                 ],
+              'payment_lines'=> [{"amount"=>155.0, "linked_transactions"=>[{"id"=>[{"id"=>"N11003", "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>155.0}]}],
               # The amount field is read only in Connec! and calculated based on lines
               'amount' => {'currency' => 'AUD'},
               'title' => 'N11003',
@@ -86,8 +75,159 @@ describe Entities::SubEntities::Transaction do
         it 'maps to Connec! payment' do
           expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
         end
-      end
 
+        context 'without shipping' do
+          let(:transaction) {
+            {
+              "id"=>5659504008,
+              "amount"=>"41.70",
+              "kind"=>"sale",
+              "gateway"=>"manual",
+              "status"=>"success",
+              "message"=>"Marked the manual payment as received",
+              "created_at"=>"2017-05-26T16:48:43+10:00",
+              "test"=>false,
+              "authorization"=>nil,
+              "currency"=>"AUD",
+              "location_id"=>nil,
+              "user_id"=>nil,
+              "parent_id"=>nil,
+              "device_id"=>nil,
+              "receipt"=>{
+
+              },
+              "error_code"=>nil,
+              "source_name"=>"shopify_draft_order",
+              "line_items"=>[
+                {
+                  "id"=>9323051080,
+                  "variant_id"=>36815052424,
+                  "title"=>"Bacon and Cheese Burger",
+                  "quantity"=>1,
+                  "price"=>"11.90",
+                  "grams"=>0,
+                  "sku"=>"BG1044",
+                  "variant_title"=>nil,
+                  "vendor"=>"contacts-revamp",
+                  "fulfillment_service"=>"manual",
+                  "product_id"=>9715975752,
+                  "requires_shipping"=>false,
+                  "taxable"=>true,
+                  "gift_card"=>false,
+                  "name"=>"Bacon and Cheese Burger",
+                  "variant_inventory_management"=>nil,
+                  "properties"=>nil,
+                  "product_exists"=>true,
+                  "fulfillable_quantity"=>1,
+                  "total_discount"=>"0.00",
+                  "fulfillment_status"=>nil,
+                  "tax_lines"=>[
+                    {
+                      "title"=>"GST",
+                      "price"=>"1.08",
+                      "rate"=>0.1
+                    }
+                  ]
+                },
+                {
+                  "id"=>9323051144,
+                  "variant_id"=>36814965192,
+                  "title"=>"Double Beef Burger",
+                  "quantity"=>2,
+                  "price"=>"14.90",
+                  "grams"=>0,
+                  "sku"=>"BG1031",
+                  "variant_title"=>nil,
+                  "vendor"=>"contacts-revamp",
+                  "fulfillment_service"=>"manual",
+                  "product_id"=>9715954184,
+                  "requires_shipping"=>false,
+                  "taxable"=>true,
+                  "gift_card"=>false,
+                  "name"=>"Double Beef Burger",
+                  "variant_inventory_management"=>nil,
+                  "properties"=>nil,
+                  "product_exists"=>true,
+                  "fulfillable_quantity"=>2,
+                  "total_discount"=>"0.00",
+                  "fulfillment_status"=>nil,
+                  "tax_lines"=>[
+                    {
+                      "title"=>"GST",
+                      "price"=>"2.71",
+                      "rate"=>0.1
+                    }
+                  ]
+                }
+              ],
+              "shipping_lines"=>[
+
+              ],
+              "order_id"=>4863088456,
+              "customer"=>{
+                "id"=>5241025160,
+                "email"=>"chris@example.com",
+                "accepts_marketing"=>false,
+                "created_at"=>"2017-05-26T16:13:35+10:00",
+                "updated_at"=>"2017-05-26T16:48:43+10:00",
+                "first_name"=>"Chris",
+                "last_name"=>"Cordial",
+                "orders_count"=>3,
+                "state"=>"disabled",
+                "total_spent"=>"80.40",
+                "last_order_id"=>4863088456,
+                "note"=>"",
+                "verified_email"=>true,
+                "multipass_identifier"=>nil,
+                "tax_exempt"=>false,
+                "phone"=>"+61411245541",
+                "tags"=>"",
+                "last_order_name"=>"#1006",
+                "default_address"=>{
+                  "id"=>5537262216,
+                  "first_name"=>"Chris",
+                  "last_name"=>"Cordial",
+                  "company"=>"",
+                  "address1"=>"",
+                  "address2"=>"",
+                  "city"=>"",
+                  "province"=>"Australian Capital Territory",
+                  "country"=>"Australia",
+                  "zip"=>"",
+                  "phone"=>"",
+                  "name"=>"Chris Cordial",
+                  "province_code"=>"ACT",
+                  "country_code"=>"AU",
+                  "country_name"=>"Australia",
+                  "default"=>true
+                }
+              },
+              "transaction_number"=>1006
+            }
+          }
+
+          let(:connec_payment) {
+            {
+              'opts' => {'sparse' => false},
+              "title"=>4863088456,
+              "transaction_date"=>"2017-05-26T16:48:43+10:00",
+              "person_id"=>[{"id"=>5241025160, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
+              "amount"=>{"currency"=>"AUD"},
+              "payment_lines" => [
+                {"amount"=>41.7, "linked_transactions"=>[{"id"=>[{"id"=>4863088456, "provider"=>"this_app", "realm"=>organization.oauth_uid}], "class"=>"Invoice", "applied_amount"=>41.7}]}
+              ],
+              "type"=>"CUSTOMER",
+              "status"=>"ACTIVE",
+              "transaction_number"=>1006,
+              "id"=>[{"id"=>"5659504008", "provider"=>"this_app", "realm"=>organization.oauth_uid}]
+            }
+          }
+
+          it 'maps to Connec! payment' do
+            expect(subject.map_to('Payment', transaction)).to eql(connec_payment)
+          end
+        end
+      end
     end
   end
 end

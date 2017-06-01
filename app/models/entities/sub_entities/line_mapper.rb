@@ -12,11 +12,20 @@ class Entities::SubEntities::LineMapper
 
     if input['taxes_included']
       output[:unit_price][:total_amount] = output[:unit_price].delete(:net_amount)
-      output[:unit_price][:tax_amount] = 0.0
-    else
-      total_line_tax = input['tax_lines']&.map { |line| (line['price']&.to_f / output[:quantity].to_f) }.compact.sum
+    end
 
-      output[:unit_price][:tax_amount] = total_line_tax&.to_f
+    if input['tax_lines']
+      total_tax_rate = input['tax_lines'].map { |line| (line['rate']&.to_f) }&.compact&.sum&.to_f * 100.0
+      unit_price_tax_amount = input['tax_lines'].map { |line| (line['price']&.to_f / output[:quantity].to_f) }&.compact&.sum&.to_f
+    else
+      total_tax_rate = 0.0
+      unit_price_tax_amount = 0.0
+    end
+
+    output[:unit_price][:tax_rate] = total_tax_rate
+
+    if input['total_discount'].to_f > 0.0
+      output[:reduction_percent] = input['price'].to_f / input['total_discount'].to_f
     end
 
     output[:description] = "Shipping: #{input['title']}" unless input['variant_id']
