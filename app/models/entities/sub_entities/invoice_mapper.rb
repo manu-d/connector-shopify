@@ -59,6 +59,8 @@ class Entities::SubEntities::InvoiceMapper
       output[:discount_amount] = input['discount_codes'].map { |l| l['amount'].to_f }.sum
     end
 
+    output[:apply_tax_after_discount] = false
+
     output = set_lines_currency(output, input['currency'])
 
     if input['financial_status'] == 'paid'
