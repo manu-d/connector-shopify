@@ -110,6 +110,7 @@ describe Entities::SubEntities::Order do
                 postal_code: 'shipping_address.postal_code',
                 country: 'shipping_address.country'
             },
+            apply_tax_after_discount: false,
             transaction_date: Date.new(1985, 9, 17).iso8601,
             lines: [
               {
@@ -553,6 +554,7 @@ describe Entities::SubEntities::Order do
                 "postal_code"=>"2000",
                 "country"=>"AU"
               },
+              "apply_tax_after_discount" => false,
               "billing_address"=>{
                 "city"=>"Sydney",
                 "region"=>"New South Wales",
@@ -1087,6 +1089,7 @@ describe Entities::SubEntities::Order do
               "region"=>"Australian Capital Territory",
               "country"=>"AU"
             },
+            "apply_tax_after_discount" => false,
             "billing_address"=>{
               "region"=>"Australian Capital Territory",
               "country"=>"AU"
