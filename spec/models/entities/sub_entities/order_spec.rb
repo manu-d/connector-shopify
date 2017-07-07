@@ -127,7 +127,7 @@ describe Entities::SubEntities::Order do
               {
                 id: [{id: '369256396', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
-                    net_amount: 10.0,
+                    total_amount: 10.0,
                     tax_rate: 0.0,
                     currency: 'EUR'
                 },
@@ -577,7 +577,7 @@ describe Entities::SubEntities::Order do
                 {
                   "id"=>[{"id"=>4051029064, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
                   "unit_price"=>{
-                    "net_amount"=>5.0,
+                    "total_amount"=>5.0,
                     "tax_rate"=>0.0,
                     "currency"=>"AUD"
                   },
@@ -1111,7 +1111,7 @@ describe Entities::SubEntities::Order do
               {
                 "id"=>[{"id"=>4051086472, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
                 "unit_price"=>{
-                  "net_amount"=>5.0,
+                  "total_amount"=>5.0,
                   "tax_rate"=>0.0,
                   "currency"=>"AUD"
                 },
