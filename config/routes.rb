@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  ActiveAdmin.routes(self)
   mount Maestrano::Connector::Rails::Engine, at: '/'
 
   namespace :webhooks do
