@@ -9,6 +9,7 @@ module MapperHelper
   end
 
   def get_rate_from_country(country_tax_rate)
-    (country_tax_rate * 100) || 0
+    return 'Not Found' unless country_tax_rate
+    country_tax_rate * 100
   end
 end

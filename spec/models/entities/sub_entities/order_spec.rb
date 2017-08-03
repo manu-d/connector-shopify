@@ -13,7 +13,21 @@ describe Entities::SubEntities::Order do
     let(:organization) { create(:organization) }
     let(:connec_client) { Maestrano::Connec::Client[organization.tenant].new(organization.uid) }
     let(:external_client) { Maestrano::Connector::Rails::External.get_client(organization) }
-    let(:opts) { {country_tax_rate: 0.2}}
+    let(:opts) { {shipping_tax_rates: [
+          {
+            "name"=>"United Kingdom",
+            "tax"=>0.2,
+            # This would be a country code with real data
+            "code"=>"shipping_address.country",
+          },
+          {
+            "name"=>"Rest of World",
+            "tax"=>0.0,
+            "code"=>"*"
+          }
+        ]
+      }
+    }
     subject { Entities::SubEntities::Order.new(organization, connec_client, external_client, opts) }
 
     describe 'map_to_connec' do
@@ -307,7 +321,7 @@ describe Entities::SubEntities::Order do
                 "latitude"=>-33.8708464,
                 "longitude"=>151.20733,
                 "name"=>"Alice Arthon",
-                "country_code"=>"AU",
+                "country_code"=>"shipping_address.country",
                 "province_code"=>"NSW"
               },
               "fulfillments"=>nil,
@@ -554,7 +568,7 @@ describe Entities::SubEntities::Order do
                 "city"=>"Sydney",
                 "region"=>"New South Wales",
                 "postal_code"=>"2000",
-                "country"=>"AU"
+                "country"=>"shipping_address.country"
               },
               "apply_tax_after_discount" => false,
               "billing_address"=>{
@@ -742,7 +756,7 @@ describe Entities::SubEntities::Order do
               "latitude"=>nil,
               "longitude"=>nil,
               "name"=>"Chris Cordial",
-              "country_code"=>"AU",
+              "country_code"=>"shipping_address.country",
               "province_code"=>"ACT"
             },
             "fulfillments"=>nil,
@@ -924,7 +938,7 @@ describe Entities::SubEntities::Order do
                 "latitude"=>nil,
                 "longitude"=>nil,
                 "name"=>"Chris Cordial",
-                "country_code"=>"AU",
+                "country_code"=>"shipping_address.country",
                 "province_code"=>"ACT"
               },
               "fulfillments"=>nil,
@@ -1089,7 +1103,7 @@ describe Entities::SubEntities::Order do
             "title"=>"#1011",
             "shipping_address"=>{
               "region"=>"Australian Capital Territory",
-              "country"=>"AU"
+              "country"=>"shipping_address.country"
             },
             "apply_tax_after_discount" => false,
             "billing_address"=>{
