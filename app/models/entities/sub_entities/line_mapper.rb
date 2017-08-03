@@ -12,7 +12,7 @@ class Entities::SubEntities::LineMapper
 	  output[:quantity] ||= 1
     # We check the presence of the field 'carrier_identifier' which is unique to shipping lines
     #
-    if input['taxes_included']
+    if input['taxes_included'] || input.has_key?('carrier_identifier')
       output[:unit_price][:total_amount] = output[:unit_price].delete(:net_amount)
     end
 

@@ -141,7 +141,7 @@ describe Entities::SubEntities::Order do
               {
                 id: [{id: '369256396', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
-                    net_amount: 10.0,
+                    total_amount: 10.0,
                     tax_rate: 20.0,
                     currency: 'EUR'
                 },
