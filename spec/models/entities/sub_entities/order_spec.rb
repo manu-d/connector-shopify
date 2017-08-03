@@ -13,7 +13,7 @@ describe Entities::SubEntities::Order do
     let(:organization) { create(:organization) }
     let(:connec_client) { Maestrano::Connec::Client[organization.tenant].new(organization.uid) }
     let(:external_client) { Maestrano::Connector::Rails::External.get_client(organization) }
-    let(:opts) { }
+    let(:opts) { {country_tax_rate: 0.2}}
     subject { Entities::SubEntities::Order.new(organization, connec_client, external_client, opts) }
 
     describe 'map_to_connec' do
@@ -127,8 +127,8 @@ describe Entities::SubEntities::Order do
               {
                 id: [{id: '369256396', provider: organization.oauth_provider, realm: organization.oauth_uid}],
                 unit_price: {
-                    total_amount: 10.0,
-                    tax_rate: 0.0,
+                    net_amount: 10.0,
+                    tax_rate: 20.0,
                     currency: 'EUR'
                 },
                 description: 'Shipping: Standard',
@@ -139,7 +139,7 @@ describe Entities::SubEntities::Order do
         }
 
         context 'with taxes excluded' do
-          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
+          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.merge(apply_tax_after_discount: true).with_indifferent_access) }
         end
 
         context 'with taxes included' do
@@ -147,6 +147,8 @@ describe Entities::SubEntities::Order do
             order[:taxes_included] = true
             connec_hash[:lines][0][:unit_price][:total_amount] = 55.0
             connec_hash[:lines][0][:unit_price].delete(:net_amount)
+            connec_hash[:lines][1][:unit_price][:total_amount] = 10.0
+            connec_hash[:lines][1][:unit_price].delete(:net_amount)
           end
 
           it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.with_indifferent_access) }
@@ -157,7 +159,7 @@ describe Entities::SubEntities::Order do
             order[:financial_status] = 'paid'
           end
 
-          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.merge({balance: 0.0, deposit: 82.96, status: 'PAID'}).with_indifferent_access) }
+          it { expect(subject.map_to('Invoice', order.with_indifferent_access)).to eql(connec_hash.merge({balance: 0.0, deposit: 82.96, status: 'PAID', apply_tax_after_discount: true}).with_indifferent_access) }
         end
 
         context 'with shipping and global discount' do
@@ -578,7 +580,7 @@ describe Entities::SubEntities::Order do
                   "id"=>[{"id"=>4051029064, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
                   "unit_price"=>{
                     "total_amount"=>5.0,
-                    "tax_rate"=>0.0,
+                    "tax_rate"=>20.0,
                     "currency"=>"AUD"
                   },
                   "description"=>"Shipping: Deliveroo",
@@ -1112,7 +1114,7 @@ describe Entities::SubEntities::Order do
                 "id"=>[{"id"=>4051086472, "provider"=>"this_app", "realm"=>organization.oauth_uid}],
                 "unit_price"=>{
                   "total_amount"=>5.0,
-                  "tax_rate"=>0.0,
+                  "tax_rate"=>20.0,
                   "currency"=>"AUD"
                 },
                 "description"=>"Shipping: Delivery",

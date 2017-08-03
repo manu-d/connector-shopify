@@ -11,6 +11,13 @@ class Entities::Financial < Maestrano::Connector::Rails::ComplexEntity
     'Orders'
   end
 
+  def before_sync(last_synchronization_date)
+    # TODO manage when country differs from currency 'countries or money gem'
+    current_country_code = @external_client.find('Shop')&.first.dig('country_code')
+    countries = @external_client.find 'Country'
+    @opts[:country_tax_rate] ||= countries.find {|country| country['code'] == current_country_code}&.dig('tax')
+  end
+
 #   # input :  {
 #   #             connec_entity_names[0]: [unmapped_connec_entitiy1, unmapped_connec_entitiy2],
 #   #             connec_entity_names[1]: [unmapped_connec_entitiy3, unmapped_connec_entitiy4]
