@@ -10,24 +10,46 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
-    # Here is an example of a simple dashboard with columns and panels.
-    #
-    # columns do
-    #   column do
-    #     panel "Recent Posts" do
-    #       ul do
-    #         Post.recent(5).map do |post|
-    #           li link_to(post.title, admin_post_path(post))
-    #         end
-    #       end
-    #     end
-    #   end
+    columns do
+      column do
+        panel "Recent Organizations" do
+          ul do
+            Maestrano::Connector::Rails::Organization.last(5).map do |org|
+              li link_to("#{org.name} -- Tenant: #{org.tenant}", admin_maestrano_connector_rails_organization_path(org))
+            end
+          end
+        end
+      end
+    end
 
-    #   column do
-    #     panel "Info" do
-    #       para "Welcome to ActiveAdmin."
-    #     end
-    #   end
-    # end
-  end # content
+    columns do
+      column do
+        panel "Recent Users" do
+          ul do
+            Maestrano::Connector::Rails::User.last(5).map do |user|
+              li link_to("#{user.uid} - #{user.email}", admin_maestrano_connector_rails_user_path(user))
+            end
+          end
+        end
+      end
+    end
+
+    columns do
+      column do
+        panel "Recent Synchronizations" do
+          ul do
+            Maestrano::Connector::Rails::Synchronization.last(5).map do |sync|
+              li link_to("#{sync.id} - #{sync.created_at} - #{sync.status}", admin_maestrano_connector_rails_synchronization_path(sync))
+            end
+          end
+        end
+      end
+    end
+
+    columns do
+      panel "Info" do
+        para "Welcome to ActiveAdmin."
+      end
+    end
+  end
 end

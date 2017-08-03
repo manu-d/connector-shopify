@@ -7,18 +7,27 @@
 # Ignore bundler config.
 /.bundle
 
+# Ignore TODO files
+LEFT-TO-DO.*
+
+<% if sqlite3? -%>
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sqlite3-journal
+
+<% end -%>
 # Ignore all logfiles and tempfiles.
 /log/*
 !/log/.keep
 /tmp
 
+config/settings.local.yml
+config/settings/*.local.yml
+config/environments/*.local.yml
+
 # Ignore application configuration
 /config/application.yml
+/config/application-sample.yml
 
+# Ignore coverage
 /coverage
-/db/*.sqlite3
-
-.project
-
-.idea/*
-/config/settings/*.local.yml
