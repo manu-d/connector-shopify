@@ -29,7 +29,7 @@ describe Entities::Person do
                     city: 'city',
                     region: 'region',
                     postal_code: 'postal_code',
-                    country: 'Country Code'
+                    country: 'AU'
                 }
             },
             phone_work: {
@@ -67,7 +67,7 @@ describe Entities::Person do
               city: "city",
               province: "region",
               zip: "postal_code",
-              country_code: "Country Code",
+              country_code: "AU",
               phone: "0208 111 222 33"
             },
             addresses: [
@@ -77,7 +77,7 @@ describe Entities::Person do
                 city: 'city',
                 province: 'region',
                 zip: 'postal_code',
-                country_code: 'Country Code',
+                country_code: 'AU',
                 phone: '0208 111 222 33'
               }
             ],

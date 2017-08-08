@@ -8,6 +8,7 @@ gem 'httparty'
 gem 'uglifier', '>= 1.3.0'
 gem 'bootstrap-validator-rails'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'countries'
 
 gem 'puma', require: false
 gem 'sinatra', require: false

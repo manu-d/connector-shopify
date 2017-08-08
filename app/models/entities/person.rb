@@ -53,6 +53,19 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       input
     end
 
+    def self.country_to_alpha2(input, field)
+      country = input.dig('address_work', field, 'country')
+      alpha2 = ISO3166::Country.find_country_by_name(country)&.alpha2 if country && country.length > 2
+
+      input['address_work'][field]['country'] = alpha2 if alpha2
+    end
+
+    before_normalize do |input, output|
+      country_to_alpha2(input, 'billing')
+      country_to_alpha2(input, 'shipping')
+      input
+    end
+
     map from('first_name'), to('first_name')
     map from('last_name'), to('last_name'), default: 'Undefined'
 
